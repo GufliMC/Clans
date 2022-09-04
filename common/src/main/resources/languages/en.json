@@ -1,0 +1,26 @@
+{
+  "cmd.error.args.player": "<red>The player {0} is not online.",
+  "cmd.error.args.type": "<red>The entity type {0} does not exist.",
+  "cmd.error.args.hologram": "<red>The hologram {0} does not exist or is not possible.",
+  "cmd.error.args.index": "<red>The index {0} is out of bounds.",
+
+  "cmd.create": "<green>Created hologram {0}.",
+  "cmd.create.invalid": "<red>A hologram with that name already exists.",
+
+  "cmd.delete": "<green>Deleted {0}.",
+
+  "cmd.list": "<green>List of holograms: {0}",
+
+  "cmd.addline": "<green>Added line {0} <green>to {1}.",
+
+  "cmd.removeline": "<green>Removed line {0} <green>from {1}.",
+
+  "cmd.tphere": "<green>Teleported {0} to your position.",
+
+  "cmd.reload": "<green>Reloaded all holograms.",
+
+  "cmd.setitem": "<green>Set item of {0} <green>to {1}.",
+
+  "cmd.unsetitem": "<green>Unset item of {0}."
+
+}

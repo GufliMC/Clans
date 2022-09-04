@@ -1,0 +1,38 @@
+plugins {
+    id 'net.minecrell.plugin-yml.bukkit' version '0.5.1'
+}
+
+repositories {
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+}
+
+dependencies {
+    // provided by platform
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+
+    // shadow
+    implementation project(':common')
+    implementation project(':spigot-api')
+
+    // TODO
+    implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+
+bukkit {
+    name = rootProject.name
+    main = 'com.guflimc.reignofclans.spigot.ReignOfClans'
+    description = 'Create a clan, build your base and fight for glory!'
+    author = 'GufliMC'
+    website = 'https://github.com/GufliMC/ReignOfClans'
+}
+
+// I want it nice like that
+generateBukkitPluginDescription.group = "minecraft"

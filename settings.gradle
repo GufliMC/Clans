@@ -1,0 +1,6 @@
+rootProject.name = 'ReignOfClans'
+
+include 'api'
+include 'common'
+include 'spigot'
+include 'spigot-api'

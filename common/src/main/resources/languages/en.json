@@ -1,26 +1,22 @@
 {
-  "cmd.error.args.player": "<red>The player {0} is not online.",
-  "cmd.error.args.type": "<red>The entity type {0} does not exist.",
-  "cmd.error.args.hologram": "<red>The hologram {0} does not exist or is not possible.",
-  "cmd.error.args.index": "<red>The index {0} is out of bounds.",
+  "cmd.error.args.player": "<red>The player <dark_red>{0} does not exist.",
+  "cmd.error.args.index": "<red>The index <dark_red>{0} is out of bounds.",
+  "cmd.error.base.noclan": "<red>You are not in a clan.",
 
-  "cmd.create": "<green>Created hologram {0}.",
-  "cmd.create.invalid": "<red>A hologram with that name already exists.",
+  "chat.button.accept": "<green><bold>ACCEPT",
+  "chat.button.accept.hover": "<DARK_GREEN>CLICK to ACCEPT",
+  "chat.button.decline": "<red><bold>DECLINE",
+  "chat.button.decline.hover": "<DARK_RED>CLICK to DECLINE",
 
-  "cmd.delete": "<green>Deleted {0}.",
+  "cmd.clans.create": "<gray>You created the clan <green>{0} <gray>with tag <green>{1}<gray>.",
+  "cmd.clans.create.error.exists.name": "<red>That clan name is already taken.",
+  "cmd.clans.create.error.exists.tag": "<red>That clan tag is already taken.",
+  "cmd.clans.create.error.name": "<red>The clan name must be alphanumeric and between 2 and 24 characters.",
+  "cmd.clans.create.error.tag": "<red>The clan tag must be alphpanumeric and be 2 or 3 characters.",
+  "cmd.clans.create.error.member": "<red>You are already a member of a clan.",
 
-  "cmd.list": "<green>List of holograms: {0}",
+  "cmd.clans.list": "<gray>List of clans: <green>{0}<gray>.",
 
-  "cmd.addline": "<green>Added line {0} <green>to {1}.",
-
-  "cmd.removeline": "<green>Removed line {0} <green>from {1}.",
-
-  "cmd.tphere": "<green>Teleported {0} to your position.",
-
-  "cmd.reload": "<green>Reloaded all holograms.",
-
-  "cmd.setitem": "<green>Set item of {0} <green>to {1}.",
-
-  "cmd.unsetitem": "<green>Unset item of {0}."
-
+  "cmd.clans.invite.sender": "<gray>You have invited <green>{0} <gray>to join your clan.",
+  "cmd.clans.invite.target": "<gray>You have been invited to join <green>{0}<gray>."
 }

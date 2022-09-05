@@ -1,8 +1,9 @@
 {
   "database": {
-    "dsn": "jdbc:h2:file:./extensions/BrickHolograms/data/database.h2",
-    "driver": "com.mysql.jdbc.Driver",
-    "username": "dbuser",
-    "password": "dbuser"
-  }
+    "dsn": "jdbc:mysql://localhost/lavaclans",
+    "driver": "com.mysql.cj.jdbc.Driver",
+    "username": "root",
+    "password": "root"
+  },
+  "rootCommand": "clan"
 }

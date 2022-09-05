@@ -2,27 +2,14 @@ plugins {
     id 'java-library'
 }
 
+
 dependencies {
     api project(':api')
 
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation 'org.slf4j:slf4j-api:1.7.36'
-
-    // provided by extension
-    compileOnly 'com.guflimc.brick.i18n:api:+'
-
-    // LIBRARIES
-
-    // commands
-    implementation 'net.kyori:adventure-text-minimessage:4.+'
-    implementation 'cloud.commandframework:cloud-core:+'
-    implementation 'cloud.commandframework:cloud-annotations:+'
-
-    // serialization
-    implementation 'com.google.code.gson:gson:+'
+    compileOnly 'org.slf4j:slf4j-api:1.7.36'
+    compileOnly 'com.google.code.gson:gson:+'
 
     // database
     api 'com.guflimc.brick.orm:common:+'
-
-    implementation 'com.guflimc.brick.maths:database-api:+'
+    api 'com.guflimc.brick.maths:database-api:+'
 }

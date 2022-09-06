@@ -5,11 +5,10 @@ import com.guflimc.brick.maths.database.api.LocationConverter;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.nexus;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -24,6 +23,7 @@ public class DNexus implements nexus {
     private UUID id;
 
     @OneToOne(targetEntity = DClan.class, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private DClan clan;
 
     @Convert(converter = LocationConverter.class)
@@ -87,7 +87,7 @@ public class DNexus implements nexus {
     }
 
     @Override
-    public void activateShield(Instant expireAt) {
+    public void activateShield(@NotNull Instant expireAt) {
         this.shieldExpireAt = expireAt;
     }
 
@@ -95,4 +95,15 @@ public class DNexus implements nexus {
     public Instant createdAt() {
         return createdAt;
     }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DNexus other && other.id.equals(id);
+    }
+
 }

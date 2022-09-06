@@ -2,9 +2,9 @@ package com.guflimc.lavaclans.common;
 
 import com.guflimc.lavaclans.api.ClanManager;
 import com.guflimc.lavaclans.api.domain.Clan;
+import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.common.domain.DClan;
-import com.guflimc.lavaclans.common.domain.DClanProfile;
 import com.guflimc.lavaclans.common.domain.DProfile;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ public class LavaClansManager implements ClanManager {
     // edit clans
 
     @Override
-    public CompletableFuture<Clan> create(@NotNull String name, @NotNull String tag) {
+    public CompletableFuture<Clan> create(@NotNull Profile leader, @NotNull String name, @NotNull String tag) {
         if (name.length() < 3) {
             throw new IllegalArgumentException("Clan name must be at least 3 characters.");
         }
@@ -85,19 +85,35 @@ public class LavaClansManager implements ClanManager {
         DClan clan = new DClan(name, tag);
         clans.add(clan);
 
-        // TODO call event
+        return databaseContext.persistAsync(clan).thenCompose(n -> {
+            // TODO call create event
 
-        return databaseContext.persistAsync(clan).thenApply(n -> clan);
+            ((DProfile) leader).joinClan(clan);
+
+            // TODO set leader rank
+
+            return update(leader);
+        }).thenApply(n -> clan);
     }
 
     @Override
     public CompletableFuture<Void> remove(@NotNull Clan clan) {
         logger.debug("Deleting clan '" + clan.name() + "'.");
+        clans.remove((DClan) clan);
+
+        Set<CompletableFuture<?>> futures = new HashSet<>();
+
+        // online players will leave clan
+        profiles.stream().filter(p -> p.clanProfile().map(cp -> cp.clan().equals(clan)).orElse(false))
+                .forEach(p -> {
+                    p.clanProfile().get().quit();
+                    futures.add(update(p));
+                });
 
         // TODO consistency check
 
-        clans.remove((DClan) clan);
-        return databaseContext.removeAsync(clan);
+        return databaseContext.removeAsync(clan).thenCompose(n ->
+                CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)));
     }
 
     @Override
@@ -139,7 +155,6 @@ public class LavaClansManager implements ClanManager {
     // edit profiles
 
     public CompletableFuture<Profile> load(@NotNull UUID id, @NotNull String name) {
-        System.out.println("a");
         return findProfile(id).thenApply(p -> {
             // update name change
             ((DProfile) p).setName(name);
@@ -152,8 +167,6 @@ public class LavaClansManager implements ClanManager {
             return profile;
         }).thenApply(p -> {
             // add to cache
-
-            System.out.println("Loaded " + p.name() + ".");
             DProfile dp = (DProfile) p;
             dp.setLastSeenAt(Instant.now());
             profiles.add(dp);
@@ -168,28 +181,14 @@ public class LavaClansManager implements ClanManager {
     }
 
     @Override
-    public CompletableFuture<Void> joinClan(@NotNull Profile profile, @NotNull Clan clan) {
-        if (profile.clanProfile().isPresent()) {
-            // leave previous clan
-            quitClan(profile);
-        }
-
-        DProfile p = (DProfile) profile;
-        p.setClanProfile(new DClanProfile(p, (DClan) clan));
-
-        return databaseContext.mergeAsync(p).thenAccept(mp -> {
+    public CompletableFuture<Void> update(@NotNull Profile profile) {
+        return databaseContext.mergeAsync(profile).thenRun(() -> {
         });
     }
 
     @Override
-    public CompletableFuture<Void> quitClan(@NotNull Profile profile) {
-        DProfile p = (DProfile) profile;
-        p.setClanProfile(null);
-        return databaseContext.mergeAsync(p).thenAccept(mp -> {});
-    }
-
-    @Override
-    public CompletableFuture<Void> update(@NotNull Profile profile) {
-        return databaseContext.mergeAsync(profile).thenRun(() -> {});
+    public CompletableFuture<Void> update(@NotNull ClanProfile clanProfile) {
+        return databaseContext.mergeAsync(clanProfile).thenRun(() -> {
+        });
     }
 }

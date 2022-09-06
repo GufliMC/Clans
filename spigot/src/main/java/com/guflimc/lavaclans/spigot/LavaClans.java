@@ -1,11 +1,12 @@
 package com.guflimc.lavaclans.spigot;
 
-import co.aikar.commands.MessageType;
-import co.aikar.commands.PaperCommandManager;
+import co.aikar.commands.*;
 import com.google.gson.Gson;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.lavaclans.api.ClanAPI;
+import com.guflimc.lavaclans.api.domain.Clan;
+import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.common.LavaClansConfig;
 import com.guflimc.lavaclans.common.LavaClansDatabaseContext;
 import com.guflimc.lavaclans.common.LavaClansManager;
@@ -13,6 +14,7 @@ import com.guflimc.lavaclans.spigot.commands.LavaClansCommands;
 import com.guflimc.lavaclans.spigot.listener.JoinQuitListener;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.translation.TranslationRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
@@ -25,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class LavaClans extends JavaPlugin {
 
@@ -64,13 +67,7 @@ public class LavaClans extends JavaPlugin {
         SpigotI18nAPI.get().register(namespace);
 
         // COMMANDS
-        PaperCommandManager commandManager = new PaperCommandManager(this);
-        commandManager.setFormat(MessageType.SYNTAX, ChatColor.GRAY, ChatColor.GREEN, ChatColor.DARK_GREEN);
-        commandManager.getCommandContexts().registerIssuerOnlyContext(Audience.class,
-                ctx -> adventure.player(ctx.getPlayer()));
-        commandManager.getCommandReplacements().addReplacement("rootCommand", config.rootCommand);
-
-        commandManager.registerCommand(new LavaClansCommands(this));
+        setupCommands();
 
         // EVENTS
 
@@ -93,5 +90,51 @@ public class LavaClans extends JavaPlugin {
 
     private String nameAndVersion() {
         return getDescription().getName() + " v" + getDescription().getVersion();
+    }
+
+    private void setupCommands() {
+        PaperCommandManager commandManager = new PaperCommandManager(this);
+        commandManager.setFormat(MessageType.SYNTAX, ChatColor.GRAY, ChatColor.GREEN, ChatColor.DARK_GREEN);
+
+        // REPLACEMENTS
+        commandManager.getCommandReplacements().addReplacement("rootCommand", config.rootCommand);
+
+        // CONTEXTS
+        CommandContexts<BukkitCommandExecutionContext> ctxs = commandManager.getCommandContexts();
+
+        ctxs.registerIssuerOnlyContext(Audience.class,
+                ctx -> adventure.player(ctx.getPlayer()));
+
+        ctxs.registerIssuerOnlyContext(Profile.class,
+                ctx -> manager.findCachedProfile(ctx.getPlayer().getUniqueId()));
+
+        ctxs.registerContext(Clan.class, ctx -> {
+            String name = ctx.popFirstArg();
+            return manager.findClan(name)
+                    .orElseThrow(() -> {
+                        SpigotI18nAPI.get(this).send(ctx.getPlayer(), "cmd.error.args.clan", name);
+                        return new InvalidCommandArgument();
+                    });
+        });
+
+        // CONDITIONS
+        CommandConditions<BukkitCommandIssuer, BukkitCommandExecutionContext, BukkitConditionContext> conds
+                = commandManager.getCommandConditions();
+
+        conds.addCondition("clan", ctx -> {
+           if ( manager.findCachedProfile(ctx.getIssuer().getUniqueId()).clanProfile().isEmpty() ) {
+               SpigotI18nAPI.get(this).send(ctx.getIssuer().getPlayer(), "cmd.error.base.not.in.clan");
+               throw new ConditionFailedException();
+           }
+        });
+
+        // COMPLETIONS
+        CommandCompletions<BukkitCommandCompletionContext> cmpls = commandManager.getCommandCompletions();
+
+        cmpls.registerCompletion("clan", ctx ->
+                manager.clans().stream().map(Clan::name).toList());
+
+        // REGISTER
+        commandManager.registerCommand(new LavaClansCommands(this));
     }
 }

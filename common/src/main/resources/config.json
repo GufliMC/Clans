@@ -3,7 +3,8 @@
     "dsn": "jdbc:mysql://localhost/lavaclans",
     "driver": "com.mysql.cj.jdbc.Driver",
     "username": "root",
-    "password": "root"
+    "password": "root",
+    "debug": true
   },
   "rootCommand": "clan"
 }

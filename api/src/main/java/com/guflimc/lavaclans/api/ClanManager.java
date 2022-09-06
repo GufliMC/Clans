@@ -1,8 +1,7 @@
 package com.guflimc.lavaclans.api;
 
 import com.guflimc.lavaclans.api.domain.Clan;
-import com.guflimc.lavaclans.api.domain.ClanInvite;
-import com.guflimc.lavaclans.api.domain.ClanJoinRequest;
+import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +26,7 @@ public interface ClanManager {
 
     // edit clans
 
-    CompletableFuture<Clan> create(@NotNull String name, @NotNull String tag);
+    CompletableFuture<Clan> create(@NotNull Profile leader, @NotNull String name, @NotNull String tag);
 
     CompletableFuture<Void> remove(@NotNull Clan clan);
 
@@ -43,10 +42,8 @@ public interface ClanManager {
 
     // edit profiles
 
-    CompletableFuture<Void> joinClan(@NotNull Profile profile, @NotNull Clan clan);
-
-    CompletableFuture<Void> quitClan(@NotNull Profile profile);
-
     CompletableFuture<Void> update(@NotNull Profile profile);
+
+    CompletableFuture<Void> update(@NotNull ClanProfile clanProfile);
 
 }

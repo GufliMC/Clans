@@ -1,6 +1,7 @@
 package com.guflimc.lavaclans.common.domain;
 
 import com.guflimc.lavaclans.api.domain.Clan;
+import com.guflimc.lavaclans.api.domain.ClanInvite;
 import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
 import jakarta.persistence.*;
@@ -8,12 +9,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "profiles")
@@ -26,16 +25,19 @@ public class DProfile implements Profile {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(targetEntity = DClanProfile.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    private DClanProfile clanProfile;
+    @OneToOne(targetEntity = DClanProfile.class, orphanRemoval = true,
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
+            "foreign key (clan_profile_id) references clan_profiles (id) on delete set null"))
+    DClanProfile clanProfile;
 
     @OneToMany(targetEntity = DClanInvite.class, mappedBy = "target", fetch = FetchType.EAGER, orphanRemoval = true,
-            cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     private List<DClanInvite> invites = new ArrayList<>();
 
     @OneToMany(targetEntity = DClanInvite.class, mappedBy = "sender", fetch = FetchType.EAGER, orphanRemoval = true,
-            cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    private List<DClanJoinRequest> joinRequests = new ArrayList<>();
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    List<DClanInvite> sentInvites = new ArrayList<>();
 
     private Instant lastSeenAt;
 
@@ -47,7 +49,8 @@ public class DProfile implements Profile {
 
     //
 
-    private DProfile() {}
+    private DProfile() {
+    }
 
     public DProfile(UUID id, String name) {
         this.id = id;
@@ -73,8 +76,14 @@ public class DProfile implements Profile {
         return Optional.ofNullable(clanProfile);
     }
 
-    public void setClanProfile(ClanProfile profile) {
-        this.clanProfile = (DClanProfile) profile;
+    public void joinClan(Clan clan) {
+        // leave previous clan
+        clanProfile().ifPresent(ClanProfile::quit);
+
+        // join new clan
+        clanProfile = new DClanProfile(this, (DClan) clan);
+
+        // TODO events
     }
 
     @Override
@@ -92,16 +101,26 @@ public class DProfile implements Profile {
     }
 
     @Override
-    public void addJoinRequest(Clan clan) {
-        // TODO call events
-
-        joinRequests.add(new DClanJoinRequest(this, clan));
+    public ClanInvite addInvite(@NotNull Profile sender, @NotNull Clan clan) {
+        DClanInvite invite = new DClanInvite((DProfile) sender, this, (DClan) clan);
+        invites.add(invite);
+        return invite;
     }
 
     @Override
-    public void addInvite(Profile sender, Clan clan) {
-        // TODO call events
+    public Optional<ClanInvite> mostRecentInvite(@NotNull Clan clan) {
+        return invites.stream().filter(inv -> inv.clan().equals(clan))
+                .max(Comparator.comparing(DClanInvite::createdAt))
+                .map(inv -> inv);
+    }
 
-        invites.add(new DClanInvite(sender, this, clan));
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DProfile other && other.id.equals(id);
     }
 }

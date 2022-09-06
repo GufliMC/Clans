@@ -10,12 +10,10 @@ public interface ClanProfile {
 
     Instant createdAt();
 
-    boolean isActive();
-
-    void setActive(boolean active);
-
     float power();
 
     void setPower(float power);
+
+    void quit();
 
 }

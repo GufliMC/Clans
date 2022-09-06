@@ -1,13 +1,13 @@
 package com.guflimc.lavaclans.common.domain;
 
+import com.guflimc.lavaclans.api.ClanAPI;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
@@ -23,9 +23,11 @@ public class DClanProfile implements ClanProfile {
     private UUID id;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private DProfile profile;
 
     @ManyToOne(targetEntity = DClan.class, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private DClan clan;
 
     @ColumnDefault("true")
@@ -42,7 +44,8 @@ public class DClanProfile implements ClanProfile {
 
     //
 
-    private DClanProfile() {}
+    private DClanProfile() {
+    }
 
     public DClanProfile(DProfile profile, DClan clan) {
         this.profile = profile;
@@ -65,16 +68,6 @@ public class DClanProfile implements ClanProfile {
     }
 
     @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    @Override
     public float power() {
         return power;
     }
@@ -82,5 +75,26 @@ public class DClanProfile implements ClanProfile {
     @Override
     public void setPower(float power) {
         this.power = power;
+    }
+
+    @Override
+    public void quit() {
+        profile.clanProfile = null;
+        profile.sentInvites.clear();
+
+        this.active = false;
+        ClanAPI.get().update(this);
+
+        // TODO events
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DClanProfile other && other.id.equals(id);
     }
 }

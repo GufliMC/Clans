@@ -1,6 +1,7 @@
 package com.guflimc.lavaclans.api.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public interface ClanInvite {
@@ -13,6 +14,12 @@ public interface ClanInvite {
 
     Clan clan();
 
-    Instant createdAt();
+    void reject();
+
+    void accept();
+
+    boolean isValid();
+
+    boolean isExpired();
 
 }

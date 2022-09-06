@@ -1,22 +1,40 @@
 {
-  "cmd.error.args.player": "<red>The player <dark_red>{0} does not exist.",
-  "cmd.error.args.index": "<red>The index <dark_red>{0} is out of bounds.",
-  "cmd.error.base.noclan": "<red>You are not in a clan.",
+  "cmd.error.args.player": "<red>The player <dark_red>{0} <red>does not exist.",
+  "cmd.error.args.index": "<red>The index <dark_red>{0} <red>is out of bounds.",
+  "cmd.error.args.clan": "<red>The clan <dark_red>{0} <red>does not exist.",
+
+  "cmd.error.base.not.in.clan": "<red>You are not in a clan.",
+  "cmd.error.base.already.in.clan": "<red>You are already have a clan.",
 
   "chat.button.accept": "<green><bold>ACCEPT",
-  "chat.button.accept.hover": "<DARK_GREEN>CLICK to ACCEPT",
+  "chat.button.accept.hover": "<GRAY><bold>CLICK TO ACCEPT",
   "chat.button.decline": "<red><bold>DECLINE",
-  "chat.button.decline.hover": "<DARK_RED>CLICK to DECLINE",
+  "chat.button.decline.hover": "<GRAY><bold>CLICK TO DECLINE",
 
   "cmd.clans.create": "<gray>You created the clan <green>{0} <gray>with tag <green>{1}<gray>.",
-  "cmd.clans.create.error.exists.name": "<red>That clan name is already taken.",
-  "cmd.clans.create.error.exists.tag": "<red>That clan tag is already taken.",
-  "cmd.clans.create.error.name": "<red>The clan name must be alphanumeric and between 2 and 24 characters.",
-  "cmd.clans.create.error.tag": "<red>The clan tag must be alphpanumeric and be 2 or 3 characters.",
-  "cmd.clans.create.error.member": "<red>You are already a member of a clan.",
+  "cmd.clans.create.error.name.exists": "<red>That clan name is already taken.",
+  "cmd.clans.create.error.tag.exists": "<red>That clan tag is already taken.",
+  "cmd.clans.create.error.name.format": "<red>The clan name must be alphanumeric and between 2 and 24 characters.",
+  "cmd.clans.create.error.tag.format": "<red>The clan tag must be alphpanumeric and be 2 or 3 characters.",
 
   "cmd.clans.list": "<gray>List of clans: <green>{0}<gray>.",
 
+  "cmd.clans.invite.error.already.invited": "<red>This player is already invited to join your clan.",
+  "cmd.clans.invite.error.already.in.clan": "<red>This player is already in a clan.",
   "cmd.clans.invite.sender": "<gray>You have invited <green>{0} <gray>to join your clan.",
-  "cmd.clans.invite.target": "<gray>You have been invited to join <green>{0}<gray>."
+  "cmd.clans.invite.target": "<gray>You have been invited to join <green>{0}<gray>.",
+
+  "cmd.clans.join.error.missing": "<red>You don't have an invite to join this clan.",
+  "cmd.clans.join": "<gray>You joined <green>{0}<gray>.",
+
+  "events.clan.join": "<green>{0} <gray>has joined your clan.",
+
+  "cmd.clans.reject": "<gray>You have rejected the invite for <green>{0}<gray>.",
+  "cmd.clans.reject.sender": "<green>{0} <gray>has denied your clan invite.",
+
+  "cmd.clans.quit": "<gray>You have quit your clan.",
+
+  "cmd.clans.disband": "<gray>Your clan has been disbanded."
+
+
 }

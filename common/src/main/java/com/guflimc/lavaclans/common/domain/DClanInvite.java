@@ -4,11 +4,12 @@ import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanInvite;
 import com.guflimc.lavaclans.api.domain.Profile;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
@@ -21,22 +22,32 @@ public class DClanInvite implements ClanInvite {
     private UUID id;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
-    private Profile sender;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DProfile sender;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
-    private Profile target;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DProfile target;
 
     @ManyToOne(targetEntity = DClan.class, optional = false)
-    private Clan clan;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DClan clan;
+
+    @ColumnDefault("false")
+    private boolean rejected;
+
+    @ColumnDefault("false")
+    private boolean accepted;
 
     @CreationTimestamp
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     //
 
-    public DClanInvite() {}
+    public DClanInvite() {
+    }
 
-    public DClanInvite(Profile sender, Profile target, Clan clan) {
+    public DClanInvite(DProfile sender, DProfile target, DClan clan) {
         this.sender = sender;
         this.target = target;
         this.clan = clan;
@@ -63,8 +74,42 @@ public class DClanInvite implements ClanInvite {
     }
 
     @Override
-    public Instant createdAt() {
+    public void reject() {
+        this.rejected = true;
+    }
+
+    @Override
+    public void accept() {
+        if (!isValid()) {
+            throw new IllegalStateException("This invite is not valid.");
+        }
+
+        this.accepted = true;
+        target.joinClan(clan);
+    }
+
+    @Override
+    public boolean isValid() {
+        return !rejected && !isExpired();
+    }
+
+    @Override
+    public boolean isExpired() {
+        return Instant.now().isAfter(createdAt.plus(24, ChronoUnit.HOURS));
+    }
+
+    Instant createdAt() {
         return createdAt;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DClanInvite other && other.id.equals(id);
     }
 
 }

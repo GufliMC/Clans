@@ -1,5 +1,7 @@
 package com.guflimc.lavaclans.api.domain;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,8 +18,8 @@ public interface Profile {
 
     Instant lastSeenAt();
 
-    void addJoinRequest(Clan clan);
+    ClanInvite addInvite(@NotNull Profile sender, @NotNull Clan clan);
 
-    void addInvite(Profile sender, Clan clan);
+    Optional<ClanInvite> mostRecentInvite(@NotNull Clan clan);
 
 }

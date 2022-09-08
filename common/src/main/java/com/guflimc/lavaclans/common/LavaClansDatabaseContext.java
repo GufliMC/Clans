@@ -21,7 +21,8 @@ public class LavaClansDatabaseContext extends HibernateDatabaseContext {
                 DClanProfile.class,
                 DNexus.class,
                 DProfile.class,
-                DClanInvite.class
+                DClanInvite.class,
+                DClanProfilePermission.class
         };
     }
 

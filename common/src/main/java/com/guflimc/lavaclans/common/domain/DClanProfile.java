@@ -2,15 +2,18 @@ package com.guflimc.lavaclans.common.domain;
 
 import com.guflimc.lavaclans.api.ClanAPI;
 import com.guflimc.lavaclans.api.domain.Clan;
+import com.guflimc.lavaclans.api.domain.ClanPermission;
 import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +32,13 @@ public class DClanProfile implements ClanProfile {
     @ManyToOne(targetEntity = DClan.class, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private DClan clan;
+
+    @ColumnDefault("false")
+    public boolean leader;
+
+    @OneToMany(targetEntity = DClanProfilePermission.class, orphanRemoval = true, fetch = FetchType.EAGER,
+            cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<DClanProfilePermission> permissions = new ArrayList<>();
 
     @ColumnDefault("true")
     private boolean active;
@@ -86,6 +96,29 @@ public class DClanProfile implements ClanProfile {
         ClanAPI.get().update(this);
 
         // TODO events
+    }
+
+    @Override
+    public boolean isLeader() {
+        return leader;
+    }
+
+    @Override
+    public boolean hasPermission(ClanPermission permission) {
+        return leader || permissions.stream().anyMatch(p -> p.permission().equals(permission));
+    }
+
+    @Override
+    public void addPermission(ClanPermission permission) {
+        if ( hasPermission(permission) ) {
+            return;
+        }
+        permissions.add(new DClanProfilePermission(this, permission));
+    }
+
+    @Override
+    public void removePermission(ClanPermission permission) {
+        permissions.removeIf(p -> p.permission().equals(permission));
     }
 
     @Override

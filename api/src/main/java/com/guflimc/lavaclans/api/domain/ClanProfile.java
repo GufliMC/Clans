@@ -8,12 +8,20 @@ public interface ClanProfile {
 
     Clan clan();
 
-    Instant createdAt();
+    void quit();
+
+    boolean isLeader();
 
     float power();
 
     void setPower(float power);
 
-    void quit();
+    boolean hasPermission(ClanPermission permission);
+
+    void addPermission(ClanPermission permission);
+
+    void removePermission(ClanPermission permission);
+
+    Instant createdAt();
 
 }

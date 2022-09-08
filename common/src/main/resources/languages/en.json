@@ -3,6 +3,7 @@
   "cmd.error.args.index": "<red>The index <dark_red>{0} <red>is out of bounds.",
   "cmd.error.args.clan": "<red>The clan <dark_red>{0} <red>does not exist.",
 
+  "cmd.error.base.no.permission": "<red>You don't have permission to do that.",
   "cmd.error.base.not.in.clan": "<red>You are not in a clan.",
   "cmd.error.base.already.in.clan": "<red>You are already have a clan.",
 
@@ -34,7 +35,24 @@
 
   "cmd.clans.quit": "<gray>You have quit your clan.",
 
-  "cmd.clans.disband": "<gray>Your clan has been disbanded."
+  "cmd.clans.disband": "<gray>Your clan has been disbanded.",
+
+  "cmd.clans.perms.error.not.in.clan": "<red>This player is not in your clan.",
+  "cmd.clans.perms.error.not.leader": "<red>You are not the leader of this clan.",
+
+  "menu.clans.permissions.title": "Permissions for {0}",
+  "menu.clans.permissions.status": "<gray>Status: ",
+  "menu.clans.permissions.enabled": "<green>Allowed",
+  "menu.clans.permissions.disabled": "<red>Denied",
+
+  "menu.clans.permission.change.name": "<green>Change clan name",
+  "menu.clans.permission.change.tag": "<green>Change clan tag",
+  "menu.clans.permission.change.banner": "<green>Change clan banner",
+  "menu.clans.permission.change.color": "<green>Change clan color",
+  "menu.clans.permission.invite.player": "<green>Invite players",
+  "menu.clans.permission.kick.member": "<green>Kick members",
+  "menu.clans.permission.open.vault": "<green>Open clan vault",
+  "menu.clans.permission.withdraw.money": "<green>Withdraw money from clan"
 
 
 }

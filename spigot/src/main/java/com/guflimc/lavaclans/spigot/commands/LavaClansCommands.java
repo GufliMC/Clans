@@ -6,8 +6,10 @@ import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.lavaclans.api.ClanAPI;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanInvite;
+import com.guflimc.lavaclans.api.domain.ClanPermission;
 import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.spigot.LavaClans;
+import com.guflimc.lavaclans.spigot.menu.PermissionsMenu;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -40,7 +42,7 @@ public class LavaClansCommands extends BaseCommand {
             return;
         }
 
-        if ( sprofile.clanProfile().isPresent() ) {
+        if (sprofile.clanProfile().isPresent()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.join.error.already");
             return;
         }
@@ -80,7 +82,10 @@ public class LavaClansCommands extends BaseCommand {
 
         Clan clan = sprofile.clanProfile().orElseThrow().clan();
 
-        // TODO check for clan officer role
+        if ( !sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER) ) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
+            return;
+        }
 
         ClanAPI.get().findProfile(username).thenAccept(target -> {
             if (target == null) {
@@ -88,13 +93,13 @@ public class LavaClansCommands extends BaseCommand {
                 return;
             }
 
-            if ( target.clanProfile().isPresent() ) {
+            if (target.clanProfile().isPresent()) {
                 SpigotI18nAPI.get(this).send(sender, "cmd.clans.invite.error.already.in.clan");
                 return;
             }
 
             Optional<ClanInvite> recent = target.mostRecentInvite(clan);
-            if ( recent.isPresent() && !recent.get().isExpired() ) {
+            if (recent.isPresent() && !recent.get().isExpired()) {
                 SpigotI18nAPI.get(this).send(sender, "cmd.clans.invite.error.already.invited");
                 return;
             }
@@ -123,13 +128,13 @@ public class LavaClansCommands extends BaseCommand {
     @Subcommand("join")
     @CommandPermission("lavaclans.clans.join")
     public void join(Audience sender, Profile sprofile, @Values("@clan") Clan clan) {
-        if ( sprofile.clanProfile().isPresent() ) {
+        if (sprofile.clanProfile().isPresent()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
             return;
         }
 
         Optional<ClanInvite> recent = sprofile.mostRecentInvite(clan);
-        if ( recent.isEmpty() || !recent.get().isValid() ) {
+        if (recent.isEmpty() || !recent.get().isValid()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.join.error.missing");
             return;
         }
@@ -144,7 +149,7 @@ public class LavaClansCommands extends BaseCommand {
     @CommandPermission("lavaclans.clans.reject")
     public void reject(Audience sender, Profile sprofile, @Values("@clan") Clan clan) {
         Optional<ClanInvite> recent = sprofile.mostRecentInvite(clan);
-        if ( recent.isEmpty() || !recent.get().isValid() ) {
+        if (recent.isEmpty() || !recent.get().isValid()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.join.error.missing");
             return;
         }
@@ -155,7 +160,7 @@ public class LavaClansCommands extends BaseCommand {
         SpigotI18nAPI.get(this).send(sender, "cmd.clans.reject", clan.name());
 
         Player invsender = Bukkit.getPlayer(recent.get().sender().id());
-        if ( invsender != null ) {
+        if (invsender != null) {
             SpigotI18nAPI.get(this).send(invsender, "cmd.clans.reject.sender", sprofile.name());
         }
     }
@@ -187,6 +192,39 @@ public class LavaClansCommands extends BaseCommand {
     @Conditions("clan")
     public void info(Audience sender, Profile sprofile) {
         sender.sendMessage(Component.text("Your clan is: " + sprofile.clanProfile().get().clan().name()));
+    }
+
+    @Subcommand("perms")
+    @CommandPermission("lavaclans.clans.perms")
+    @Conditions("clan")
+    public void perms(Player sender, Profile sprofile, @Single @Values("@players") String username) {
+        if (sprofile.clanProfile().isEmpty()) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
+            return;
+        }
+
+        if (!sprofile.clanProfile().get().isLeader()) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.leader");
+            return;
+        }
+
+        Clan clan = sprofile.clanProfile().orElseThrow().clan();
+        ClanAPI.get().findProfile(username).thenAccept(target -> {
+            if (target == null) {
+                SpigotI18nAPI.get(this).send(sender, "cmd.error.args.player", username);
+                return;
+            }
+
+            if (target.clanProfile().isEmpty() || !target.clanProfile().get().clan().equals(clan)) {
+                SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.in.clan");
+                return;
+            }
+
+            PermissionsMenu.open(sender, target.clanProfile().get());
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
     }
 
 }

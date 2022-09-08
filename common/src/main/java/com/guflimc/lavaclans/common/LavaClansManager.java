@@ -5,6 +5,7 @@ import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.common.domain.DClan;
+import com.guflimc.lavaclans.common.domain.DClanProfile;
 import com.guflimc.lavaclans.common.domain.DProfile;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -89,6 +90,7 @@ public class LavaClansManager implements ClanManager {
             // TODO call create event
 
             ((DProfile) leader).joinClan(clan);
+            ((DClanProfile) leader.clanProfile().get()).leader = true;
 
             // TODO set leader rank
 

@@ -2,6 +2,7 @@ package com.guflimc.lavaclans.spigot;
 
 import co.aikar.commands.*;
 import com.google.gson.Gson;
+import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.lavaclans.api.ClanAPI;
@@ -50,6 +51,8 @@ public class LavaClans extends JavaPlugin {
             logger.error("Cannot load configuration.", e);
             return;
         }
+
+        SpigotBrickGUI.register(this);
 
         // ADVENTURE
         adventure = BukkitAudiences.create(this);

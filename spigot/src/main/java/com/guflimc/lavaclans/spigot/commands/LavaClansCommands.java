@@ -10,11 +10,16 @@ import com.guflimc.lavaclans.api.domain.ClanPermission;
 import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.spigot.LavaClans;
 import com.guflimc.lavaclans.spigot.menu.PermissionsMenu;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockVector;
 
 import java.util.Optional;
 
@@ -198,17 +203,12 @@ public class LavaClansCommands extends BaseCommand {
     @CommandPermission("lavaclans.clans.perms")
     @Conditions("clan")
     public void perms(Player sender, Profile sprofile, @Single @Values("@players") String username) {
-        if (sprofile.clanProfile().isEmpty()) {
-            SpigotI18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
-            return;
-        }
-
         if (!sprofile.clanProfile().get().isLeader()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.leader");
             return;
         }
 
-        Clan clan = sprofile.clanProfile().orElseThrow().clan();
+        Clan clan = sprofile.clanProfile().get().clan();
         ClanAPI.get().findProfile(username).thenAccept(target -> {
             if (target == null) {
                 SpigotI18nAPI.get(this).send(sender, "cmd.error.args.player", username);
@@ -225,6 +225,29 @@ public class LavaClansCommands extends BaseCommand {
             ex.printStackTrace();
             return null;
         });
+    }
+
+    @Subcommand("nexus")
+    @CommandPermission("lavaclans.clans.nexus")
+    @Conditions("clan")
+    public void nexus(Player sender, Profile sprofile) {
+        if (!sprofile.clanProfile().get().isLeader()) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.leader");
+            return;
+        }
+
+        Clan clan = sprofile.clanProfile().get().clan();
+
+        String rgId = "clan-" + clan.id();
+        Location loc = sender.getLocation();
+        ProtectedCuboidRegion region = new ProtectedCuboidRegion(
+                rgId,
+                BlockVector3.at(loc.getX() - 80, -60, loc.getZ() - 80),
+                BlockVector3.at(loc.getX() + 80, 256, loc.getZ() + 80)
+        );
+
+        DefaultDomain domain = region.getMembers();
+
     }
 
 }

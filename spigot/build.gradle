@@ -6,6 +6,7 @@ repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url 'https://jitpack.io' }
+    maven { url "https://maven.enginehub.org/repo/" }
 }
 
 dependencies {
@@ -23,6 +24,7 @@ dependencies {
 
     // provided
     compileOnly 'com.guflimc.brick.i18n:spigot-api:+'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.+'
 }
 
 compileJava {
@@ -39,7 +41,7 @@ bukkit {
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/ReignOfClans'
     apiVersion = '1.13'
-    depend = ["BrickI18n"]
+    depend = ["BrickI18n", "WorldGuard", "WorldEdit"]
 }
 
 // I want it nice like that

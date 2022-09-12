@@ -3,6 +3,10 @@ package com.guflimc.lavaclans.spigot.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
+import com.guflimc.brick.maths.api.geo.area.CuboidArea;
+import com.guflimc.brick.maths.spigot.api.SpigotMaths;
+import com.guflimc.brick.regions.api.RegionAPI;
+import com.guflimc.brick.regions.api.selection.CubeSelection;
 import com.guflimc.lavaclans.api.ClanAPI;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanInvite;
@@ -10,16 +14,13 @@ import com.guflimc.lavaclans.api.domain.ClanPermission;
 import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.spigot.LavaClans;
 import com.guflimc.lavaclans.spigot.menu.PermissionsMenu;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BlockVector;
 
 import java.util.Optional;
 
@@ -87,7 +88,7 @@ public class LavaClansCommands extends BaseCommand {
 
         Clan clan = sprofile.clanProfile().orElseThrow().clan();
 
-        if ( !sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER) ) {
+        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER)) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
             return;
         }
@@ -237,17 +238,17 @@ public class LavaClansCommands extends BaseCommand {
         }
 
         Clan clan = sprofile.clanProfile().get().clan();
-
-        String rgId = "clan-" + clan.id();
         Location loc = sender.getLocation();
-        ProtectedCuboidRegion region = new ProtectedCuboidRegion(
-                rgId,
-                BlockVector3.at(loc.getX() - 80, -60, loc.getZ() - 80),
-                BlockVector3.at(loc.getX() + 80, 256, loc.getZ() + 80)
-        );
 
-        DefaultDomain domain = region.getMembers();
+        loc.clone().add(0, 1, 0).getBlock().setType(Material.OBSIDIAN);
 
+        CubeSelection selection = new CubeSelection();
+        selection.setPos1(SpigotMaths.toVector(loc.clone().add(-48, 0, -48)));
+        selection.setPos2(SpigotMaths.toVector(loc.clone().add(48, 0, 48)));
+
+        RegionAPI.get().create(clan.name() + "-nexus", selection.area()).thenAccept(region -> {
+            clan.setNexus(region.id(), SpigotMaths.toPosition(loc));
+        });
     }
 
 }

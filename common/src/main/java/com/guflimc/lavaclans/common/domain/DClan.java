@@ -1,14 +1,13 @@
 package com.guflimc.lavaclans.common.domain;
 
+import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.lavaclans.api.domain.Clan;
+import com.guflimc.lavaclans.api.domain.Nexus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,12 +57,12 @@ public class DClan implements Clan {
     }
 
     @Override
-    public Optional<com.guflimc.lavaclans.api.domain.nexus> nexus() {
+    public Optional<Nexus> nexus() {
         return Optional.ofNullable(nexus);
     }
 
     @Override
-    public void setNexus(com.guflimc.lavaclans.api.domain.nexus nexus) {
+    public void setNexus(Nexus nexus) {
         this.nexus = (DNexus) nexus;
     }
 
@@ -75,6 +74,11 @@ public class DClan implements Clan {
     @Override
     public void setRGBColor(int rgbColor) {
         this.rgbColor = rgbColor;
+    }
+
+    @Override
+    public void setNexus(UUID regionId, Location location) {
+        this.nexus = new DNexus(this, regionId, location);
     }
 
     @Override

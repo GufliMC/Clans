@@ -1,9 +1,9 @@
 package com.guflimc.lavaclans.common.domain;
 
-import com.guflimc.brick.maths.api.geo.Location;
+import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.brick.maths.database.api.LocationConverter;
 import com.guflimc.lavaclans.api.domain.Clan;
-import com.guflimc.lavaclans.api.domain.nexus;
+import com.guflimc.lavaclans.api.domain.Nexus;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "nexuses")
-public class DNexus implements nexus {
+public class DNexus implements Nexus {
 
     @Id
     @GeneratedValue
@@ -29,6 +29,9 @@ public class DNexus implements nexus {
     @Convert(converter = LocationConverter.class)
     @Column(nullable = false)
     private Location location = new Location(null, 0, 0, 0, 0, 0);
+
+    @Column(nullable = false, unique = true)
+    private UUID regionId;
 
     @ColumnDefault("1")
     private int level = 1;
@@ -46,8 +49,9 @@ public class DNexus implements nexus {
     public DNexus() {
     }
 
-    public DNexus(Clan clan, Location location) {
+    public DNexus(Clan clan, UUID regionId, Location location) {
         this.clan = (DClan) clan;
+        this.regionId = regionId;
         this.location = location;
     }
 
@@ -59,6 +63,11 @@ public class DNexus implements nexus {
     @Override
     public Location location() {
         return location;
+    }
+
+    @Override
+    public UUID regionId() {
+        return regionId;
     }
 
     @Override

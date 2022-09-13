@@ -36,7 +36,7 @@ public class DClanProfile implements ClanProfile {
     @ColumnDefault("false")
     public boolean leader;
 
-    @OneToMany(targetEntity = DClanProfilePermission.class, orphanRemoval = true, fetch = FetchType.EAGER,
+    @OneToMany(targetEntity = DClanProfilePermission.class, orphanRemoval = true, mappedBy = "clanProfile", fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<DClanProfilePermission> permissions = new ArrayList<>();
 

@@ -11,5 +11,5 @@ dependencies {
 
     // database
     api 'com.guflimc.brick.orm:common:+'
-    api 'com.guflimc.brick.maths:database-api:+'
+    implementation 'com.guflimc.brick.maths:database-api:+'
 }

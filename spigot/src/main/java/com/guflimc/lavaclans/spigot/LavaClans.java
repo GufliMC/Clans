@@ -13,9 +13,9 @@ import com.guflimc.lavaclans.common.LavaClansDatabaseContext;
 import com.guflimc.lavaclans.common.LavaClansManager;
 import com.guflimc.lavaclans.spigot.commands.LavaClansCommands;
 import com.guflimc.lavaclans.spigot.listener.JoinQuitListener;
+import com.guflimc.lavaclans.spigot.listener.RegionEnterLeaveListener;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.translation.TranslationRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class LavaClans extends JavaPlugin {
 
@@ -76,6 +75,7 @@ public class LavaClans extends JavaPlugin {
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new JoinQuitListener(this), this);
+        pm.registerEvents(new RegionEnterLeaveListener(this), this);
 
         // LOAD
 
@@ -125,10 +125,10 @@ public class LavaClans extends JavaPlugin {
                 = commandManager.getCommandConditions();
 
         conds.addCondition("clan", ctx -> {
-           if ( manager.findCachedProfile(ctx.getIssuer().getUniqueId()).clanProfile().isEmpty() ) {
-               SpigotI18nAPI.get(this).send(ctx.getIssuer().getPlayer(), "cmd.error.base.not.in.clan");
-               throw new ConditionFailedException();
-           }
+            if (manager.findCachedProfile(ctx.getIssuer().getUniqueId()).clanProfile().isEmpty()) {
+                SpigotI18nAPI.get(this).send(ctx.getIssuer().getPlayer(), "cmd.error.base.not.in.clan");
+                throw new ConditionFailedException();
+            }
         });
 
         // COMPLETIONS

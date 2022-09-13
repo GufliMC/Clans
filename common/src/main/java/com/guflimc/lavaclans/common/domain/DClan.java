@@ -6,6 +6,8 @@ import com.guflimc.lavaclans.api.domain.Nexus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Optional;
@@ -26,7 +28,9 @@ public class DClan implements Clan {
     @Column(nullable = false, unique = true)
     private String tag;
 
-    @OneToOne(targetEntity = DNexus.class, cascade = { CascadeType.REMOVE })
+    @OneToOne(targetEntity = DNexus.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
+            "foreign key (nexus_id) references nexuses (id) on delete set null"))
     private DNexus nexus;
 
     @ColumnDefault("16581375")

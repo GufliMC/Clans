@@ -20,8 +20,7 @@ public class DClanProfilePermission implements ClanProfilePermission {
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
-    @OneToOne(targetEntity = DClanProfile.class, orphanRemoval = true, optional = false,
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    @ManyToOne(targetEntity = DClanProfile.class, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private DClanProfile clanProfile;
 

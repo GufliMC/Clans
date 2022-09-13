@@ -8,6 +8,7 @@ import com.guflimc.brick.maths.spigot.api.SpigotMaths;
 import com.guflimc.brick.regions.api.RegionAPI;
 import com.guflimc.brick.regions.api.selection.CubeSelection;
 import com.guflimc.lavaclans.api.ClanAPI;
+import com.guflimc.lavaclans.api.attributes.RegionAttributes;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanInvite;
 import com.guflimc.lavaclans.api.domain.ClanPermission;
@@ -241,13 +242,22 @@ public class LavaClansCommands extends BaseCommand {
         Location loc = sender.getLocation();
 
         loc.clone().add(0, 1, 0).getBlock().setType(Material.OBSIDIAN);
+        sender.teleport(loc.clone().add(0, 2, 0));
 
-        CubeSelection selection = new CubeSelection();
-        selection.setPos1(SpigotMaths.toVector(loc.clone().add(-48, 0, -48)));
-        selection.setPos2(SpigotMaths.toVector(loc.clone().add(48, 0, 48)));
+        CuboidArea area = CuboidArea.of(
+                SpigotMaths.toBrickVector(loc.clone().add(-48, -255, -48)),
+                SpigotMaths.toBrickLocation(loc.clone().add(48, 255, 48))
+        );
 
-        RegionAPI.get().create(clan.name() + "-nexus", selection.area()).thenAccept(region -> {
-            clan.setNexus(region.id(), SpigotMaths.toPosition(loc));
+        RegionAPI.get().create(clan.name() + "-nexus", loc.getWorld().getUID(), area).thenCompose(region -> {
+            region.setAttribute(RegionAttributes.CLAN, clan);
+            return RegionAPI.get().update(region).thenApply(n -> region);
+        }).thenCompose(region -> {
+            clan.setNexus(region.id(), SpigotMaths.toBrickLocation(loc));
+            return ClanAPI.get().update(clan);
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
         });
     }
 

@@ -30,6 +30,7 @@ public class DNexus implements Nexus {
     @Column(nullable = false)
     private Location location = new Location(null, 0, 0, 0, 0, 0);
 
+    @JdbcTypeCode(SqlTypes.CHAR)
     @Column(nullable = false, unique = true)
     private UUID regionId;
 

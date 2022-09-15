@@ -1,30 +1,21 @@
 package com.guflimc.lavaclans.api.domain;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
-import org.jetbrains.annotations.NotNull;
+import com.guflimc.brick.regions.api.domain.AreaRegion;
+import com.guflimc.lavaclans.api.cosmetic.NexusSkin;
 
 import java.time.Instant;
 import java.util.UUID;
 
-public interface Nexus {
+public interface Nexus extends AreaRegion {
 
     UUID id();
 
     Location location();
 
-    UUID regionId();
-
     Clan clan();
 
-    int level();
-
-    void setLevel(int level);
-
-    boolean hasShield();
-
-    Instant shieldExpireAt();
-
-    void activateShield(@NotNull Instant expireAt);
+    NexusSkin skin();
 
     Instant createdAt();
 

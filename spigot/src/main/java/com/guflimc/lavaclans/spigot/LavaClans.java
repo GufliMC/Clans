@@ -10,9 +10,10 @@ import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.Profile;
 import com.guflimc.lavaclans.common.LavaClansConfig;
 import com.guflimc.lavaclans.common.LavaClansDatabaseContext;
-import com.guflimc.lavaclans.common.LavaClansManager;
+import com.guflimc.lavaclans.common.AbstractLavaClansManager;
 import com.guflimc.lavaclans.spigot.commands.LavaClansCommands;
 import com.guflimc.lavaclans.spigot.listener.JoinQuitListener;
+import com.guflimc.lavaclans.spigot.listener.RegionBuildListener;
 import com.guflimc.lavaclans.spigot.listener.RegionEnterLeaveListener;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -35,7 +36,7 @@ public class LavaClans extends JavaPlugin {
 
     public final Gson gson = new Gson();
 
-    public LavaClansManager manager;
+    public AbstractLavaClansManager manager;
     public LavaClansConfig config;
     public BukkitAudiences adventure;
 
@@ -60,7 +61,7 @@ public class LavaClans extends JavaPlugin {
         LavaClansDatabaseContext databaseContext = new LavaClansDatabaseContext(config.database);
 
         // LAVA CLANS MANAGER
-        manager = new LavaClansManager(databaseContext);
+        manager = new SpigotLavaClansManager(databaseContext);
         ClanAPI.register(manager);
 
         // TRANSLATIONS
@@ -76,6 +77,7 @@ public class LavaClans extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new JoinQuitListener(this), this);
         pm.registerEvents(new RegionEnterLeaveListener(this), this);
+        pm.registerEvents(new RegionBuildListener(this), this);
 
         // LOAD
 

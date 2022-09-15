@@ -17,16 +17,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Predicate;
 
-public class LavaClansManager implements ClanManager {
+public abstract class AbstractLavaClansManager implements ClanManager {
 
-    private final Logger logger = LoggerFactory.getLogger(LavaClansManager.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractLavaClansManager.class);
 
-    private final LavaClansDatabaseContext databaseContext;
+    protected final LavaClansDatabaseContext databaseContext;
 
     private final Set<DClan> clans = new CopyOnWriteArraySet<>();
     private final Set<DProfile> profiles = new CopyOnWriteArraySet<>();
 
-    public LavaClansManager(LavaClansDatabaseContext databaseContext) {
+    public AbstractLavaClansManager(LavaClansDatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
         reload();
     }

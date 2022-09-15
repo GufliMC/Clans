@@ -1,6 +1,9 @@
 package com.guflimc.lavaclans.spigot.listener;
 
+import com.guflimc.brick.maths.spigot.api.SpigotMaths;
+import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsBuildEvent;
 import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsMoveEvent;
+import com.guflimc.lavaclans.api.attributes.RegionAttributes;
 import com.guflimc.lavaclans.api.domain.Nexus;
 import com.guflimc.lavaclans.spigot.LavaClans;
 import net.kyori.adventure.audience.Audience;
@@ -14,37 +17,30 @@ import org.bukkit.event.Listener;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
-public class RegionEnterLeaveListener implements Listener {
+public class RegionBuildListener implements Listener {
 
     private final LavaClans plugin;
 
-    private final Title.Times defaultTimes = Title.Times.times(
-            Duration.of(250, ChronoUnit.MILLIS),
-            Duration.of(1500, ChronoUnit.MILLIS),
-            Duration.of(250, ChronoUnit.MILLIS)
-    );
-
-    public RegionEnterLeaveListener(LavaClans plugin) {
+    public RegionBuildListener(LavaClans plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onMove(PlayerRegionsMoveEvent event) {
+    public void onBuild(PlayerRegionsBuildEvent event) {
         Audience audience = plugin.adventure.player(event.player());
-        if (event.to().isEmpty()) {
-            // Player walks into the wilderness
-            audience.sendTitlePart(TitlePart.TITLE, Component.text("Wilderness", NamedTextColor.GREEN));
-            audience.sendTitlePart(TitlePart.TIMES, defaultTimes);
-            return;
-        }
 
-        event.uniqueTo().stream()
+        event.regions().stream()
                 .filter(rg -> rg instanceof Nexus)
                 .map(rg -> (Nexus) rg)
                 .findFirst().ifPresent(nexus -> {
-                    audience.sendTitlePart(TitlePart.TITLE, Component.text(nexus.clan().name(), TextColor.color(nexus.clan().rgbColor())));
-                    audience.sendTitlePart(TitlePart.TIMES, defaultTimes);
+                    double dist = nexus.location().distanceSquared(SpigotMaths.toBrickLocation(event.block().getLocation().add(0.5, 0.5, 0.5)));
+                    System.out.println(dist);
+                    if ( dist <= 3 ) {
+                        event.setCancelled(true);
+                        audience.sendMessage(Component.text("You cannot build near your nexus!", NamedTextColor.RED));
+                    }
                 });
     }
 

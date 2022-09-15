@@ -6,8 +6,6 @@ import com.guflimc.lavaclans.api.domain.Nexus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Optional;
@@ -28,7 +26,7 @@ public class DClan implements Clan {
     @Column(nullable = false, unique = true)
     private String tag;
 
-    @OneToOne(targetEntity = DNexus.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OneToOne(targetEntity = DNexus.class, mappedBy = "clan", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
             "foreign key (nexus_id) references nexuses (id) on delete set null"))
     private DNexus nexus;
@@ -36,9 +34,13 @@ public class DClan implements Clan {
     @ColumnDefault("16581375")
     private int rgbColor;
 
+    @ColumnDefault("1")
+    private int level = 1;
+
     //
 
-    public DClan() {}
+    public DClan() {
+    }
 
     public DClan(String name, String tag) {
         this.name = name;
@@ -65,9 +67,13 @@ public class DClan implements Clan {
         return Optional.ofNullable(nexus);
     }
 
-    @Override
-    public void setNexus(Nexus nexus) {
-        this.nexus = (DNexus) nexus;
+    public void setNexus(Location loc) {
+        nexus = new DNexus(this, loc);
+        updateNexusArea();
+    }
+
+    private void updateNexusArea() {
+        nexus().ifPresent(nexus -> ((DNexus) nexus).setAreaSize(level * 40));
     }
 
     @Override
@@ -81,8 +87,14 @@ public class DClan implements Clan {
     }
 
     @Override
-    public void setNexus(UUID regionId, Location location) {
-        this.nexus = new DNexus(this, regionId, location);
+    public int level() {
+        return level;
+    }
+
+    @Override
+    public void setLevel(int level) {
+        this.level = level;
+        updateNexusArea();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.guflimc.lavaclans.api;
 
+import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanProfile;
 import com.guflimc.lavaclans.api.domain.Profile;
@@ -27,6 +28,8 @@ public interface ClanManager {
     // edit clans
 
     CompletableFuture<Clan> create(@NotNull Profile leader, @NotNull String name, @NotNull String tag);
+
+    CompletableFuture<Void> createNexus(@NotNull Clan clan, Location location);
 
     CompletableFuture<Void> remove(@NotNull Clan clan);
 

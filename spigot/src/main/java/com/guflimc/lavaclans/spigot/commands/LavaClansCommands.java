@@ -3,12 +3,8 @@ package com.guflimc.lavaclans.spigot.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
-import com.guflimc.brick.maths.api.geo.area.CuboidArea;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
-import com.guflimc.brick.regions.api.RegionAPI;
-import com.guflimc.brick.regions.api.selection.CubeSelection;
 import com.guflimc.lavaclans.api.ClanAPI;
-import com.guflimc.lavaclans.api.attributes.RegionAttributes;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanInvite;
 import com.guflimc.lavaclans.api.domain.ClanPermission;
@@ -20,8 +16,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.Optional;
 
@@ -239,26 +235,33 @@ public class LavaClansCommands extends BaseCommand {
         }
 
         Clan clan = sprofile.clanProfile().get().clan();
+
         Location loc = sender.getLocation();
+        com.guflimc.brick.maths.api.geo.pos.Location nexus = SpigotMaths.toBrickLocation(loc.add(0, 1.5, 0));
 
-        loc.clone().add(0, 1, 0).getBlock().setType(Material.OBSIDIAN);
-        sender.teleport(loc.clone().add(0, 2, 0));
+        try {
+            ClanAPI.get().createNexus(clan, nexus);
 
-        CuboidArea area = CuboidArea.of(
-                SpigotMaths.toBrickVector(loc.clone().add(-48, -255, -48)),
-                SpigotMaths.toBrickLocation(loc.clone().add(48, 255, 48))
-        );
+            Vector dir = cardinalDirectionFrom(loc);
+            sender.teleport(loc.getBlock().getLocation().add(0.5, 0, 0.5).add(dir.clone().multiply(2))
+                    .setDirection(sender.getLocation().getDirection()));
+            Bukkit.getScheduler().runTaskLater(lavaClans, () -> sender.setVelocity(dir.clone().setY(0.1)), 1L);
+        } catch (IllegalArgumentException ex) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.invalid");
+        }
+    }
 
-        RegionAPI.get().create(clan.name() + "-nexus", loc.getWorld().getUID(), area).thenCompose(region -> {
-            region.setAttribute(RegionAttributes.CLAN, clan);
-            return RegionAPI.get().update(region).thenApply(n -> region);
-        }).thenCompose(region -> {
-            clan.setNexus(region.id(), SpigotMaths.toBrickLocation(loc));
-            return ClanAPI.get().update(clan);
-        }).exceptionally(ex -> {
-            ex.printStackTrace();
-            return null;
-        });
+    private Vector cardinalDirectionFrom(Location loc) {
+        float yaw = loc.getYaw() + 180;
+        if ( yaw > 45 && yaw < 135 ) {
+            return new Vector(-1, 0, 0);
+        } else if ( yaw > 135 && yaw < 225 ) {
+            return new Vector(0, 0, -1);
+        } else if ( yaw > 225 && yaw < 315 ) {
+            return new Vector(1, 0, 0);
+        } else {
+            return new Vector(0, 0, 1);
+        }
     }
 
 }

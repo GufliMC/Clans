@@ -52,7 +52,9 @@
   "menu.clans.permission.invite.player": "<green>Invite players",
   "menu.clans.permission.kick.member": "<green>Kick members",
   "menu.clans.permission.open.vault": "<green>Open clan vault",
-  "menu.clans.permission.withdraw.money": "<green>Withdraw money from clan"
+  "menu.clans.permission.withdraw.money": "<green>Withdraw money from clan",
+
+  "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area."
 
 
 }

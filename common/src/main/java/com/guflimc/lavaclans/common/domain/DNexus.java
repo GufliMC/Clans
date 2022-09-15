@@ -1,14 +1,18 @@
 package com.guflimc.lavaclans.common.domain;
 
+import com.guflimc.brick.maths.api.geo.area.Area;
+import com.guflimc.brick.maths.api.geo.area.CuboidArea;
 import com.guflimc.brick.maths.api.geo.pos.Location;
+import com.guflimc.brick.maths.database.api.AreaConverter;
 import com.guflimc.brick.maths.database.api.LocationConverter;
+import com.guflimc.brick.regions.api.RegionAPI;
+import com.guflimc.lavaclans.api.cosmetic.NexusSkin;
 import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.Nexus;
-import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -32,12 +36,13 @@ public class DNexus implements Nexus {
 
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(nullable = false, unique = true)
-    private UUID regionId;
+    @Convert(converter = AreaConverter.class)
+    private Area area;
 
-    @ColumnDefault("1")
-    private int level = 1;
-
-    private Instant shieldExpireAt;
+    @Column(nullable = false)
+    @ColumnDefault("'DEFAULT'")
+    @Enumerated(EnumType.STRING)
+    private NexusSkin skin = NexusSkin.DEFAULT;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -50,9 +55,20 @@ public class DNexus implements Nexus {
     public DNexus() {
     }
 
-    public DNexus(Clan clan, UUID regionId, Location location) {
+    @PostLoad @PostUpdate @PostPersist
+    public void onLoad() {
+        RegionAPI.get().unregister(this);
+        RegionAPI.get().register(this);
+    }
+
+    @PostRemove
+    public void onRemove() {
+        RegionAPI.get().unregister(this);
+        clan = null;
+    }
+
+    public DNexus(Clan clan, Location location) {
         this.clan = (DClan) clan;
-        this.regionId = regionId;
         this.location = location;
     }
 
@@ -62,13 +78,23 @@ public class DNexus implements Nexus {
     }
 
     @Override
-    public Location location() {
-        return location;
+    public UUID worldId() {
+        return location.worldId();
     }
 
     @Override
-    public UUID regionId() {
-        return regionId;
+    public String name() {
+        return clan.name() + "-nexus";
+    }
+
+    @Override
+    public int priority() {
+        return 1;
+    }
+
+    @Override
+    public Location location() {
+        return location;
     }
 
     @Override
@@ -77,34 +103,28 @@ public class DNexus implements Nexus {
     }
 
     @Override
-    public int level() {
-        return level;
+    public NexusSkin skin() {
+        return skin;
     }
 
-    @Override
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    @Override
-    public boolean hasShield() {
-        return shieldExpireAt != null && Instant.now().isBefore(shieldExpireAt);
-    }
-
-    @Override
-    public Instant shieldExpireAt() {
-        return shieldExpireAt;
-    }
-
-    @Override
-    public void activateShield(@NotNull Instant expireAt) {
-        this.shieldExpireAt = expireAt;
+    public void setSkin(NexusSkin skin) {
+        this.skin = skin;
     }
 
     @Override
     public Instant createdAt() {
         return createdAt;
     }
+
+    public void setAreaSize(int radius) {
+        area = CuboidArea.of(location.add(radius, radius, radius), location.add(-radius, -radius, -radius));
+    }
+
+    @Override
+    public Area area() {
+        return area;
+    }
+
 
     @Override
     public int hashCode() {

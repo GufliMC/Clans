@@ -8,7 +8,7 @@ import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.lavaclans.api.ClanAPI;
 import com.guflimc.lavaclans.api.domain.ClanPermission;
 import com.guflimc.lavaclans.api.domain.ClanProfile;
-import com.guflimc.lavaclans.spigot.LavaClans;
+import com.guflimc.lavaclans.spigot.SpigotLavaClans;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class PermissionsMenu {
 
-    private static final SpigotNamespace namespace = SpigotI18nAPI.get().byClass(LavaClans.class);
+    private static final SpigotNamespace namespace = SpigotI18nAPI.get().byClass(SpigotLavaClans.class);
 
     private static final Map<ClanPermission, Material> materials = Map.of(
             ClanPermission.CHANGE_NAME, Material.NAME_TAG,

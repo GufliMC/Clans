@@ -1,24 +1,28 @@
 package com.guflimc.lavaclans.spigot;
 
-import co.aikar.commands.*;
+import cloud.commandframework.annotations.AnnotationParser;
+import cloud.commandframework.bukkit.BukkitCommandManager;
+import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.meta.SimpleCommandMeta;
 import com.google.gson.Gson;
 import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.lavaclans.api.ClanAPI;
 import com.guflimc.lavaclans.api.domain.Clan;
-import com.guflimc.lavaclans.api.domain.Profile;
+import com.guflimc.lavaclans.common.AbstractLavaClansManager;
 import com.guflimc.lavaclans.common.LavaClansConfig;
 import com.guflimc.lavaclans.common.LavaClansDatabaseContext;
-import com.guflimc.lavaclans.common.AbstractLavaClansManager;
-import com.guflimc.lavaclans.spigot.commands.LavaClansCommands;
+import com.guflimc.lavaclans.common.commands.LavaClansCommands;
+import com.guflimc.lavaclans.common.commands.arguments.ClanArgument;
+import com.guflimc.lavaclans.spigot.commands.SpigotLavaClansCommands;
 import com.guflimc.lavaclans.spigot.listener.JoinQuitListener;
 import com.guflimc.lavaclans.spigot.listener.RegionBuildListener;
 import com.guflimc.lavaclans.spigot.listener.RegionEnterLeaveListener;
-import net.kyori.adventure.audience.Audience;
+import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
@@ -29,10 +33,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
-public class LavaClans extends JavaPlugin {
+public class SpigotLavaClans extends JavaPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(LavaClans.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpigotLavaClans.class);
 
     public final Gson gson = new Gson();
 
@@ -98,6 +103,31 @@ public class LavaClans extends JavaPlugin {
     }
 
     private void setupCommands() {
+        // COMMANDS
+        try {
+            BukkitCommandManager<CommandSender> commandManager = new BukkitCommandManager<>(
+                    this,
+                    CommandExecutionCoordinator.simpleCoordinator(),
+                    Function.identity(),
+                    Function.identity()
+            );
+
+            commandManager.parserRegistry().registerParserSupplier(TypeToken.get(Clan.class),
+                    ps -> new ClanArgument.ClanParser<>());
+
+            AnnotationParser<CommandSender> annotationParser = new AnnotationParser<>(
+                    commandManager,
+                    CommandSender.class,
+                    parameters -> SimpleCommandMeta.empty()
+            );
+
+            annotationParser.parse(new LavaClansCommands());
+            annotationParser.parse(new SpigotLavaClansCommands(this));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        /*
         PaperCommandManager commandManager = new PaperCommandManager(this);
         commandManager.setFormat(MessageType.SYNTAX, ChatColor.GRAY, ChatColor.GREEN, ChatColor.DARK_GREEN);
 
@@ -140,6 +170,7 @@ public class LavaClans extends JavaPlugin {
                 manager.clans().stream().map(Clan::name).toList());
 
         // REGISTER
-        commandManager.registerCommand(new LavaClansCommands(this));
+        commandManager.registerCommand(new SpigotLavaClansCommands(this));
+         */
     }
 }

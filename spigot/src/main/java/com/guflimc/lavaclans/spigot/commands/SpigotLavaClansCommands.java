@@ -1,6 +1,8 @@
 package com.guflimc.lavaclans.spigot.commands;
 
-import co.aikar.commands.BaseCommand;
+import cloud.commandframework.annotations.CommandMethod;
+import cloud.commandframework.annotations.CommandPermission;
+import cloud.commandframework.annotations.processing.CommandContainer;
 import co.aikar.commands.annotation.*;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
@@ -9,7 +11,7 @@ import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.ClanInvite;
 import com.guflimc.lavaclans.api.domain.ClanPermission;
 import com.guflimc.lavaclans.api.domain.Profile;
-import com.guflimc.lavaclans.spigot.LavaClans;
+import com.guflimc.lavaclans.spigot.SpigotLavaClans;
 import com.guflimc.lavaclans.spigot.menu.PermissionsMenu;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -21,23 +23,23 @@ import org.bukkit.util.Vector;
 
 import java.util.Optional;
 
-@CommandAlias("%rootCommand")
-public class LavaClansCommands extends BaseCommand {
+@CommandContainer
+public class SpigotLavaClansCommands {
 
-    private final LavaClans lavaClans;
+    private final SpigotLavaClans lavaClans;
 
-    public LavaClansCommands(LavaClans lavaClans) {
+    public SpigotLavaClansCommands(SpigotLavaClans lavaClans) {
         this.lavaClans = lavaClans;
     }
 
-    @Subcommand("list")
+    @CommandMethod("clans list")
     @CommandPermission("lavaclans.clans.list")
     public void list(Audience sender) {
         SpigotI18nAPI.get(this).send(sender, "cmd.clans.list",
                 ClanAPI.get().clans().stream().map(Clan::name).toList());
     }
 
-    @Subcommand("create")
+    @CommandMethod("clans create")
     @CommandPermission("lavaclans.clans.create")
     public void create(Audience sender, Profile sprofile, @Single String name, @Single String tag) {
         if (sprofile.clanProfile().isPresent()) {
@@ -75,7 +77,7 @@ public class LavaClansCommands extends BaseCommand {
         });
     }
 
-    @Subcommand("invite")
+    @CommandMethod("clans invite")
     @CommandPermission("lavaclans.clans.invite")
     public void invite(Audience sender, Profile sprofile, @Single @Values("@players") String username) {
         if (sprofile.clanProfile().isEmpty()) {
@@ -87,6 +89,11 @@ public class LavaClansCommands extends BaseCommand {
 
         if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER)) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
+            return;
+        }
+
+        if (clan.memberCount() >= clan.maxMembers()) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.invite.error.max.members");
             return;
         }
 
@@ -128,7 +135,7 @@ public class LavaClansCommands extends BaseCommand {
         });
     }
 
-    @Subcommand("join")
+    @CommandMethod("clans join")
     @CommandPermission("lavaclans.clans.join")
     public void join(Audience sender, Profile sprofile, @Values("@clan") Clan clan) {
         if (sprofile.clanProfile().isPresent()) {
@@ -142,13 +149,18 @@ public class LavaClansCommands extends BaseCommand {
             return;
         }
 
+        if (clan.memberCount() >= clan.maxMembers()) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.join.error.max.members");
+            return;
+        }
+
         recent.get().accept();
         ClanAPI.get().update(sprofile);
 
         SpigotI18nAPI.get(this).send(sender, "cmd.clans.join", clan.name());
     }
 
-    @Subcommand("reject")
+    @CommandMethod("clans reject")
     @CommandPermission("lavaclans.clans.reject")
     public void reject(Audience sender, Profile sprofile, @Values("@clan") Clan clan) {
         Optional<ClanInvite> recent = sprofile.mostRecentInvite(clan);
@@ -168,7 +180,7 @@ public class LavaClansCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("quit")
+    @CommandMethod("clans quit")
     @CommandPermission("lavaclans.clans.quit")
     @Conditions("clan")
     public void quit(Audience sender, Profile sprofile) {
@@ -180,7 +192,7 @@ public class LavaClansCommands extends BaseCommand {
         SpigotI18nAPI.get(this).send(sender, "cmd.clans.quit");
     }
 
-    @Subcommand("disband")
+    @CommandMethod("clans disband")
     @CommandPermission("lavaclans.clans.disband")
     @Conditions("clan")
     public void disband(Audience sender, Profile sprofile) {
@@ -190,14 +202,14 @@ public class LavaClansCommands extends BaseCommand {
         SpigotI18nAPI.get(this).send(sender, "cmd.clans.disband");
     }
 
-    @Subcommand("info")
+    @CommandMethod("clans info")
     @CommandPermission("lavaclans.clans.info")
     @Conditions("clan")
     public void info(Audience sender, Profile sprofile) {
         sender.sendMessage(Component.text("Your clan is: " + sprofile.clanProfile().get().clan().name()));
     }
 
-    @Subcommand("perms")
+    @CommandMethod("clans permissions|perms")
     @CommandPermission("lavaclans.clans.perms")
     @Conditions("clan")
     public void perms(Player sender, Profile sprofile, @Single @Values("@players") String username) {
@@ -225,7 +237,7 @@ public class LavaClansCommands extends BaseCommand {
         });
     }
 
-    @Subcommand("nexus")
+    @CommandMethod("clans nexus")
     @CommandPermission("lavaclans.clans.nexus")
     @Conditions("clan")
     public void nexus(Player sender, Profile sprofile) {
@@ -253,11 +265,11 @@ public class LavaClansCommands extends BaseCommand {
 
     private Vector cardinalDirectionFrom(Location loc) {
         float yaw = loc.getYaw() + 180;
-        if ( yaw > 45 && yaw < 135 ) {
+        if (yaw > 45 && yaw < 135) {
             return new Vector(-1, 0, 0);
-        } else if ( yaw > 135 && yaw < 225 ) {
+        } else if (yaw > 135 && yaw < 225) {
             return new Vector(0, 0, -1);
-        } else if ( yaw > 225 && yaw < 315 ) {
+        } else if (yaw > 225 && yaw < 315) {
             return new Vector(1, 0, 0);
         } else {
             return new Vector(0, 0, 1);

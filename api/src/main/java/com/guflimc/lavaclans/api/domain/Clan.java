@@ -21,4 +21,10 @@ public interface Clan {
 
     void setLevel(int level);
 
+    int maxMembers();
+
+    void setMaxMembers(int value);
+
+    int memberCount();
+
 }

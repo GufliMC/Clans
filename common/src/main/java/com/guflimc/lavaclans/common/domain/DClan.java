@@ -5,6 +5,7 @@ import com.guflimc.lavaclans.api.domain.Clan;
 import com.guflimc.lavaclans.api.domain.Nexus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -36,6 +37,12 @@ public class DClan implements Clan {
 
     @ColumnDefault("1")
     private int level = 1;
+
+    @ColumnDefault("10")
+    private int maxMembers = 10;
+
+    @Formula("(select count(cp.id) from clan_profiles cp where cp.clan_id = id)")
+    public int memberCount;
 
     //
 
@@ -95,6 +102,21 @@ public class DClan implements Clan {
     public void setLevel(int level) {
         this.level = level;
         updateNexusArea();
+    }
+
+    @Override
+    public int maxMembers() {
+        return maxMembers;
+    }
+
+    @Override
+    public void setMaxMembers(int value) {
+        this.maxMembers = value;
+    }
+
+    @Override
+    public int memberCount() {
+        return memberCount;
     }
 
     @Override

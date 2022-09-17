@@ -89,6 +89,8 @@ public class DClanProfile implements ClanProfile {
 
     @Override
     public void quit() {
+        clan.memberCount--;
+
         profile.clanProfile = null;
         profile.sentInvites.clear();
 

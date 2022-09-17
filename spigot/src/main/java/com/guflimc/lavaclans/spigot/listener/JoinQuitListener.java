@@ -1,7 +1,7 @@
 package com.guflimc.lavaclans.spigot.listener;
 
 import com.guflimc.lavaclans.api.domain.Profile;
-import com.guflimc.lavaclans.spigot.LavaClans;
+import com.guflimc.lavaclans.spigot.SpigotLavaClans;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class JoinQuitListener implements Listener {
 
-    private final LavaClans lavaClans;
+    private final SpigotLavaClans lavaClans;
 
     private final Map<UUID, CompletableFuture<Profile>> loading = new ConcurrentHashMap<>();
 
-    public JoinQuitListener(LavaClans lavaClans) {
+    public JoinQuitListener(SpigotLavaClans lavaClans) {
         this.lavaClans = lavaClans;
     }
 

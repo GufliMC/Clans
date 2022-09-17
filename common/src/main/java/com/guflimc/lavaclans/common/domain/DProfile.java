@@ -82,6 +82,7 @@ public class DProfile implements Profile {
 
         // join new clan
         clanProfile = new DClanProfile(this, (DClan) clan);
+        ((DClan) clan).memberCount++;
 
         // TODO events
     }

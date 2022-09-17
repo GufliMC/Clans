@@ -15,4 +15,7 @@ dependencies {
 
     compileOnly 'com.guflimc.brick.regions:api:+'
     compileOnly 'com.guflimc.brick.maths:spigot-api:+'
+
+    api 'cloud.commandframework:cloud-core:+'
+    api 'cloud.commandframework:cloud-annotations:+'
 }

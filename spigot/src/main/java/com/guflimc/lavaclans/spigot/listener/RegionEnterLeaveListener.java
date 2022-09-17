@@ -2,7 +2,7 @@ package com.guflimc.lavaclans.spigot.listener;
 
 import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsMoveEvent;
 import com.guflimc.lavaclans.api.domain.Nexus;
-import com.guflimc.lavaclans.spigot.LavaClans;
+import com.guflimc.lavaclans.spigot.SpigotLavaClans;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 
 public class RegionEnterLeaveListener implements Listener {
 
-    private final LavaClans plugin;
+    private final SpigotLavaClans plugin;
 
     private final Title.Times defaultTimes = Title.Times.times(
             Duration.of(250, ChronoUnit.MILLIS),
@@ -25,7 +25,7 @@ public class RegionEnterLeaveListener implements Listener {
             Duration.of(250, ChronoUnit.MILLIS)
     );
 
-    public RegionEnterLeaveListener(LavaClans plugin) {
+    public RegionEnterLeaveListener(SpigotLavaClans plugin) {
         this.plugin = plugin;
     }
 

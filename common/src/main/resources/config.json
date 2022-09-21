@@ -6,5 +6,5 @@
     "password": "root",
     "debug": true
   },
-  "rootCommand": "clan"
+  "clanChatPrefix": "<insertion:/clans info {clan_name}><hover:show_text:'{clan}'><gray>[{clan_tag}]</gray></hover></insertion>"
 }

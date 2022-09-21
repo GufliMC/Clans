@@ -3,7 +3,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.13.6'
 }
 
-group 'com.guflimc.lavaclans'
+group 'com.guflimc.clans'
 version = scmVersion.version
 
 def javadocProjects = [project(':api')]

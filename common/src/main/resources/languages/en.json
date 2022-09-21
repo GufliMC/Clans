@@ -41,6 +41,7 @@
 
   "cmd.clans.perms.error.not.in.clan": "<red>This player is not in your clan.",
   "cmd.clans.perms.error.not.leader": "<red>You are not the leader of this clan.",
+  "cmd.clans.perms.error.self": "<red>You can't change your own permissions.",
 
   "menu.clans.permissions.title": "Permissions for {0}",
   "menu.clans.permissions.status": "<gray>Status: ",

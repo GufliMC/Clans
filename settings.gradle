@@ -1,4 +1,4 @@
-rootProject.name = 'LavaClans'
+rootProject.name = 'Clans'
 
 include 'api'
 include 'common'

@@ -57,7 +57,9 @@
   "menu.clans.permission.open.vault": "<green>Open clan vault",
   "menu.clans.permission.withdraw.money": "<green>Withdraw money from clan",
 
-  "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area."
+  "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area.",
+
+  "protection.nexus.build.too-close": "<red>You cannot build this close to your nexus."
 
 
 }

@@ -9,19 +9,20 @@ import com.guflimc.brick.chat.spigot.api.SpigotChatAPI;
 import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
-import com.guflimc.clans.api.ClanAPI;
+import com.guflimc.clans.api.AttackAPI;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Profile;
-import com.guflimc.clans.common.AbstractClanManager;
 import com.guflimc.clans.common.ClansConfig;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.commands.ClanCommands;
 import com.guflimc.clans.common.commands.arguments.ClanArgument;
+import com.guflimc.clans.spigot.api.SpigotClanAPI;
+import com.guflimc.clans.spigot.attack.SpigotBrickAttackManager;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
-import com.guflimc.clans.spigot.listener.PlayerChatListener;
-import com.guflimc.clans.spigot.listener.RegionBuildListener;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
 import com.guflimc.clans.spigot.listener.JoinQuitListener;
+import com.guflimc.clans.spigot.listener.PlayerChatListener;
+import com.guflimc.clans.spigot.listener.RegionBuildListener;
 import com.guflimc.clans.spigot.listener.RegionEnterLeaveListener;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
 import io.leangen.geantyref.TypeToken;
@@ -45,7 +46,10 @@ public class SpigotClans extends JavaPlugin {
 
     public final Gson gson = new Gson();
 
-    public AbstractClanManager manager;
+    public SpigotBrickClanManager clanManager;
+    public SpigotBrickAttackManager attackManager;
+
+
     public ClansConfig config;
     public BukkitAudiences adventure;
 
@@ -70,9 +74,13 @@ public class SpigotClans extends JavaPlugin {
         // DATABASE
         ClansDatabaseContext databaseContext = new ClansDatabaseContext(config.database);
 
-        // LAVA CLANS MANAGER
-        manager = new SpigotClanManager(databaseContext);
-        ClanAPI.register(manager);
+        // CLAN MANAGER
+        clanManager = new SpigotBrickClanManager(databaseContext);
+        SpigotClanAPI.register(clanManager);
+
+        // ATTACK MANAGER
+        attackManager = new SpigotBrickAttackManager(databaseContext, config);
+        AttackAPI.register(attackManager);
 
         // TRANSLATIONS
         SpigotNamespace namespace = new SpigotNamespace(this, Locale.ENGLISH);
@@ -104,7 +112,7 @@ public class SpigotClans extends JavaPlugin {
         // LOAD
 
         CompletableFuture.allOf(Bukkit.getServer().getOnlinePlayers().stream()
-                .map(p -> manager.load(p.getUniqueId(), p.getName()))
+                .map(p -> clanManager.load(p.getUniqueId(), p.getName()))
                 .toArray(CompletableFuture[]::new)).join();
 
         getLogger().info("Enabled " + nameAndVersion() + ".");
@@ -140,7 +148,7 @@ public class SpigotClans extends JavaPlugin {
             );
 
             annotationParser.getParameterInjectorRegistry().registerInjector(Profile.class,
-                    (context, annotationAccessor) -> manager.findCachedProfile(((Player) context.getSender()).getUniqueId()));
+                    (context, annotationAccessor) -> clanManager.findCachedProfile(((Player) context.getSender()).getUniqueId()));
 
             annotationParser.parse(new ClanCommands(adventure));
             annotationParser.parse(new SpigotClanCommands(this));

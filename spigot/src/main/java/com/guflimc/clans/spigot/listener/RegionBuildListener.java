@@ -6,10 +6,18 @@ import com.guflimc.brick.maths.spigot.api.SpigotMaths;
 import com.guflimc.brick.regions.api.domain.Region;
 import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsBlockBreakEvent;
 import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsBlockPlaceEvent;
+import com.guflimc.clans.api.AttackAPI;
+import com.guflimc.clans.api.ClanAPI;
+import com.guflimc.clans.api.domain.Attack;
+import com.guflimc.clans.api.domain.Clan;
+import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.spigot.SpigotClans;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -61,11 +69,23 @@ public class RegionBuildListener implements Listener {
             event.setCancelled(true);
             SpigotI18nAPI.get(this).send(player, "protection.nexus.build.too-close");
         }
+
+        // TODO check for player clan and use power
     }
 
     private void breakNexus(Player player, Block block, Nexus nexus) {
         player.sendMessage("You just broke the nexus.");
-        // TODO
+
+        Clan clan = ClanAPI.get().findCachedProfile(player.getUniqueId()).clanProfile().map(ClanProfile::clan).orElse(null);
+        if ( clan == null ) {
+            return; // players without a clan cannot attack
+        }
+
+        if ( clan.equals(nexus.clan()) ) {
+            return; // can't attack your own nexus
+        }
+
+        plugin.attackManager.attack(player, clan, nexus, block);
     }
 
 }

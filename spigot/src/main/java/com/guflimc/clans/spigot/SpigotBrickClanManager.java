@@ -2,12 +2,15 @@ package com.guflimc.clans.spigot;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
+import com.guflimc.clans.api.ClanAPI;
 import com.guflimc.clans.api.cosmetic.NexusSkin;
 import com.guflimc.clans.api.domain.Clan;
+import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.common.AbstractClanManager;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.domain.DClan;
+import com.guflimc.clans.spigot.api.SpigotClanManager;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
@@ -22,18 +25,21 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class SpigotClanManager extends AbstractClanManager {
+public class SpigotBrickClanManager extends AbstractClanManager implements SpigotClanManager {
 
     private final Map<NexusSkin, Clipboard> schematics = new HashMap<>();
 
-    public SpigotClanManager(ClansDatabaseContext databaseContext) {
+    public SpigotBrickClanManager(ClansDatabaseContext databaseContext) {
         super(databaseContext);
 
         ClipboardFormat format = ClipboardFormats.findByAlias("sponge");
@@ -88,4 +94,19 @@ public class SpigotClanManager extends AbstractClanManager {
         return update(clan);
     }
 
+    @Override
+    public Collection<Player> onlinePlayers(Clan clan) {
+        return Bukkit.getOnlinePlayers().stream()
+                .filter(p -> ClanAPI.get().findCachedProfile(p.getUniqueId())
+                        .clanProfile()
+                        .map(ClanProfile::clan)
+                        .filter(c -> c.equals(clan))
+                        .isPresent()
+                ).map(Player.class::cast).toList();
+    }
+
+    @Override
+    public Optional<Clan> clan(Player player) {
+        return findCachedProfile(player.getUniqueId()).clanProfile().map(ClanProfile::clan);
+    }
 }

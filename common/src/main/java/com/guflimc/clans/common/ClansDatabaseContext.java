@@ -22,7 +22,8 @@ public class ClansDatabaseContext extends HibernateDatabaseContext {
                 DNexus.class,
                 DProfile.class,
                 DClanInvite.class,
-                DClanProfilePermission.class
+                DClanProfilePermission.class,
+                DAttack.class
         };
     }
 

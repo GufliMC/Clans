@@ -37,7 +37,7 @@ dependencies {
     compileOnly 'com.guflimc.brick.maths:spigot-api:+'
     compileOnly 'com.guflimc.brick.chat:spigot-api:+'
     compileOnly 'com.guflimc.brick.placeholders:spigot-api:+'
-
+    compileOnly 'com.guflimc.brick.sidebar:spigot-api:+'
 }
 
 compileJava {
@@ -53,7 +53,7 @@ bukkit {
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/Clans'
     apiVersion = '1.13'
-    depend = ["BrickI18n", "BrickRegions", "BrickChat", "BrickPlaceholders", "BrickNametags", "WorldGuard", "WorldEdit"]
+    depend = ["BrickI18n", "BrickRegions", "BrickChat", "BrickPlaceholders", "BrickNametags", "BrickSidebar", "WorldGuard", "WorldEdit"]
 }
 
 // I want it nice like that

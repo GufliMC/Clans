@@ -6,5 +6,20 @@
     "password": "root",
     "debug": true
   },
-  "clanChatPrefix": "<insertion:/clans info {clan_name}><hover:show_text:'{clan}'><gray>[{clan_tag}]</gray></hover></insertion>"
+  "clanChatPrefix": "<insert:/clans info {clan_name}><hover:show_text:'{clan}'><gray>[{clan_tag}]</gray></hover></insert>",
+  "clanNametagPrefix": "<gray>[{clan_tag}]</gray> ",
+  "attackSidebar": {
+    "title": "<yellow><bold>CLAN ATTACK",
+    "lines": [
+      "",
+      "<white>Attackers:",
+      "{clan_attack_attacker}",
+      "",
+      "<white>Defenders:",
+      "{clan_attack_defender}",
+      "",
+      "<white>Nexus health: <red>{clan_attack_nexus_health}",
+      "<white>Time left: <red>{clan_attack_time_left}"
+    ]
+  }
 }

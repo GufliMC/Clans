@@ -14,6 +14,7 @@ public class ClanPlaceholders {
     public static void init(ClansConfig config) {
 
         Component clanChatPrefix = MiniMessage.miniMessage().deserialize(config.clanChatPrefix);
+        Component clanNametagPrefix = MiniMessage.miniMessage().deserialize(config.clanNametagPrefix);
 
         SpigotPlaceholderAPI.get().registerReplacer("clan", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
@@ -51,6 +52,12 @@ public class ClanPlaceholders {
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .clanProfile()
                         .map(cp -> SpigotPlaceholderAPI.get().replace(player, clanChatPrefix))
+                        .orElse(null));
+
+        SpigotPlaceholderAPI.get().registerReplacer("clan_nametag_prefix", (player) ->
+                ClanAPI.get().findCachedProfile(player.getUniqueId())
+                        .clanProfile()
+                        .map(cp -> SpigotPlaceholderAPI.get().replace(player, clanNametagPrefix))
                         .orElse(null));
     }
 

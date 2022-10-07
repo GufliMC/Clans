@@ -4,11 +4,13 @@ import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.JdbcTypeCode;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,6 +45,12 @@ public class DClan implements Clan {
 
     @Formula("(select count(cp.id) from clan_profiles cp where cp.clan_id = id)")
     public int memberCount;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant updatedAt;
 
     //
 

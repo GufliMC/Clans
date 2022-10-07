@@ -31,7 +31,7 @@ public class JoinQuitListener implements Listener {
             return;
         }
 
-        loading.put(event.getUniqueId(), lavaClans.manager.load(event.getUniqueId(), event.getName()));
+        loading.put(event.getUniqueId(), lavaClans.clanManager.load(event.getUniqueId(), event.getName()));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -51,7 +51,7 @@ public class JoinQuitListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent event) {
         loading.remove(event.getPlayer().getUniqueId());
-        lavaClans.manager.unload(event.getPlayer().getUniqueId());
+        lavaClans.clanManager.unload(event.getPlayer().getUniqueId());
     }
 
 }

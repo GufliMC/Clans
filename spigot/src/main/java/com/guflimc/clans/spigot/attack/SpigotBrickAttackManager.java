@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 
 public class SpigotBrickAttackManager extends AbstractAttackManager {
@@ -58,7 +59,7 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
         SpigotPlaceholderAPI.get().registerReplacer("clan_attack_time_left", (player) -> {
             return SpigotClanAPI.get().clan(player).flatMap(this::findAttack)
                     .map(Attack::createdAt)
-                    .map(start -> Duration.between(start, Instant.now()))
+                    .map(start -> Duration.between(Instant.now(), start.plus(config.attackDuration, ChronoUnit.MINUTES)))
                     .map(this::format)
                     .map(Component::text).orElse(null);
         });
@@ -67,6 +68,7 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
     }
 
     private String format(Duration duration) {
+        duration = duration.withNanos(0);
         String result = duration.toString().substring(2);
         int index = result.indexOf(".");
         if (index > 0) {
@@ -121,7 +123,9 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
 
     private void resume() {
         for ( Attack attack : attacks() ) {
+            System.out.println("resuming");
             SpigotClanAPI.get().onlinePlayers(attack.attacker()).forEach(p -> {
+                System.out.println("pushing sidebar");
                 if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
             });
 

@@ -78,6 +78,11 @@ public class SpigotClans extends JavaPlugin {
         clanManager = new SpigotBrickClanManager(databaseContext);
         SpigotClanAPI.register(clanManager);
 
+        // LOAD PLAYERS
+        CompletableFuture.allOf(Bukkit.getServer().getOnlinePlayers().stream()
+                .map(p -> clanManager.load(p.getUniqueId(), p.getName()))
+                .toArray(CompletableFuture[]::new)).join();
+
         // ATTACK MANAGER
         attackManager = new SpigotBrickAttackManager(databaseContext, config);
         AttackAPI.register(attackManager);
@@ -108,12 +113,6 @@ public class SpigotClans extends JavaPlugin {
         pm.registerEvents(new RegionEnterLeaveListener(this), this);
         pm.registerEvents(new RegionBuildListener(this), this);
         pm.registerEvents(new PlayerChatListener(), this);
-
-        // LOAD
-
-        CompletableFuture.allOf(Bukkit.getServer().getOnlinePlayers().stream()
-                .map(p -> clanManager.load(p.getUniqueId(), p.getName()))
-                .toArray(CompletableFuture[]::new)).join();
 
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }
@@ -148,7 +147,7 @@ public class SpigotClans extends JavaPlugin {
             );
 
             annotationParser.getParameterInjectorRegistry().registerInjector(Profile.class,
-                    (context, annotationAccessor) -> clanManager.findCachedProfile(((Player) context.getSender()).getUniqueId()));
+                    (context, annotationAccessor) -> clanManager.findCachedProfile(((Player) context.getSender()).getUniqueId()).orElseThrow());
 
             annotationParser.parse(new ClanCommands(adventure));
             annotationParser.parse(new SpigotClanCommands(this));

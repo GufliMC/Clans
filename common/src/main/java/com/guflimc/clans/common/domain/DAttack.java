@@ -35,7 +35,7 @@ public class DAttack implements Attack {
 
     @Column(nullable = false)
     @ColumnDefault("1000")
-    private int nexusHealth = 1000; // 17 minutes, one block every second
+    private int nexusHealth = 100; // 1000 = 17 minutes, one block every second
 
     @Column(nullable = false)
     @ColumnDefault("false")

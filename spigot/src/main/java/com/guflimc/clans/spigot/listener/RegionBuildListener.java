@@ -8,10 +8,7 @@ import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsBlockBreakEvent;
 import com.guflimc.brick.regions.spigot.api.events.PlayerRegionsBlockPlaceEvent;
 import com.guflimc.clans.api.AttackAPI;
 import com.guflimc.clans.api.ClanAPI;
-import com.guflimc.clans.api.domain.Attack;
-import com.guflimc.clans.api.domain.Clan;
-import com.guflimc.clans.api.domain.ClanProfile;
-import com.guflimc.clans.api.domain.Nexus;
+import com.guflimc.clans.api.domain.*;
 import com.guflimc.clans.spigot.SpigotClans;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -74,9 +71,9 @@ public class RegionBuildListener implements Listener {
     }
 
     private void breakNexus(Player player, Block block, Nexus nexus) {
-        player.sendMessage("You just broke the nexus.");
+        player.sendMessage("You just broke a nexus.");
 
-        Clan clan = ClanAPI.get().findCachedProfile(player.getUniqueId()).clanProfile().map(ClanProfile::clan).orElse(null);
+        Clan clan = ClanAPI.get().findCachedProfile(player.getUniqueId()).flatMap(Profile::clanProfile).map(ClanProfile::clan).orElse(null);
         if ( clan == null ) {
             return; // players without a clan cannot attack
         }

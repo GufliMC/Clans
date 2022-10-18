@@ -7,6 +7,7 @@ import com.guflimc.clans.api.cosmetic.NexusSkin;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Nexus;
+import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.common.AbstractClanManager;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.domain.DClan;
@@ -98,7 +99,7 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
     public Collection<Player> onlinePlayers(Clan clan) {
         return Bukkit.getOnlinePlayers().stream()
                 .filter(p -> ClanAPI.get().findCachedProfile(p.getUniqueId())
-                        .clanProfile()
+                        .flatMap(Profile::clanProfile)
                         .map(ClanProfile::clan)
                         .filter(c -> c.equals(clan))
                         .isPresent()
@@ -107,6 +108,6 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
 
     @Override
     public Optional<Clan> clan(Player player) {
-        return findCachedProfile(player.getUniqueId()).clanProfile().map(ClanProfile::clan);
+        return findCachedProfile(player.getUniqueId()).flatMap(Profile::clanProfile).map(ClanProfile::clan);
     }
 }

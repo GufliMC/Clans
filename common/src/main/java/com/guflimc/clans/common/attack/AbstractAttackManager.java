@@ -17,7 +17,7 @@ public class AbstractAttackManager implements AttackManager {
 
     public AbstractAttackManager(HibernateDatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
-        databaseContext.findAllAsync(DAttack.class).thenAccept(this.attacks::addAll);
+        databaseContext.findAllAsync(DAttack.class).thenAccept(this.attacks::addAll).join();
     }
 
     public final Optional<Attack> findAttack(Clan clan) {

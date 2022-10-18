@@ -150,8 +150,8 @@ public abstract class AbstractClanManager implements ClanManager {
     }
 
     @Override
-    public Profile findCachedProfile(@NotNull UUID id) {
-        return profiles.stream().filter(p -> p.id().equals(id)).map(p -> (Profile) p).findFirst().orElseThrow();
+    public Optional<Profile> findCachedProfile(@NotNull UUID id) {
+        return profiles.stream().filter(p -> p.id().equals(id)).map(p -> (Profile) p).findFirst();
     }
 
     // edit profiles

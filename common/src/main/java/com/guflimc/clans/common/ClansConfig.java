@@ -10,8 +10,10 @@ public class ClansConfig {
 
     public String clanChatPrefix;
     public String clanNametagPrefix;
+    public String clanRegionNone;
 
     public SidebarTemplate attackSidebar;
+    public int attackDuration; // minutes
 
     public static class SidebarTemplate {
 

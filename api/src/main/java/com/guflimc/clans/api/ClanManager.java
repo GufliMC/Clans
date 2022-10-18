@@ -41,7 +41,7 @@ public interface ClanManager {
 
     CompletableFuture<Profile> findProfile(@NotNull String name);
 
-    Profile findCachedProfile(@NotNull UUID id);
+    Optional<Profile> findCachedProfile(@NotNull UUID id);
 
     // edit profiles
 

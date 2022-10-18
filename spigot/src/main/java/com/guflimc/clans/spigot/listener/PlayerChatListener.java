@@ -3,6 +3,7 @@ package com.guflimc.clans.spigot.listener;
 import com.guflimc.brick.chat.spigot.api.event.SpigotPlayerChannelChatEvent;
 import com.guflimc.clans.api.ClanAPI;
 import com.guflimc.clans.api.domain.Clan;
+import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,8 +16,13 @@ public class PlayerChatListener implements Listener {
             return;
         }
 
-        Clan clan = ClanAPI.get().findCachedProfile(event.player().getUniqueId()).clanProfile().get().clan();
-        event.recipients().removeIf(p -> !ClanAPI.get().findCachedProfile(p.getUniqueId()).clanProfile().get().clan().equals(clan));
+        Clan clan = ClanAPI.get().findCachedProfile(event.player().getUniqueId())
+                .flatMap(Profile::clanProfile).orElseThrow().clan();
+
+        event.recipients().removeIf(p ->
+                !ClanAPI.get().findCachedProfile(p.getUniqueId())
+                .flatMap(Profile::clanProfile).orElseThrow()
+                .clan().equals(clan));
     }
 
 }

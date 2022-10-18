@@ -2,6 +2,7 @@ package com.guflimc.clans.spigot.chat;
 
 import com.guflimc.brick.chat.api.channel.AbstractChatChannel;
 import com.guflimc.clans.api.ClanAPI;
+import com.guflimc.clans.api.domain.Profile;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -13,11 +14,11 @@ public class ClanChatChannel extends AbstractChatChannel<Player> {
 
     @Override
     public boolean canRead(Player player) {
-        return ClanAPI.get().findCachedProfile(player.getUniqueId()).clanProfile().isPresent();
+        return ClanAPI.get().findCachedProfile(player.getUniqueId()).flatMap(Profile::clanProfile).isPresent();
     }
 
     @Override
     public boolean canTalk(Player player) {
-        return ClanAPI.get().findCachedProfile(player.getUniqueId()).clanProfile().isPresent();
+        return ClanAPI.get().findCachedProfile(player.getUniqueId()).flatMap(Profile::clanProfile).isPresent();
     }
 }

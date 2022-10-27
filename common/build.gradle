@@ -16,7 +16,7 @@ dependencies {
     compileOnly 'com.guflimc.brick.regions:api:+'
     compileOnly 'com.guflimc.brick.maths:api:+'
     compileOnly 'com.guflimc.brick.i18n:api:+'
-    compileOnly 'com.guflimc.brick.secheduler:api:+'
+    compileOnly 'com.guflimc.brick.scheduler:api:+'
 
     api 'cloud.commandframework:cloud-core:+'
     api 'cloud.commandframework:cloud-annotations:+'

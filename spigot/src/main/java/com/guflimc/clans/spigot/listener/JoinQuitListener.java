@@ -9,11 +9,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class JoinQuitListener implements Listener {
 
-    private final SpigotClans lavaClans;
+    private final SpigotClans plugin;
 
-
-    public JoinQuitListener(SpigotClans lavaClans) {
-        this.lavaClans = lavaClans;
+    public JoinQuitListener(SpigotClans plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -22,12 +21,12 @@ public class JoinQuitListener implements Listener {
             return;
         }
 
-        lavaClans.clanManager.load(event.getUniqueId(), event.getName()).join();
+        plugin.clanManager.load(event.getUniqueId(), event.getName()).join();
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        lavaClans.clanManager.unload(event.getPlayer().getUniqueId());
+        plugin.clanManager.unload(event.getPlayer().getUniqueId());
     }
 
 }

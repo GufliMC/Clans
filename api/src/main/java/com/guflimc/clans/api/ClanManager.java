@@ -43,6 +43,8 @@ public interface ClanManager {
 
     Optional<Profile> findCachedProfile(@NotNull UUID id);
 
+    Collection<Profile> cachedProfiles();
+
     // edit profiles
 
     CompletableFuture<Void> update(@NotNull Profile profile);

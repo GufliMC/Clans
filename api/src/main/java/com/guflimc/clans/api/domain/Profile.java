@@ -26,4 +26,8 @@ public interface Profile {
 
     void setPower(int power);
 
+    long playTime();
+
+    void setPlayTime(long playTime);
+
 }

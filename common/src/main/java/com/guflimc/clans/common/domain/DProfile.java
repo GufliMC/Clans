@@ -43,6 +43,9 @@ public class DProfile implements Profile {
     @ColumnDefault("0")
     private int power = 0;
 
+    @ColumnDefault("0")
+    private long playTime = 0;
+
     private Instant lastSeenAt;
 
     @CreationTimestamp
@@ -127,6 +130,16 @@ public class DProfile implements Profile {
     @Override
     public void setPower(int power) {
         this.power = power;
+    }
+
+    @Override
+    public long playTime() {
+        return playTime;
+    }
+
+    @Override
+    public void setPlayTime(long playTime) {
+        this.playTime = playTime;
     }
 
     @Override

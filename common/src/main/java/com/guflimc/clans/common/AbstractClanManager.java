@@ -154,6 +154,11 @@ public abstract class AbstractClanManager implements ClanManager {
         return profiles.stream().filter(p -> p.id().equals(id)).map(p -> (Profile) p).findFirst();
     }
 
+    @Override
+    public Collection<Profile> cachedProfiles() {
+        return Collections.unmodifiableSet(profiles);
+    }
+
     // edit profiles
 
     public CompletableFuture<Profile> load(@NotNull UUID id, @NotNull String name) {

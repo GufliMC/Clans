@@ -11,6 +11,8 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+import java.time.Duration;
+
 public class ClanPlaceholders {
 
     public static void init(ClansConfig config) {
@@ -70,6 +72,31 @@ public class ClanPlaceholders {
                         .findFirst()
                         .map(nexus -> Component.text(nexus.clan().name(), TextColor.color(nexus.clan().color())))
                         .orElse(clanRegionNone));
+
+        SpigotPlaceholderAPI.get().registerReplacer("profile_power", (player) ->
+                ClanAPI.get().findCachedProfile(player.getUniqueId())
+                        .map(profile -> Component.text(profile.power()))
+                        .orElse(Component.text(0)));
+
+        SpigotPlaceholderAPI.get().registerReplacer("profile_playtime", (player) ->
+                ClanAPI.get().findCachedProfile(player.getUniqueId())
+                        .map(profile -> Component.text(format(Duration.ofSeconds(profile.playTime()))))
+                        .orElse(Component.text(0)));
+    }
+
+    private static String format(Duration duration) {
+//        duration = duration.withNanos(0);
+        duration = Duration.ofSeconds(duration.getSeconds() - duration.getSeconds() % 60);
+        String result = duration.toString().substring(2);
+        int index = result.indexOf(".");
+        if (index > 0) {
+            result = result.substring(0, index);
+        }
+
+        result = result.replace("H", "h ");
+        result = result.replace("M", "m ");
+        result = result.replace("S", "m");
+        return result;
     }
 
 }

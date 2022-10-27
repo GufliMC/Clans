@@ -9,6 +9,7 @@ import com.guflimc.brick.chat.spigot.api.SpigotChatAPI;
 import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
+import com.guflimc.brick.scheduler.spigot.api.SpigotScheduler;
 import com.guflimc.clans.api.AttackAPI;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Profile;
@@ -20,11 +21,9 @@ import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.attack.SpigotBrickAttackManager;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
-import com.guflimc.clans.spigot.listener.JoinQuitListener;
-import com.guflimc.clans.spigot.listener.PlayerChatListener;
-import com.guflimc.clans.spigot.listener.RegionBuildListener;
-import com.guflimc.clans.spigot.listener.RegionEnterLeaveListener;
+import com.guflimc.clans.spigot.listener.*;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
+import com.guflimc.clans.spigot.power.SpigotPowerManager;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
@@ -92,6 +91,10 @@ public class SpigotClans extends JavaPlugin {
         namespace.loadValues(this, "languages");
         SpigotI18nAPI.get().register(namespace);
 
+        // SCHEDULER
+        SpigotScheduler scheduler = new SpigotScheduler(this, getName());
+        SpigotPowerManager powerManager = new SpigotPowerManager(config, scheduler);
+
         // COMMANDS
         setupCommands();
 
@@ -113,6 +116,7 @@ public class SpigotClans extends JavaPlugin {
         pm.registerEvents(new RegionEnterLeaveListener(this), this);
         pm.registerEvents(new RegionBuildListener(this), this);
         pm.registerEvents(new PlayerChatListener(), this);
+        pm.registerEvents(new JoinQuitPlayTimeListener(this, scheduler), this);
 
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }

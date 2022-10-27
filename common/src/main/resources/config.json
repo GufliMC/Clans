@@ -9,6 +9,8 @@
   "clanChatPrefix": "<insert:/clans info {clan_name}><hover:show_text:'{clan}'><gray>[{clan_tag}]</gray></hover></insert>",
   "clanNametagPrefix": "<gray>[{clan_tag}]</gray> ",
   "clanRegionNone": "<green>Wilderness",
+  "powerGiftAmount": 10,
+  "powerGiftInterval": 100,
   "attackDuration": "10",
   "attackSidebar": {
     "title": "<yellow><bold>CLAN ATTACK",

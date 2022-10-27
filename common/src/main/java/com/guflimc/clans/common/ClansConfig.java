@@ -8,6 +8,9 @@ public class ClansConfig {
 
     public HibernateConfig database;
 
+    public int powerGiftAmount;
+    public int powerGiftInterval;
+
     public String clanChatPrefix;
     public String clanNametagPrefix;
     public String clanRegionNone;

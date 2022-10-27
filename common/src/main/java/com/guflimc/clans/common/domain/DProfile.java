@@ -5,6 +5,7 @@ import com.guflimc.clans.api.domain.ClanInvite;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,6 +39,9 @@ public class DProfile implements Profile {
     @OneToMany(targetEntity = DClanInvite.class, mappedBy = "sender", fetch = FetchType.EAGER, orphanRemoval = true,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     List<DClanInvite> sentInvites = new ArrayList<>();
+
+    @ColumnDefault("0")
+    private int power = 0;
 
     private Instant lastSeenAt;
 
@@ -113,6 +117,16 @@ public class DProfile implements Profile {
         return invites.stream().filter(inv -> inv.clan().equals(clan))
                 .max(Comparator.comparing(DClanInvite::createdAt))
                 .map(inv -> inv);
+    }
+
+    @Override
+    public int power() {
+        return power;
+    }
+
+    @Override
+    public void setPower(int power) {
+        this.power = power;
     }
 
     @Override

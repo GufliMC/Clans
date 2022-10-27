@@ -22,4 +22,8 @@ public interface Profile {
 
     Optional<ClanInvite> mostRecentInvite(@NotNull Clan clan);
 
+    int power();
+
+    void setPower(int power);
+
 }

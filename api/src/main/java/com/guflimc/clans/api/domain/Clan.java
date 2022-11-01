@@ -13,6 +13,8 @@ public interface Clan {
 
     Optional<Nexus> nexus();
 
+    int nexusRadius();
+
     int color();
 
     void setColor(int color);

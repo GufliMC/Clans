@@ -116,7 +116,7 @@ public class DNexus implements Nexus {
         return createdAt;
     }
 
-    public void setAreaSize(int radius) {
+    public void setCubeRadius(int radius) {
         area = CuboidArea.of(location.add(radius, radius, radius), location.add(-radius, -radius, -radius));
     }
 

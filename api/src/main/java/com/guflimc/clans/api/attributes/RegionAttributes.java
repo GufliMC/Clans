@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public class RegionAttributes {
 
+    public final static int CUBE_RADIUS_MULTIPLIER = 40;
+
     public final static AttributeKey<Clan> CLAN = new AttributeKey<>(
             "clan", Clan.class,
             (clan) -> clan.id().toString(),

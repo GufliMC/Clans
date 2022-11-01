@@ -1,6 +1,7 @@
 package com.guflimc.clans.common.domain;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
+import com.guflimc.clans.api.attributes.RegionAttributes;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import jakarta.persistence.*;
@@ -62,6 +63,11 @@ public class DClan implements Clan {
         this.tag = tag;
     }
 
+    @PostLoad
+    private void onLoad() {
+        updateNexusArea();
+    }
+
     @Override
     public UUID id() {
         return id;
@@ -82,13 +88,22 @@ public class DClan implements Clan {
         return Optional.ofNullable(nexus);
     }
 
+    @Override
+    public int nexusRadius() {
+        return level * 40; // TODO: Configurable
+    }
+
     public void setNexus(Location loc) {
         nexus = new DNexus(this, loc);
         updateNexusArea();
     }
 
     private void updateNexusArea() {
-        nexus().ifPresent(nexus -> ((DNexus) nexus).setAreaSize(level * 40));
+        if ( nexus == null ) {
+            return;
+        }
+
+        nexus.setCubeRadius(nexusRadius());
     }
 
     @Override

@@ -5,9 +5,13 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.processing.CommandContainer;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
+import com.guflimc.brick.maths.api.geo.area.CuboidArea;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
+import com.guflimc.brick.regions.spigot.api.SpigotRegionAPI;
 import com.guflimc.clans.api.ClanAPI;
+import com.guflimc.clans.api.attributes.RegionAttributes;
 import com.guflimc.clans.api.domain.Clan;
+import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.spigot.SpigotClans;
 import com.guflimc.clans.spigot.menu.PermissionsMenu;
@@ -152,6 +156,14 @@ public class SpigotClanCommands {
         Location loc = sender.getLocation();
         com.guflimc.brick.maths.api.geo.pos.Location nexus = SpigotMaths.toBrickLocation(loc.add(0, 1.5, 0));
 
+        if ( SpigotRegionAPI.get().regions().stream()
+                .filter(rg -> rg instanceof Nexus)
+                .map(rg -> (Nexus) rg)
+                .anyMatch(rg -> isTooClose(rg, nexus)) ) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.too.close");
+            return;
+        }
+
         try {
             ClanAPI.get().createNexus(clan, nexus);
 
@@ -162,6 +174,11 @@ public class SpigotClanCommands {
         } catch (IllegalArgumentException ex) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.invalid");
         }
+    }
+
+    private boolean isTooClose(Nexus nexus, com.guflimc.brick.maths.api.geo.pos.Location location) {
+        double distance = nexus.location().distance(location);
+        return distance < 12 * RegionAttributes.CUBE_RADIUS_MULTIPLIER; // 2 clans * 3 levels * 2 radius
     }
 
     private Vector cardinalDirectionFrom(Location loc) {

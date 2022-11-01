@@ -58,6 +58,7 @@
   "menu.clans.permission.withdraw.money": "<green>Withdraw money from clan",
 
   "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area.",
+  "cmd.clans.nexus.error.too.close": "<red>The nexus cannot be placed this close to another nexus.",
 
   "protection.nexus.build.too-close": "<red>You cannot build this close to a nexus.",
 
@@ -70,5 +71,8 @@
   "attack.progress.defenders": "<bold><gray>Your nexus health is at <dark_green>{0}</dark_green> health!",
   "attack.progress.attackers": "<bold><gray>The defenders nexus is at <dark_green>{0}</dark_green> health!",
 
-  "attack.error.wrong-nexus": "<red>You can only attack the nexus of a clan you are at war with."
+  "attack.error.wrong-nexus": "<red>You can only attack the nexus of a clan you are at war with.",
+
+  "power.action.pay": "<red>-{0} <gray>power.",
+  "power.action.not-enough": "<red>You don't have enough power."
 }

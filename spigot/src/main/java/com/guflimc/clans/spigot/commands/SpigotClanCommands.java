@@ -3,11 +3,9 @@ package com.guflimc.clans.spigot.commands;
 import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
-import cloud.commandframework.annotations.processing.CommandContainer;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.maths.api.geo.area.Area;
 import com.guflimc.brick.maths.api.geo.area.CuboidArea;
-import com.guflimc.brick.maths.api.geo.pos.Vector2;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
 import com.guflimc.brick.regions.spigot.api.SpigotRegionAPI;
 import com.guflimc.clans.api.ClanAPI;
@@ -16,6 +14,7 @@ import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.spigot.SpigotClans;
+import com.guflimc.clans.spigot.menu.DesignMenu;
 import com.guflimc.clans.spigot.menu.PermissionsMenu;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
@@ -26,15 +25,15 @@ import org.bukkit.util.Vector;
 //@CommandContainer
 public class SpigotClanCommands {
 
-    private final SpigotClans lavaClans;
+    private final SpigotClans plugin;
 
-    public SpigotClanCommands(SpigotClans lavaClans) {
-        this.lavaClans = lavaClans;
+    public SpigotClanCommands(SpigotClans plugin) {
+        this.plugin = plugin;
     }
 
     @CommandMethod("clans create <name> <tag>")
     @CommandPermission("lavaclans.clans.create")
-    public void create(Audience sender, Profile sprofile, @Argument("name") String name, @Argument("tag") String tag) {
+    public void create(Player sender, Profile sprofile, @Argument("name") String name, @Argument("tag") String tag) {
         if (sprofile.clanProfile().isPresent()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
             return;
@@ -67,6 +66,7 @@ public class SpigotClanCommands {
 
         ClanAPI.get().create(sprofile, name, tag.toUpperCase()).thenAccept(clan -> {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.create", clan.name(), clan.tag());
+            plugin.getServer().getScheduler().runTask(plugin, () -> DesignMenu.open(sender, clan));
         });
     }
 
@@ -180,7 +180,7 @@ public class SpigotClanCommands {
             Vector dir = cardinalDirectionFrom(loc);
             sender.teleport(loc.getBlock().getLocation().add(0.5, 0, 0.5).add(dir.clone().multiply(2))
                     .setDirection(sender.getLocation().getDirection()));
-            Bukkit.getScheduler().runTaskLater(lavaClans, () -> sender.setVelocity(dir.clone().setY(0.1)), 1L);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> sender.setVelocity(dir.clone().setY(0.1)), 1L);
         } catch (IllegalArgumentException ex) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.invalid");
         }

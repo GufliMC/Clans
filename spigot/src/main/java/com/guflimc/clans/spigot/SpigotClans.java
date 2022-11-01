@@ -117,7 +117,7 @@ public class SpigotClans extends JavaPlugin {
         pm.registerEvents(new RegionBuildListener(this), this);
         pm.registerEvents(new PlayerChatListener(), this);
         pm.registerEvents(new JoinQuitPlayTimeListener(this, scheduler), this);
-        pm.registerEvents(new PowerActionListener(), this);
+        pm.registerEvents(new PowerActionListener(this), this);
 
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }

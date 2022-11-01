@@ -5,7 +5,9 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.processing.CommandContainer;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
+import com.guflimc.brick.maths.api.geo.area.Area;
 import com.guflimc.brick.maths.api.geo.area.CuboidArea;
+import com.guflimc.brick.maths.api.geo.pos.Vector2;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
 import com.guflimc.brick.regions.spigot.api.SpigotRegionAPI;
 import com.guflimc.clans.api.ClanAPI;
@@ -156,10 +158,18 @@ public class SpigotClanCommands {
         Location loc = sender.getLocation();
         com.guflimc.brick.maths.api.geo.pos.Location nexus = SpigotMaths.toBrickLocation(loc.add(0, 1.5, 0));
 
-        if ( SpigotRegionAPI.get().regions().stream()
-                .filter(rg -> rg instanceof Nexus)
-                .map(rg -> (Nexus) rg)
-                .anyMatch(rg -> isTooClose(rg, nexus)) ) {
+//        if ( SpigotRegionAPI.get().regions().stream()
+//                .filter(rg -> rg instanceof Nexus)
+//                .map(rg -> (Nexus) rg)
+//                .anyMatch(rg -> isTooClose(rg, nexus)) ) {
+//            SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.too.close");
+//            return;
+//        }
+
+        int maxLevelRadius = RegionAttributes.CUBE_RADIUS_MULTIPLIER * 3;
+        Area area = CuboidArea.of(nexus.add(-maxLevelRadius, -maxLevelRadius, -maxLevelRadius),
+                nexus.add(maxLevelRadius, maxLevelRadius, maxLevelRadius));
+        if ( !SpigotRegionAPI.get().intersecting(area).isEmpty() ) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.too.close");
             return;
         }

@@ -1,6 +1,6 @@
 {
   "database": {
-    "dsn": "jdbc:mysql://localhost/lavaclans",
+    "dsn": "jdbc:mysql://localhost/clans",
     "driver": "com.mysql.cj.jdbc.Driver",
     "username": "root",
     "password": "root",

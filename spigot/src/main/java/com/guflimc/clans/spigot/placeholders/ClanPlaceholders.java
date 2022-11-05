@@ -21,31 +21,31 @@ public class ClanPlaceholders {
         Component clanNametagPrefix = MiniMessage.miniMessage().deserialize(config.clanNametagPrefix);
         TextComponent clanRegionNone = Component.text().append(MiniMessage.miniMessage().deserialize(config.clanRegionNone)).build();
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_display", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .map(cp -> Component.text(cp.clan().name(), TextColor.color(cp.clan().color())))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_name", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_name", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .map(cp -> Component.text(cp.clan().name()))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_tag", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_tag", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .map(cp -> Component.text(cp.clan().tag(), TextColor.color(cp.clan().color())))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_level", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_level", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .map(cp -> Component.text(cp.clan().level()))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_nexus", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_nexus", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .flatMap(cp -> cp.clan().nexus())
@@ -53,19 +53,19 @@ public class ClanPlaceholders {
                                 + (int) nexus.location().y() + ", " + (int) nexus.location().z()))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_chat_prefix", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_chat_prefix", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .map(cp -> SpigotPlaceholderAPI.get().replace(player, clanChatPrefix))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_nametag_prefix", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_clan_nametag_prefix", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .flatMap(Profile::clanProfile)
                         .map(cp -> SpigotPlaceholderAPI.get().replace(player, clanNametagPrefix))
                         .orElse(null));
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_region", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_region_clan", (player) ->
                 SpigotRegionAPI.get().regionsAt(player.getLocation()).stream()
                         .filter(rg -> rg instanceof Nexus)
                         .map(rg -> (Nexus) rg)
@@ -73,12 +73,12 @@ public class ClanPlaceholders {
                         .map(nexus -> Component.text(nexus.clan().name(), TextColor.color(nexus.clan().color())))
                         .orElse(clanRegionNone));
 
-        SpigotPlaceholderAPI.get().registerReplacer("profile_power", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_profile_power", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .map(profile -> Component.text(profile.power()))
                         .orElse(Component.text(0)));
 
-        SpigotPlaceholderAPI.get().registerReplacer("profile_playtime", (player) ->
+        SpigotPlaceholderAPI.get().registerReplacer("clans_profile_playtime", (player) ->
                 ClanAPI.get().findCachedProfile(player.getUniqueId())
                         .map(profile -> Component.text(format(Duration.ofSeconds(profile.playTime()))))
                         .orElse(Component.text(0)));

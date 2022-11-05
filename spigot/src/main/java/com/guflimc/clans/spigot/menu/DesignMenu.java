@@ -92,58 +92,22 @@ public class DesignMenu {
         ISpigotMenu menu = SpigotBrickGUI.create(54, namespace.string(player, "menu.clans.design.color.extra.title", clan.name()));
         float[] hsb = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
 
-//        int index = 10;
-//        for (float s = 1f; s > 0.22f; s -= 0.2f) {
-//            for (float b = 0.28f; b <= 1f; b += 0.12f) {
-//                java.awt.Color tmp = java.awt.Color.getHSBColor(hsb[0], s, b);
-//                Color c = Color.fromRGB(tmp.getRed(), tmp.getGreen(), tmp.getBlue());
-//                menu.setItem(index, ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
-//                        .withArmorColor(c)
-//                        .build());
-//                index++;
-//            }
-//            index += 2;
-//        }
-
         int index = 10;
-        for (float b = 0.28f; b <= 1f; b += 0.12f) {
-            java.awt.Color tmp = java.awt.Color.getHSBColor(hsb[0], Math.min(0, hsb[1] + .3f), b);
-            Color c = Color.fromRGB(tmp.getRed(), tmp.getGreen(), tmp.getBlue());
-            menu.setItem(index, ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
-                    .withArmorColor(c)
-                    .build());
-            index++;
-        }
-        index += 2;
-
-        for (float b = 0.28f; b <= 1f; b += 0.12f) {
-            java.awt.Color tmp = java.awt.Color.getHSBColor(hsb[0], Math.max(0, hsb[1] - .3f), b);
-            Color c = Color.fromRGB(tmp.getRed(), tmp.getGreen(), tmp.getBlue());
-            menu.setItem(index, ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
-                    .withArmorColor(c)
-                    .build());
-            index++;
-        }
-        index += 2;
-
-        for (float b = 0.28f; b <= 1f; b += 0.12f) {
-            java.awt.Color tmp = java.awt.Color.getHSBColor(hsb[0], hsb[1], b);
-            Color c = Color.fromRGB(tmp.getRed(), tmp.getGreen(), tmp.getBlue());
-            menu.setItem(index, ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
-                    .withArmorColor(c)
-                    .build());
-            index++;
-        }
-        index += 2;
-
-
-        for (float b = 0.28f; b <= 1f; b += 0.12f) {
-            java.awt.Color tmp = java.awt.Color.getHSBColor(hsb[0] - .2f, hsb[1], b);
-            Color c = Color.fromRGB(tmp.getRed(), tmp.getGreen(), tmp.getBlue());
-            menu.setItem(index, ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
-                    .withArmorColor(c)
-                    .build());
-            index++;
+        for (float s = 1f; s > 0.22f; s -= 0.2f) {
+            for (float b = 0.28f; b <= 1f; b += 0.12f) {
+                java.awt.Color tmp = java.awt.Color.getHSBColor(hsb[0], s, b);
+                Color c = Color.fromRGB(tmp.getRed(), tmp.getGreen(), tmp.getBlue());
+                menu.setItem(index,
+                        ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
+                                .withArmorColor(c)
+                                .build(),
+                        e -> {
+                            clan.setColor(c.asRGB());
+                            open(player, clan);
+                        });
+                index++;
+            }
+            index += 2;
         }
 
         menu.open(player);

@@ -60,12 +60,5 @@ bukkit {
 // I want it nice like that
 generateBukkitPluginDescription.group = "minecraft"
 
-shadowJar.doLast {
-    copy {
-        from "build/libs/" + archiveFileName.get()
-        into 'D:\\Documents\\testservers\\1.19 - cob\\plugins'
-    }
-}
-
 //println project.configurations.runtimeClasspath.getResolvedConfiguration().getLenientConfiguration()
 //        .getArtifacts().stream().map(art -> art.moduleVersion.id).toList()

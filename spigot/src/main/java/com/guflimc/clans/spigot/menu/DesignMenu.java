@@ -30,16 +30,14 @@ public class DesignMenu {
         ISpigotMenuBuilder bmenu = SpigotBrickGUI.builder()
                 .withTitle(namespace.string(player, "menu.clans.design.title", clan.name()));
 
-        if (hasPermission(player, clan, ClanPermission.CHANGE_COLOR)) {
-            ItemStack color = ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
-                    .withArmorColor(clan.color())
-                    .withName(namespace.string(player, "menu.clans.design.color"))
-                    .withLore(namespace.string(player, "menu.clans.design.color.lore"))
-                    .build();
-            bmenu.withItem(color, c -> {
-                openColor(player, clan);
-            });
-        }
+        ItemStack colori = ItemStackBuilder.leatherArmor(LeatherArmorBuilder.ArmorType.CHESTPLATE)
+                .withArmorColor(clan.color())
+                .withName(namespace.string(player, "menu.clans.design.color"))
+                .withLore(namespace.string(player, "menu.clans.design.color.lore"))
+                .build();
+        bmenu.withItem(colori, c -> {
+            openColor(player, clan);
+        });
 
         if (hasPermission(player, clan, ClanPermission.CHANGE_BANNER)) {
             Color color = Color.fromRGB(clan.color());

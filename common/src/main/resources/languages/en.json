@@ -43,21 +43,7 @@
   "cmd.clans.perms.error.not.leader": "<red>You are not the leader of this clan.",
   "cmd.clans.perms.error.self": "<red>You can't change your own permissions.",
 
-  "menu.clans.permissions.title": "Permissions for {0}",
-  "menu.clans.permissions.status": "<gray>Status: ",
-  "menu.clans.permissions.enabled": "<green>Allowed",
-  "menu.clans.permissions.disabled": "<red>Denied",
-
-  "menu.clans.permission.change.name": "<green>Change clan name",
-  "menu.clans.permission.change.tag": "<green>Change clan tag",
-  "menu.clans.permission.change.banner": "<green>Change clan banner",
-  "menu.clans.permission.change.color": "<green>Change clan color",
-  "menu.clans.permission.invite.player": "<green>Invite players",
-  "menu.clans.permission.kick.member": "<green>Kick members",
-  "menu.clans.permission.open.vault": "<green>Open clan vault",
-  "menu.clans.permission.withdraw.money": "<green>Withdraw money from clan",
-
-  "menu.clans.design: title": "Clan design for {0}",
+  "cmd.clans.info.not-found": "<red>No clan or player with the given name exists.",
 
   "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area.",
   "cmd.clans.nexus.error.too.close": "<red>The nexus cannot be placed this close to another nexus or region.",
@@ -76,5 +62,48 @@
   "attack.error.wrong-nexus": "<red>You can only attack the nexus of a clan you are at war with.",
 
   "power.action.pay": "<red>-{0} <gray>power.",
-  "power.action.not-enough": "<red>You don't have enough power."
+  "power.action.not-enough": "<red>You don't have enough power.",
+
+  "menu.items.back.name": "<red>Back",
+  "menu.items.back.lore": "<gray>Go to the previous menu.",
+
+  "menu.main.title": "Main clans menu",
+  "menu.main.clan.lore": "<gray>Click to check your own clan information",
+  "menu.main.clanList.name": "<green>List of clans",
+  "menu.main.clanList.lore": "<gray>Click to view a list of all clans",
+  "menu.main.profile.lore": "<gray>Click to check your own profile information",
+  "menu.main.profileList.name": "<green>List of players",
+  "menu.main.profileList.lore": "<gray>Click to view a list of all online players",
+
+  "menu.clanList.title": "List of clans ({0}/{1})",
+  "menu.clanList.clan.lore": "<gray>Click to view the information of <dark_gray>{0}<gray>.",
+
+  "menu.profileList.title": "List of online players ({0}/1})",
+  "menu.profileList.profile.lore": "<gray>Left click to view the information of <dark_gray>{0}<gray>.",
+
+  "menu.clan.title": "Information of {0}",
+  "menu.clan.info.lore": "<gray>Created at: <gold>{0}",
+  "menu.clan.members.name": "<green>Members <gold>({0}/{1})",
+  "menu.clan.members.lore": "<gray>Click to view the members of <dark_gray>{0}<gray>.",
+  "menu.clan.storage.name": "<green>Clan storage",
+  "menu.clan.storage.lore": "<gray>Click to access the clan storage of <dark_gray>{0}<gray>.",
+  "menu.clan.vault.name": "<green>Clan vault",
+  "menu.clan.vault.lore": "<gray>Click to access the clan vault of <dark_gray>{0}<gray>.",
+  "menu.clan.change-banner.name": "<green>Change banner",
+  "menu.clan.change-banner.lore": "<gray>Click to change the banner of <dark_gray>{0}<gray>.",
+
+  "menu.clan.members.title": "Members of {0} ({1}/{2})",
+  "menu.clan.members.member.lore": "<gray>Left click to view the information of <dark_gray>{0}<gray>.",
+
+  "menu.profile.title": "Profile of {0}",
+  "menu.profile.info.lore": "<gray>Joined at: <gold>{0}\n<gray>Power: <gold>{1}\n<gray>Play time: <gold>{2}",
+  "menu.profile.clan.lore": "<gray>Click to view the information of <dark_gray>{0}<gray>.",
+  "menu.profile.kick.name": "<red>Kick player",
+  "menu.profile.kick.lore": "<gray>Click to kick <dark_gray>{0}<gray> from your clan.",
+  "menu.profile.invite.name": "<green>Invite player",
+  "menu.profile.invite.lore": "<gray>Click to invite <dark_gray>{0}<gray> to your clan.",
+
+  "menu.profile.invite.confirm.title": "Invite {0} to your clan?",
+  "menu.profile.kick.confirm.title": "Kick {0} from your clan?"
+
 }

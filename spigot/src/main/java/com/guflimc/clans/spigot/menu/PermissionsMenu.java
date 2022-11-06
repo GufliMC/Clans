@@ -22,14 +22,11 @@ public class PermissionsMenu {
     private static final SpigotNamespace namespace = SpigotI18nAPI.get().byClass(SpigotClans.class);
 
     private static final Map<ClanPermission, Material> materials = Map.of(
-//            ClanPermission.CHANGE_NAME, Material.NAME_TAG,
-//            ClanPermission.CHANGE_TAG, Material.PAPER,
-//            ClanPermission.CHANGE_BANNER, Material.BLUE_BANNER,
-//            ClanPermission.CHANGE_COLOR, Material.INK_SAC,
+            ClanPermission.CHANGE_BANNER, Material.BLUE_BANNER,
             ClanPermission.INVITE_PLAYER, Material.PLAYER_HEAD,
             ClanPermission.KICK_MEMBER, Material.IRON_SWORD,
-            ClanPermission.OPEN_VAULT, Material.CHEST,
-            ClanPermission.WITHDRAW_MONEY, Material.EMERALD
+            ClanPermission.ACCESS_STORAGE, Material.CHEST,
+            ClanPermission.ACCESS_VAULT, Material.EMERALD
     );
 
     public static void open(Player player, ClanProfile cp) {

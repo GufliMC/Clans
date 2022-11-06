@@ -140,6 +140,15 @@ public abstract class AbstractClanManager implements ClanManager {
     }
 
     @Override
+    public CompletableFuture<List<Profile>> profiles(@NotNull Clan clan) {
+        return databaseContext.findAllWhereAsync(DProfile.class, (cb, root) -> {
+                    return cb.equal(root.get("clanProfile").get("clan"), clan);
+                })
+                .thenCompose(CompletableFuture::completedFuture)
+                .thenApply(list -> list.stream().map(p -> (Profile) p).toList());
+    }
+
+    @Override
     public CompletableFuture<Profile> findProfile(@NotNull UUID id) {
         return findProfileBy(p -> p.id().equals(id), "id", id);
     }

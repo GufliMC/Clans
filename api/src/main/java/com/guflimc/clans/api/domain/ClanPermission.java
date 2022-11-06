@@ -1,14 +1,11 @@
 package com.guflimc.clans.api.domain;
 
 public enum ClanPermission {
-    CHANGE_NAME("clans.permission.change.name"),
-    CHANGE_TAG("clans.permission.change.tag"),
     CHANGE_BANNER("clans.permission.change.banner"),
-    CHANGE_COLOR("clans.permission.change.color"),
     INVITE_PLAYER("clans.permission.invite.player"),
     KICK_MEMBER("clans.permission.kick.member"),
-    OPEN_VAULT("clans.permission.open.vault"),
-    WITHDRAW_MONEY("clans.permission.withdraw.money");
+    ACCESS_STORAGE("clans.permission.access.storage"),
+    ACCESS_VAULT("clans.permission.access.vault");
 
     private final String i18nKey;
 

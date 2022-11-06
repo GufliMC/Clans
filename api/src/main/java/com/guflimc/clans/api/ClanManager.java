@@ -7,6 +7,7 @@ import com.guflimc.clans.api.domain.Profile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +45,8 @@ public interface ClanManager {
     Optional<Profile> findCachedProfile(@NotNull UUID id);
 
     Collection<Profile> cachedProfiles();
+
+    CompletableFuture<List<Profile>> profiles(@NotNull Clan clan);
 
     // edit profiles
 

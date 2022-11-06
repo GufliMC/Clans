@@ -14,6 +14,8 @@ import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.spigot.SpigotClans;
+import com.guflimc.clans.spigot.api.SpigotClanAPI;
+import com.guflimc.clans.spigot.menu.ClanMenu;
 import com.guflimc.clans.spigot.menu.DesignMenu;
 import com.guflimc.clans.spigot.menu.PermissionsMenu;
 import net.kyori.adventure.audience.Audience;
@@ -137,6 +139,29 @@ public class SpigotClanCommands {
         }).exceptionally(ex -> {
             ex.printStackTrace();
             return null;
+        });
+    }
+
+    @CommandMethod("clans menu")
+    @CommandPermission("lavaclans.clans.menu")
+    public void menu(Player sender) {
+        ClanMenu.open(sender);
+    }
+
+    @CommandMethod("clans info <input>")
+    @CommandPermission("lavaclans.clans.menu")
+    public void menu(Player sender, @Argument("input") String input) {
+        Clan clan = SpigotClanAPI.get().findClan(input).orElse(null);
+        if ( clan != null ) {
+            ClanMenu.clan(sender, clan);
+            return;
+        }
+
+        SpigotClanAPI.get().findProfile(input).thenAccept(profile -> {
+            ClanMenu.profile(sender, profile);
+        }).exceptionally(v -> {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.info.not-found");
+           return null;
         });
     }
 

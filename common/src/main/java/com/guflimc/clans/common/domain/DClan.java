@@ -143,6 +143,11 @@ public class DClan implements Clan {
     }
 
     @Override
+    public Instant createdAt() {
+        return createdAt;
+    }
+
+    @Override
     public int hashCode() {
         return id.hashCode();
     }

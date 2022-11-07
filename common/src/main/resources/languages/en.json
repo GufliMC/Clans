@@ -47,6 +47,7 @@
 
   "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area.",
   "cmd.clans.nexus.error.too.close": "<red>The nexus cannot be placed this close to another nexus or region.",
+  "cmd.clans.nexus.error.too.low": "<red>The nexus cannot be placed this deep underground.",
 
   "protection.nexus.build.too-close": "<red>You cannot build this close to a nexus.",
 

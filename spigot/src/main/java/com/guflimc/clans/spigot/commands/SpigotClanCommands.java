@@ -191,6 +191,11 @@ public class SpigotClanCommands {
 //            return;
 //        }
 
+        if ( nexus.y() < 10 ) {
+            SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.too.low");
+            return;
+        }
+
         int maxLevelRadius = RegionAttributes.CUBE_RADIUS_MULTIPLIER * 3;
         Area area = CuboidArea.of(nexus.add(-maxLevelRadius, -maxLevelRadius, -maxLevelRadius),
                 nexus.add(maxLevelRadius, maxLevelRadius, maxLevelRadius));

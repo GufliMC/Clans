@@ -1,6 +1,7 @@
 package com.guflimc.clans.api;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
+import com.guflimc.clans.api.domain.BannerPattern;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
@@ -54,4 +55,11 @@ public interface ClanManager {
 
     CompletableFuture<Void> update(@NotNull ClanProfile clanProfile);
 
+    // banner patterns
+
+    Collection<BannerPattern> bannerPatterns();
+    
+    CompletableFuture<BannerPattern> addBannerPattern(@NotNull String name, @NotNull String data, boolean restricted);
+
+    CompletableFuture<Void> removeBannerPattern(@NotNull BannerPattern bannerPattern);
 }

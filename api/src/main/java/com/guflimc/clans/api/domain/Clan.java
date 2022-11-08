@@ -34,6 +34,10 @@ public interface Clan {
 
     int memberCount();
 
+    BannerPattern bannerPattern();
+
+    void setBannerPattern(BannerPattern pattern);
+
     Instant createdAt();
 
     //

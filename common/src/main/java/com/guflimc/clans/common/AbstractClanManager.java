@@ -1,9 +1,11 @@
 package com.guflimc.clans.common;
 
 import com.guflimc.clans.api.ClanManager;
+import com.guflimc.clans.api.domain.BannerPattern;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.common.domain.DBannerPattern;
 import com.guflimc.clans.common.domain.DClan;
 import com.guflimc.clans.common.domain.DClanProfile;
 import com.guflimc.clans.common.domain.DProfile;
@@ -26,6 +28,8 @@ public abstract class AbstractClanManager implements ClanManager {
     private final Set<DClan> clans = new CopyOnWriteArraySet<>();
     private final Set<DProfile> profiles = new CopyOnWriteArraySet<>();
 
+    private final Set<DBannerPattern> bannerPatterns = new CopyOnWriteArraySet<>();
+
     public AbstractClanManager(ClansDatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
         reload();
@@ -34,8 +38,12 @@ public abstract class AbstractClanManager implements ClanManager {
     @Override
     public void reload() {
         logger.info("Reloading clan manager...");
+
         clans.clear();
         clans.addAll(databaseContext.findAllAsync(DClan.class).join());
+
+        bannerPatterns.clear();
+        bannerPatterns.addAll(databaseContext.findAllAsync(DBannerPattern.class).join());
     }
 
     // clans
@@ -90,9 +98,7 @@ public abstract class AbstractClanManager implements ClanManager {
             // TODO call create event
 
             ((DProfile) leader).joinClan(clan);
-            ((DClanProfile) leader.clanProfile().get()).leader = true;
-
-            // TODO set leader rank
+            ((DClanProfile) leader.clanProfile().orElseThrow()).leader = true;
 
             return update(leader);
         }).thenApply(n -> clan);
@@ -206,5 +212,26 @@ public abstract class AbstractClanManager implements ClanManager {
     public CompletableFuture<Void> update(@NotNull ClanProfile clanProfile) {
         return databaseContext.mergeAsync(clanProfile).thenRun(() -> {
         });
+    }
+
+    //
+
+
+    @Override
+    public Collection<BannerPattern> bannerPatterns() {
+        return Collections.unmodifiableSet(bannerPatterns);
+    }
+
+    @Override
+    public CompletableFuture<BannerPattern> addBannerPattern(@NotNull String name, @NotNull String data, boolean restricted) {
+        DBannerPattern pattern = new DBannerPattern(name, data, restricted);
+        bannerPatterns.add(pattern);
+        return databaseContext.persistAsync(pattern).thenApply(n -> pattern);
+    }
+
+    @Override
+    public CompletableFuture<Void> removeBannerPattern(@NotNull BannerPattern bannerPattern) {
+        bannerPatterns.remove((DBannerPattern) bannerPattern);
+        return databaseContext.removeAsync(bannerPattern);
     }
 }

@@ -1,7 +1,6 @@
 package com.guflimc.clans.spigot.menu;
 
 import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
-import com.guflimc.brick.gui.spigot.api.ISpigotMenu;
 import com.guflimc.brick.gui.spigot.api.ISpigotMenuBuilder;
 import com.guflimc.brick.gui.spigot.api.ISpigotPaginatedMenuBuilder;
 import com.guflimc.brick.gui.spigot.item.ItemStackBuilder;
@@ -199,7 +198,7 @@ public class ClanMenu {
         setup(bmenu, player, () -> clan(player, clan));
 
         SpigotClanAPI.get().profiles(clan).thenAccept(profiles -> {
-            bmenu.withTitle(index -> namespace.string(player, "menu.clan.members.title",  clan.name(), index + 1, profiles.size()));
+            bmenu.withTitle(index -> namespace.string(player, "menu.clan.members.title", clan.name(), index + 1, profiles.size()));
 
             bmenu.withItems(profiles.size(), index -> {
                 Profile profile = profiles.get(index);
@@ -208,7 +207,7 @@ public class ClanMenu {
                         .withLore(namespace.string(player, "menu.clan.members.profile.lore", profile.name()))
                         .build();
                 return new SpigotMenuItem(profileItem, c -> {
-                    if ( c.isRightClick() ) {
+                    if (c.isRightClick()) {
                         kickMember(player, profile);
                     } else {
                         profile(player, profile);
@@ -253,7 +252,7 @@ public class ClanMenu {
                     .withLore(namespace.string(player, "menu.profileList.profile.lore", profile.createdAt(), profile.power(), profile.playTime()))
                     .build();
             return new SpigotMenuItem(profileItem, c -> {
-                if ( c.isRightClick() ) {
+                if (c.isRightClick()) {
                     invitePlayer(player, profile);
                 } else {
                     profile(player, profile);
@@ -275,7 +274,7 @@ public class ClanMenu {
         bmenu.withItem(infoItem);
 
         Clan clan = target.clanProfile().map(ClanProfile::clan).orElse(null);
-        if ( clan != null ) {
+        if (clan != null) {
             ItemStack clanItem = ItemStackBuilder.banner(Colors.findBestDye(clan.color()))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.profile.clan.lore", clan.name()))
@@ -284,7 +283,7 @@ public class ClanMenu {
                 clan(player, clan);
             });
 
-            if ( hasPermission(player, clan, ClanPermission.KICK_MEMBER) ) {
+            if (hasPermission(player, clan, ClanPermission.KICK_MEMBER)) {
                 ItemStack kickItem = ItemStackBuilder.of(Material.REDSTONE_BLOCK)
                         .withName(namespace.string(player, "menu.profile.kick.name"))
                         .withLore(namespace.string(player, "menu.profile.kick.lore", target.name()))
@@ -293,10 +292,9 @@ public class ClanMenu {
                     kickMember(player, target);
                 });
             }
-        }
-        else {
+        } else {
             Clan pclan = SpigotClanAPI.get().clan(player).orElse(null);
-            if ( pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYER) ) {
+            if (pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYER)) {
                 ItemStack inviteItem = ItemStackBuilder.of(Material.WRITABLE_BOOK)
                         .withName(namespace.string(player, "menu.profile.invite.name"))
                         .withLore(namespace.string(player, "menu.profile.invite.lore", target.name()))

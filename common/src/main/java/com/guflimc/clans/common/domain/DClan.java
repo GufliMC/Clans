@@ -2,6 +2,7 @@ package com.guflimc.clans.common.domain;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.clans.api.attributes.RegionAttributes;
+import com.guflimc.clans.api.domain.BannerPattern;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import jakarta.persistence.*;
@@ -46,6 +47,9 @@ public class DClan implements Clan {
 
     @Formula("(select count(cp.id) from clan_profiles cp where cp.clan_id = id)")
     public int memberCount;
+
+    @ManyToOne
+    private DBannerPattern bannerPattern;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -140,6 +144,16 @@ public class DClan implements Clan {
     @Override
     public int memberCount() {
         return memberCount;
+    }
+
+    @Override
+    public BannerPattern bannerPattern() {
+        return bannerPattern;
+    }
+
+    @Override
+    public void setBannerPattern(BannerPattern pattern) {
+        this.bannerPattern = (DBannerPattern) pattern;
     }
 
     @Override

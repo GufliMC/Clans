@@ -20,6 +20,9 @@ public interface Clan {
 
     int nexusRadius();
 
+    /**
+     * Represents a bitwise rgb value
+     */
     int color();
 
     void setColor(int color);
@@ -34,9 +37,16 @@ public interface Clan {
 
     int memberCount();
 
-    BannerPattern bannerPattern();
+    SigilType sigilType();
 
-    void setBannerPattern(BannerPattern pattern);
+    void setSigilType(SigilType type);
+
+    /**
+     * Represents the index of a dye color 0 - 15.
+     */
+    byte sigilColor();
+
+    void setSigilColor(byte color);
 
     Instant createdAt();
 

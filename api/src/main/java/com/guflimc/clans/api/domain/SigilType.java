@@ -2,7 +2,7 @@ package com.guflimc.clans.api.domain;
 
 import java.util.UUID;
 
-public interface BannerPattern {
+public interface SigilType {
 
     UUID id();
 

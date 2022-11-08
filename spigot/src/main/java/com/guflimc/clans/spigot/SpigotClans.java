@@ -21,6 +21,7 @@ import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.attack.SpigotBrickAttackManager;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
+import com.guflimc.clans.spigot.commands.SpigotSigilCommands;
 import com.guflimc.clans.spigot.listener.*;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
 import com.guflimc.clans.spigot.power.SpigotPowerManager;
@@ -156,6 +157,7 @@ public class SpigotClans extends JavaPlugin {
 
             annotationParser.parse(new ClanCommands(adventure));
             annotationParser.parse(new SpigotClanCommands(this));
+            annotationParser.parse(new SpigotSigilCommands(this));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -1,16 +1,19 @@
 package com.guflimc.clans.spigot.api;
 
 import com.guflimc.clans.api.ClanManager;
-import com.guflimc.clans.api.domain.Clan;
-import org.bukkit.entity.Player;
+import com.guflimc.clans.api.domain.SigilType;
+import org.bukkit.block.banner.PatternType;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface SpigotClanManager extends ClanManager {
 
-    Collection<Player> onlinePlayers(Clan clan);
+    CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull List<PatternType> pattern,
+                                              boolean restricted);
 
-    Optional<Clan> clan(Player player);
+    CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull List<PatternType> foreground,
+                                              @NotNull List<PatternType> negative, boolean restricted);
 
 }

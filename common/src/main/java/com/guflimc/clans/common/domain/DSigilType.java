@@ -1,21 +1,16 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.clans.api.domain.BannerPattern;
-import com.guflimc.clans.api.domain.Clan;
-import com.guflimc.clans.api.domain.ClanInvite;
-import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.api.domain.SigilType;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
-@Table(name = "banner_patterns")
-public class DBannerPattern implements BannerPattern {
+@Table(name = "sigil_types")
+public class DSigilType implements SigilType {
 
     @Id
     @GeneratedValue
@@ -33,10 +28,10 @@ public class DBannerPattern implements BannerPattern {
 
     //
 
-    public DBannerPattern() {
+    public DSigilType() {
     }
 
-    public DBannerPattern(String name, String data, boolean restricted) {
+    public DSigilType(String name, String data, boolean restricted) {
         this.name = name;
         this.data = data;
     }
@@ -68,7 +63,7 @@ public class DBannerPattern implements BannerPattern {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof DBannerPattern other && other.id.equals(id);
+        return obj instanceof DSigilType other && other.id.equals(id);
     }
 
 }

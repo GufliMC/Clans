@@ -12,6 +12,7 @@ import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.common.ClansConfig;
 import com.guflimc.clans.common.attack.AbstractAttackManager;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
+import com.guflimc.clans.spigot.util.ClanTools;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -42,22 +43,22 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
 
         // PLACEHOLDERS
         SpigotPlaceholderAPI.get().registerReplacer("clan_attack_defender", (player) -> {
-            return SpigotClanAPI.get().clan(player).flatMap(this::findAttack)
+            return ClanTools.clan(player).flatMap(this::findAttack)
                     .map(Attack::defender).map(Clan::name)
                     .map(Component::text).orElse(null);
         });
         SpigotPlaceholderAPI.get().registerReplacer("clan_attack_attacker", (player) -> {
-            return SpigotClanAPI.get().clan(player).flatMap(this::findAttack)
+            return ClanTools.clan(player).flatMap(this::findAttack)
                     .map(Attack::attacker).map(Clan::name)
                     .map(Component::text).orElse(null);
         });
         SpigotPlaceholderAPI.get().registerReplacer("clan_attack_nexus_health", (player) -> {
-            return SpigotClanAPI.get().clan(player).flatMap(this::findAttack)
+            return ClanTools.clan(player).flatMap(this::findAttack)
                     .map(Attack::nexusHealth)
                     .map(Component::text).orElse(null);
         });
         SpigotPlaceholderAPI.get().registerReplacer("clan_attack_time_left", (player) -> {
-            return SpigotClanAPI.get().clan(player).flatMap(this::findAttack)
+            return ClanTools.clan(player).flatMap(this::findAttack)
                     .map(Attack::createdAt)
                     .map(start -> Duration.between(Instant.now(), start.plus(config.attackDuration, ChronoUnit.MINUTES)))
                     .map(this::format)
@@ -85,14 +86,14 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
     public CompletableFuture<Attack> start(Clan defender, Clan attacker) {
         return super.start(defender, attacker).thenApply(attack -> {
             // attacking players
-            SpigotClanAPI.get().onlinePlayers(attacker).forEach(p -> {
+            ClanTools.onlinePlayers(attacker).forEach(p -> {
                 p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
                 SpigotI18nAPI.get(this).send(p, "attack.start.attackers", defender.name());
                 if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
             });
 
             // defending players
-            SpigotClanAPI.get().onlinePlayers(defender).forEach(p -> {
+            ClanTools.onlinePlayers(defender).forEach(p -> {
                 p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
                 SpigotI18nAPI.get(this).send(p, "attack.start.defenders", attacker.name());
                 if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
@@ -107,14 +108,14 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
         super.stop(attack);
 
         // attacking players
-        SpigotClanAPI.get().onlinePlayers(attack.attacker()).forEach(p -> {
+        ClanTools.onlinePlayers(attack.attacker()).forEach(p -> {
             p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
             SpigotI18nAPI.get(this).send(p, "attack.stop.attackers", attack.defender().name());
             if ( sidebar != null ) SpigotSidebarAPI.get().remove(p, sidebar);
         });
 
         // defending players
-        SpigotClanAPI.get().onlinePlayers(attack.defender()).forEach(p -> {
+        ClanTools.onlinePlayers(attack.defender()).forEach(p -> {
             p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
             SpigotI18nAPI.get(this).send(p, "attack.stop.defenders", attack.attacker().name());
             if ( sidebar != null ) SpigotSidebarAPI.get().remove(p, sidebar);
@@ -123,14 +124,12 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
 
     private void resume() {
         for ( Attack attack : attacks() ) {
-            System.out.println("resuming");
-            SpigotClanAPI.get().onlinePlayers(attack.attacker()).forEach(p -> {
-                System.out.println("pushing sidebar");
+            ClanTools.onlinePlayers(attack.attacker()).forEach(p -> {
                 if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
             });
 
             // defending players
-            SpigotClanAPI.get().onlinePlayers(attack.defender()).forEach(p -> {
+            ClanTools.onlinePlayers(attack.defender()).forEach(p -> {
                 if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
             });
         }
@@ -164,13 +163,13 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
 
         if ((health >= 100 && health % 100 == 0) || (health <= 50 && health >= 10 && health % 10 == 0) || health == 5) {
             // defenders
-            SpigotClanAPI.get().onlinePlayers(nexus.clan()).forEach(p -> {
+            ClanTools.onlinePlayers(nexus.clan()).forEach(p -> {
                 SpigotI18nAPI.get(this).send(p, "attack.progress.defenders", health);
                 p.playSound(block.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
             });
 
             // attackers
-            SpigotClanAPI.get().onlinePlayers(clan).forEach(p -> {
+            ClanTools.onlinePlayers(clan).forEach(p -> {
                 SpigotI18nAPI.get(this).send(p, "attack.progress.attackers", health);
             });
         }

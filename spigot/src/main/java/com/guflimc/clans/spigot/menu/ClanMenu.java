@@ -1,6 +1,7 @@
 package com.guflimc.clans.spigot.menu;
 
 import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
+import com.guflimc.brick.gui.spigot.api.ISpigotMenu;
 import com.guflimc.brick.gui.spigot.api.ISpigotMenuBuilder;
 import com.guflimc.brick.gui.spigot.api.ISpigotPaginatedMenuBuilder;
 import com.guflimc.brick.gui.spigot.item.ItemStackBuilder;
@@ -8,12 +9,10 @@ import com.guflimc.brick.gui.spigot.menu.SpigotMenuItem;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.clans.api.ClanAPI;
-import com.guflimc.clans.api.domain.Clan;
-import com.guflimc.clans.api.domain.ClanPermission;
-import com.guflimc.clans.api.domain.ClanProfile;
-import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.api.domain.*;
 import com.guflimc.clans.spigot.SpigotClans;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
+import com.guflimc.clans.spigot.util.ClanTools;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.DyeColor;
@@ -32,16 +31,18 @@ public class ClanMenu {
         setup(bmenu, player, null);
     }
 
+    private static ItemStack backItem(Player player) {
+        return ItemStackBuilder.of(Material.RED_BED)
+                .withName(namespace.string(player, "menu.items.back.name"))
+                .withLore(namespace.string(player, "menu.items.back.lore"))
+                .build();
+    }
+
     private static void setup(ISpigotPaginatedMenuBuilder bmenu, Player player, Runnable back) {
         if (back != null) {
-            bmenu.withHotbarItem(4,
-                    ItemStackBuilder.of(Material.RED_BED)
-                            .withName(namespace.string(player, "menu.items.back.name"))
-                            .withLore(namespace.string(player, "menu.items.back.lore"))
-                            .build(),
-                    c -> {
-                        back.run();
-                    });
+            bmenu.withHotbarItem(4, backItem(player), c -> {
+                back.run();
+            });
         }
 
 //        bmenu.withBackItem(ItemStackBuilder.of(Material.RED_BED)
@@ -76,7 +77,7 @@ public class ClanMenu {
 
         // clans
         if (clan != null) {
-            ItemStack clanItem = ItemStackBuilder.banner(Colors.findBestDye(clan.color()))
+            ItemStack clanItem = ItemStackBuilder.of(ClanTools.sigil(clan))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.main.clan.lore"))
                     .build();
@@ -122,7 +123,7 @@ public class ClanMenu {
 
         bmenu.withItems(clans.size(), index -> {
             Clan clan = clans.get(index);
-            ItemStack clanItem = ItemStackBuilder.banner(Colors.findBestDye(clan.color()))
+            ItemStack clanItem = ItemStackBuilder.of(ClanTools.sigil(clan))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.clanList.clan.lore", clan.name()))
                     .build();
@@ -137,7 +138,7 @@ public class ClanMenu {
         ISpigotMenuBuilder bmenu = SpigotBrickGUI.builder();
         bmenu.withTitle(namespace.string(player, "menu.clan.title", clan.name()));
 
-        ItemStack infoItem = ItemStackBuilder.banner(DyeColor.WHITE)
+        ItemStack infoItem = ItemStackBuilder.of(ClanTools.sigil(clan))
                 .withName(clan.displayName())
                 .withLore(namespace.string(player, "menu.clan.info.lore", clan.createdAt()))
                 .build();
@@ -172,7 +173,7 @@ public class ClanMenu {
         }
 
         if (hasPermission(player, clan, ClanPermission.CHANGE_BANNER)) {
-            ItemStack bannerItem = ItemStackBuilder.banner(DyeColor.WHITE)
+            ItemStack bannerItem = ItemStackBuilder.banner(ClanTools.findBestDye(clan.color()))
                     .withName(namespace.string(player, "menu.clan.change-banner.name"))
                     .withLore(namespace.string(player, "menu.clan.change-banner.lore"))
                     .build();
@@ -235,7 +236,72 @@ public class ClanMenu {
     }
 
     private static void clanEditBanner(Player player, Clan clan) {
+        ISpigotMenu menu = SpigotBrickGUI.create(36, namespace.string(player, "menu.clan.change-sigil.title", clan.name()));
 
+        DyeColor foreground = DyeColor.values()[clan.sigilColor()];
+        ItemStack colorItem = ItemStackBuilder.wool(foreground)
+                .withName(namespace.string(player, "menu.clan.change-sigil.color.name"))
+                .withLore(namespace.string(player, "menu.clan.change-sigil.color.lore"))
+                .build();
+        menu.setItem(12, colorItem, (e) -> {
+            clanEditBannerColor(player, clan);
+        });
+
+        ItemStack patternItem = ItemStackBuilder.of(ClanTools.sigil(clan))
+                .withName(namespace.string(player, "menu.clan.change-sigil.pattern.name"))
+                .withLore(namespace.string(player, "menu.clan.change-sigil.pattern.lore"))
+                .build();
+        menu.setItem(14, patternItem, (e) -> {
+            clanEditBannerPattern(player, clan);
+        });
+
+        menu.setItem(31, backItem(player), c -> {
+            clan(player, clan);
+        });
+
+        menu.open(player);
+    }
+
+    private static void clanEditBannerPattern(Player player, Clan clan) {
+        ISpigotPaginatedMenuBuilder bmenu = SpigotBrickGUI.paginatedBuilder();
+        setup(bmenu, player, () -> clanEditBanner(player, clan));
+        bmenu.withTitle(index -> namespace.string(player, "menu.clan.change-sigil.pattern.title", clan.name(), index + 1, 1));
+
+        DyeColor background = ClanTools.findBestDye(clan.color());
+        DyeColor foreground = DyeColor.values()[clan.sigilColor()];
+
+        List<SigilType> sigilTypes = new ArrayList<>(SpigotClanAPI.get().sigilTypes());
+        bmenu.withItems(sigilTypes.size(), index -> {
+            SigilType sigilType = sigilTypes.get(index);
+            return new SpigotMenuItem(ClanTools.sigil(sigilType, background, foreground), c -> {
+                clan.setSigilType(sigilType);
+                clanEditBanner(player, clan);
+            });
+        });
+
+        bmenu.build().open(player);
+    }
+
+    private static void clanEditBannerColor(Player player, Clan clan) {
+        ISpigotMenu menu = SpigotBrickGUI.create(54, namespace.string(player, "menu.clan.change-sigil.color.title", clan.name()));
+
+        int index = 11;
+        for (DyeColor color : DyeColor.values()) {
+            menu.setItem(index, ItemStackBuilder.wool(color)
+                    .withName(color.name().charAt(0) + color.name().toLowerCase()
+                            .substring(1).replace("_", " "))
+                    .build(), c -> {
+                clan.setSigilColor((byte) color.ordinal());
+                clanEditBanner(player, clan);
+            });
+
+            index++;
+            if ((index + 2) % 9 == 0) {
+                index += 4;
+            }
+        }
+
+        menu.open(player);
     }
 
     private static void profileList(Player player) {
@@ -275,7 +341,7 @@ public class ClanMenu {
 
         Clan clan = target.clanProfile().map(ClanProfile::clan).orElse(null);
         if (clan != null) {
-            ItemStack clanItem = ItemStackBuilder.banner(Colors.findBestDye(clan.color()))
+            ItemStack clanItem = ItemStackBuilder.banner(ClanTools.findBestDye(clan.color()))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.profile.clan.lore", clan.name()))
                     .build();
@@ -293,7 +359,7 @@ public class ClanMenu {
                 });
             }
         } else {
-            Clan pclan = SpigotClanAPI.get().clan(player).orElse(null);
+            Clan pclan = ClanTools.clan(player).orElse(null);
             if (pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYER)) {
                 ItemStack inviteItem = ItemStackBuilder.of(Material.WRITABLE_BOOK)
                         .withName(namespace.string(player, "menu.profile.invite.name"))

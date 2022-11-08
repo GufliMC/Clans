@@ -1,14 +1,14 @@
 package com.guflimc.clans.common;
 
 import com.guflimc.clans.api.ClanManager;
-import com.guflimc.clans.api.domain.BannerPattern;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
-import com.guflimc.clans.common.domain.DBannerPattern;
+import com.guflimc.clans.api.domain.SigilType;
 import com.guflimc.clans.common.domain.DClan;
 import com.guflimc.clans.common.domain.DClanProfile;
 import com.guflimc.clans.common.domain.DProfile;
+import com.guflimc.clans.common.domain.DSigilType;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public abstract class AbstractClanManager implements ClanManager {
     private final Set<DClan> clans = new CopyOnWriteArraySet<>();
     private final Set<DProfile> profiles = new CopyOnWriteArraySet<>();
 
-    private final Set<DBannerPattern> bannerPatterns = new CopyOnWriteArraySet<>();
+    private final Set<DSigilType> sigilTypes = new CopyOnWriteArraySet<>();
 
     public AbstractClanManager(ClansDatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
@@ -42,8 +42,8 @@ public abstract class AbstractClanManager implements ClanManager {
         clans.clear();
         clans.addAll(databaseContext.findAllAsync(DClan.class).join());
 
-        bannerPatterns.clear();
-        bannerPatterns.addAll(databaseContext.findAllAsync(DBannerPattern.class).join());
+        sigilTypes.clear();
+        sigilTypes.addAll(databaseContext.findAllAsync(DSigilType.class).join());
     }
 
     // clans
@@ -218,20 +218,21 @@ public abstract class AbstractClanManager implements ClanManager {
 
 
     @Override
-    public Collection<BannerPattern> bannerPatterns() {
-        return Collections.unmodifiableSet(bannerPatterns);
+    public Collection<SigilType> sigilTypes() {
+        return Collections.unmodifiableSet(sigilTypes);
+    }
+
+    public CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull String data, boolean restricted) {
+        DSigilType pattern = new DSigilType(name, data, restricted);
+        return databaseContext.persistAsync(pattern).thenApply(n -> {
+            sigilTypes.add(pattern);
+            return pattern;
+        });
     }
 
     @Override
-    public CompletableFuture<BannerPattern> addBannerPattern(@NotNull String name, @NotNull String data, boolean restricted) {
-        DBannerPattern pattern = new DBannerPattern(name, data, restricted);
-        bannerPatterns.add(pattern);
-        return databaseContext.persistAsync(pattern).thenApply(n -> pattern);
-    }
-
-    @Override
-    public CompletableFuture<Void> removeBannerPattern(@NotNull BannerPattern bannerPattern) {
-        bannerPatterns.remove((DBannerPattern) bannerPattern);
-        return databaseContext.removeAsync(bannerPattern);
+    public CompletableFuture<Void> removeSigilType(@NotNull SigilType sigilType) {
+        sigilTypes.remove((DSigilType) sigilType);
+        return databaseContext.removeAsync(sigilType);
     }
 }

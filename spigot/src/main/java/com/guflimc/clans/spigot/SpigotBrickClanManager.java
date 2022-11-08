@@ -2,12 +2,10 @@ package com.guflimc.clans.spigot;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
-import com.guflimc.clans.api.ClanAPI;
 import com.guflimc.clans.api.cosmetic.NexusSkin;
 import com.guflimc.clans.api.domain.Clan;
-import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Nexus;
-import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.api.domain.SigilType;
 import com.guflimc.clans.common.AbstractClanManager;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.domain.DClan;
@@ -26,15 +24,15 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.block.banner.PatternType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class SpigotBrickClanManager extends AbstractClanManager implements SpigotClanManager {
 
@@ -52,6 +50,30 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
                 throw new RuntimeException(e);
             }
         }
+
+        if ( !sigilTypes().isEmpty() ) {
+            return;
+        }
+
+        addSigilType("Cross", List.of(PatternType.CROSS), false);
+
+        addSigilType("Straight Cross", List.of(PatternType.STRAIGHT_CROSS), false);
+
+        addSigilType("Circle", List.of(PatternType.CIRCLE_MIDDLE), false);
+
+        addSigilType("Creeper face", List.of(PatternType.CREEPER), true);
+
+        addSigilType("Globe", List.of(PatternType.GLOBE), false);
+
+        addSigilType("Weird Thing", List.of(PatternType.FLOWER, PatternType.RHOMBUS_MIDDLE), List.of(PatternType.CIRCLE_MIDDLE), false);
+
+        //
+
+        addSigilType("Wither face", List.of(PatternType.PIGLIN, PatternType.FLOWER),
+                List.of(PatternType.CURLY_BORDER, PatternType.STRIPE_BOTTOM), true);
+
+        addSigilType("Skull", List.of(PatternType.SKULL), true);
+
     }
 
     @Override
@@ -96,18 +118,15 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
     }
 
     @Override
-    public Collection<Player> onlinePlayers(Clan clan) {
-        return Bukkit.getOnlinePlayers().stream()
-                .filter(p -> ClanAPI.get().findCachedProfile(p.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(ClanProfile::clan)
-                        .filter(c -> c.equals(clan))
-                        .isPresent()
-                ).map(Player.class::cast).toList();
+    public CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull List<PatternType> pattern, boolean restricted) {
+        return super.addSigilType(name, pattern.stream().map(PatternType::name).collect(Collectors.joining(",")), restricted);
     }
 
     @Override
-    public Optional<Clan> clan(Player player) {
-        return findCachedProfile(player.getUniqueId()).flatMap(Profile::clanProfile).map(ClanProfile::clan);
+    public CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull List<PatternType> foreground,
+                                                     @NotNull List<PatternType> negative, boolean restricted) {
+        String data = foreground.stream().map(PatternType::name).collect(Collectors.joining(","));
+        data += ";" + negative.stream().map(PatternType::name).collect(Collectors.joining(","));
+        return super.addSigilType(name, data, restricted);
     }
 }

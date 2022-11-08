@@ -1,14 +1,14 @@
 package com.guflimc.clans.common.domain;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
-import com.guflimc.clans.api.attributes.RegionAttributes;
-import com.guflimc.clans.api.domain.BannerPattern;
+import com.guflimc.clans.api.domain.SigilType;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Table;
+import org.checkerframework.checker.units.qual.A;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
@@ -48,8 +48,13 @@ public class DClan implements Clan {
     @Formula("(select count(cp.id) from clan_profiles cp where cp.clan_id = id)")
     public int memberCount;
 
-    @ManyToOne
-    private DBannerPattern bannerPattern;
+    @ManyToOne(cascade = { CascadeType.ALL })
+    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
+            "foreign key (sigil_type_id) references sigil_types (id) on delete set null"))
+    private DSigilType sigilType;
+
+    @ColumnDefault("15")
+    private byte sigilColor;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -147,13 +152,23 @@ public class DClan implements Clan {
     }
 
     @Override
-    public BannerPattern bannerPattern() {
-        return bannerPattern;
+    public SigilType sigilType() {
+        return sigilType;
     }
 
     @Override
-    public void setBannerPattern(BannerPattern pattern) {
-        this.bannerPattern = (DBannerPattern) pattern;
+    public void setSigilType(SigilType type) {
+        this.sigilType = (DSigilType) type;
+    }
+
+    @Override
+    public byte sigilColor() {
+        return sigilColor;
+    }
+
+    @Override
+    public void setSigilColor(byte color) {
+        this.sigilColor = color;
     }
 
     @Override

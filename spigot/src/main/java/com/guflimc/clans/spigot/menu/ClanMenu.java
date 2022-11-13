@@ -175,17 +175,18 @@ public class ClanMenu {
 
         ISpigotMenuRowBuilder row = SpigotBrickGUI.rowBuilder();
 
-        if (hasPermission(player, clan, ClanPermission.ACCESS_STORAGE)) {
-            ItemStack storageItem = ItemStackBuilder.of(Material.CHEST)
-                    .withName(namespace.string(player, "menu.clan.storage.name"))
-                    .withLore(namespace.string(player, "menu.clan.storage.lore", clan.name()))
-                    .build();
-            row.withItem(storageItem, (e) -> {
-                clanStorage(player, clan, () -> clan(player, clan, back));
-            });
-        }
-
         // TODO
+//        if (hasPermission(player, clan, ClanPermission.ACCESS_STORAGE)) {
+//            ItemStack storageItem = ItemStackBuilder.of(Material.CHEST)
+//                    .withName(namespace.string(player, "menu.clan.storage.name"))
+//                    .withLore(namespace.string(player, "menu.clan.storage.lore", clan.name()))
+//                    .build();
+//            row.withItem(storageItem, (e) -> {
+//                clanStorage(player, clan, () -> clan(player, clan, back));
+//            });
+//        }
+//
+//
 //        if (hasPermission(player, clan, ClanPermission.ACCESS_VAULT)) {
 //            ItemStack vaultItem = ItemStackBuilder.of(Material.ENDER_CHEST)
 //                    .withName(namespace.string(player, "menu.clan.vault.name"))
@@ -195,16 +196,16 @@ public class ClanMenu {
 //                clanVault(player, clan, () -> clan(player, clan, back));
 //            });
 //        }
-//
-//        if (hasPermission(player, clan, ClanPermission.CHANGE_CREST)) {
-//            ItemStack bannerItem = ItemStackBuilder.banner(DyeColor.WHITE)
-//                    .withName(namespace.string(player, "menu.clan.change-crest.name"))
-//                    .withLore(namespace.string(player, "menu.clan.change-crest.lore", clan.name()))
-//                    .build();
-//            row.withItem(bannerItem, (e) -> {
-//                clanEditCrest(player, clan, () -> clan(player, clan, back));
-//            });
-//        }
+
+        if (hasPermission(player, clan, ClanPermission.CHANGE_CREST)) {
+            ItemStack bannerItem = ItemStackBuilder.banner(DyeColor.WHITE)
+                    .withName(namespace.string(player, "menu.clan.change-crest.name"))
+                    .withLore(namespace.string(player, "menu.clan.change-crest.lore", clan.name()))
+                    .build();
+            row.withItem(bannerItem, (e) -> {
+                clanEditCrest(player, clan, () -> clan(player, clan, back));
+            });
+        }
 
         row.fill(bmenu, 3);
 

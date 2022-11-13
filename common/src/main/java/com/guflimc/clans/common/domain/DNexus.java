@@ -34,8 +34,7 @@ public class DNexus implements Nexus {
     @Column(nullable = false)
     private Location location = new Location(null, 0, 0, 0, 0, 0);
 
-    @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(nullable = false, unique = true, length = 65536)
+    @Column(nullable = false, unique = true, length = 8192)
     @Convert(converter = AreaConverter.class)
     private Area area;
 

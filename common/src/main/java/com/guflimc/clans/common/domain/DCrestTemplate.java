@@ -22,7 +22,7 @@ public class DCrestTemplate implements CrestTemplate {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 8192)
     @Convert(converter = CrestTypeConverter.class)
     private CrestType type;
 

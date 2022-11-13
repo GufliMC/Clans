@@ -2,6 +2,7 @@
   "database": {
     "dsn": "jdbc:mysql://localhost/clans",
     "driver": "com.mysql.cj.jdbc.Driver",
+    "dialect": "org.hibernate.dialect.MySQLDialect",
     "username": "root",
     "password": "root",
     "debug": true

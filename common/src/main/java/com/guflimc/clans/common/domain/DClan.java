@@ -56,7 +56,7 @@ public class DClan implements Clan {
     private DCrestTemplate crestTemplate;
 
     @Convert(converter = CrestConfigConverter.class)
-    @Column(length = 65536)
+    @Column(length = 8192)
     private CrestConfig crestConfig;
 
     @CreationTimestamp

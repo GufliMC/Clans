@@ -1,7 +1,8 @@
 package com.guflimc.clans.api;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
-import com.guflimc.clans.api.domain.SigilType;
+import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
@@ -57,7 +58,9 @@ public interface ClanManager {
 
     // banner patterns
 
-    Collection<SigilType> sigilTypes();
-    
-    CompletableFuture<Void> removeSigilType(@NotNull SigilType sigilType);
+    Collection<CrestTemplate> crestTemplates();
+
+    CompletableFuture<CrestTemplate> addCrestTemplate(@NotNull String name, @NotNull CrestType type, boolean restricted);
+
+    CompletableFuture<Void> removeCrestTemplate(@NotNull CrestTemplate crestTemplate);
 }

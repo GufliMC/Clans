@@ -24,7 +24,7 @@ public class ClansDatabaseContext extends HibernateDatabaseContext {
                 DClanInvite.class,
                 DClanProfilePermission.class,
                 DAttack.class,
-                DSigilType.class
+                DCrestTemplate.class
         };
     }
 

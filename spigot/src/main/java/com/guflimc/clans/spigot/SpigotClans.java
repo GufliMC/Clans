@@ -21,7 +21,7 @@ import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.attack.SpigotBrickAttackManager;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
-import com.guflimc.clans.spigot.commands.SpigotSigilCommands;
+import com.guflimc.clans.spigot.commands.SpigotCrestCommands;
 import com.guflimc.clans.spigot.listener.*;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
 import com.guflimc.clans.spigot.power.SpigotPowerManager;
@@ -44,11 +44,12 @@ public class SpigotClans extends JavaPlugin {
 
     private static final Logger logger = LoggerFactory.getLogger(SpigotClans.class);
 
+    public static SpigotScheduler scheduler;
+
     public final Gson gson = new Gson();
 
     public SpigotBrickClanManager clanManager;
     public SpigotBrickAttackManager attackManager;
-
 
     public ClansConfig config;
     public BukkitAudiences adventure;
@@ -93,7 +94,7 @@ public class SpigotClans extends JavaPlugin {
         SpigotI18nAPI.get().register(namespace);
 
         // SCHEDULER
-        SpigotScheduler scheduler = new SpigotScheduler(this, getName());
+        scheduler = new SpigotScheduler(this, getName());
         SpigotPowerManager powerManager = new SpigotPowerManager(config, scheduler);
 
         // COMMANDS
@@ -157,7 +158,7 @@ public class SpigotClans extends JavaPlugin {
 
             annotationParser.parse(new ClanCommands(adventure));
             annotationParser.parse(new SpigotClanCommands(this));
-            annotationParser.parse(new SpigotSigilCommands(this));
+            annotationParser.parse(new SpigotCrestCommands(this));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -1,14 +1,15 @@
 package com.guflimc.clans.common;
 
 import com.guflimc.clans.api.ClanManager;
+import com.guflimc.clans.api.cosmetic.CrestType;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
-import com.guflimc.clans.api.domain.SigilType;
+import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.common.domain.DClan;
 import com.guflimc.clans.common.domain.DClanProfile;
 import com.guflimc.clans.common.domain.DProfile;
-import com.guflimc.clans.common.domain.DSigilType;
+import com.guflimc.clans.common.domain.DCrestTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public abstract class AbstractClanManager implements ClanManager {
     private final Set<DClan> clans = new CopyOnWriteArraySet<>();
     private final Set<DProfile> profiles = new CopyOnWriteArraySet<>();
 
-    private final Set<DSigilType> sigilTypes = new CopyOnWriteArraySet<>();
+    private final Set<DCrestTemplate> sigilTypes = new CopyOnWriteArraySet<>();
 
     public AbstractClanManager(ClansDatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
@@ -43,7 +44,7 @@ public abstract class AbstractClanManager implements ClanManager {
         clans.addAll(databaseContext.findAllAsync(DClan.class).join());
 
         sigilTypes.clear();
-        sigilTypes.addAll(databaseContext.findAllAsync(DSigilType.class).join());
+        sigilTypes.addAll(databaseContext.findAllAsync(DCrestTemplate.class).join());
     }
 
     // clans
@@ -218,12 +219,12 @@ public abstract class AbstractClanManager implements ClanManager {
 
 
     @Override
-    public Collection<SigilType> sigilTypes() {
+    public Collection<CrestTemplate> crestTemplates() {
         return Collections.unmodifiableSet(sigilTypes);
     }
 
-    public CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull String data, boolean restricted) {
-        DSigilType pattern = new DSigilType(name, data, restricted);
+    public CompletableFuture<CrestTemplate> addCrestTemplate(@NotNull String name, @NotNull CrestType type, boolean restricted) {
+        DCrestTemplate pattern = new DCrestTemplate(name, type, restricted);
         return databaseContext.persistAsync(pattern).thenApply(n -> {
             sigilTypes.add(pattern);
             return pattern;
@@ -231,8 +232,8 @@ public abstract class AbstractClanManager implements ClanManager {
     }
 
     @Override
-    public CompletableFuture<Void> removeSigilType(@NotNull SigilType sigilType) {
-        sigilTypes.remove((DSigilType) sigilType);
-        return databaseContext.removeAsync(sigilType);
+    public CompletableFuture<Void> removeCrestTemplate(@NotNull CrestTemplate crestTemplate) {
+        sigilTypes.remove((DCrestTemplate) crestTemplate);
+        return databaseContext.removeAsync(crestTemplate);
     }
 }

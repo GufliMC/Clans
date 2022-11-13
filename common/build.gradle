@@ -2,12 +2,16 @@ plugins {
     id 'java-library'
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 
 dependencies {
     api project(':api')
 
     compileOnly 'org.slf4j:slf4j-api:1.7.36'
     compileOnly 'com.google.code.gson:gson:+'
+    implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'
 
     api 'com.guflimc.brick.orm:common:+'
     implementation 'com.guflimc.brick.maths:database-api:+'

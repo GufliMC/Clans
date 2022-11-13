@@ -1,14 +1,16 @@
 package com.guflimc.clans.common.domain;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
-import com.guflimc.clans.api.domain.SigilType;
+import com.guflimc.clans.api.cosmetic.CrestConfig;
+import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
+import com.guflimc.clans.common.converters.CrestConfigConverter;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Table;
-import org.checkerframework.checker.units.qual.A;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
@@ -50,11 +52,12 @@ public class DClan implements Clan {
 
     @ManyToOne(cascade = { CascadeType.ALL })
     @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
-            "foreign key (sigil_type_id) references sigil_types (id) on delete set null"))
-    private DSigilType sigilType;
+            "foreign key (crest_template_id) references crest_templates (id) on delete set null"))
+    private DCrestTemplate crestTemplate;
 
-    @ColumnDefault("15")
-    private byte sigilColor;
+    @Convert(converter = CrestConfigConverter.class)
+    @Column(length = 65536)
+    private CrestConfig crestConfig;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -152,23 +155,26 @@ public class DClan implements Clan {
     }
 
     @Override
-    public SigilType sigilType() {
-        return sigilType;
+    public void setCrestTemplate(CrestTemplate template) {
+        this.crestTemplate = (DCrestTemplate) template;
     }
 
     @Override
-    public void setSigilType(SigilType type) {
-        this.sigilType = (DSigilType) type;
+    public CrestTemplate crestTemplate() {
+        return crestTemplate;
     }
 
     @Override
-    public byte sigilColor() {
-        return sigilColor;
+    public void setCrestConfig(CrestConfig config) {
+        this.crestConfig = config;
     }
 
     @Override
-    public void setSigilColor(byte color) {
-        this.sigilColor = color;
+    public CrestConfig crestConfig() {
+        if ( crestConfig == null ) {
+            return new CrestConfig(CrestType.Color.WHITE, CrestConfig.ColorTarget.BACKGROUND);
+        }
+        return crestConfig;
     }
 
     @Override

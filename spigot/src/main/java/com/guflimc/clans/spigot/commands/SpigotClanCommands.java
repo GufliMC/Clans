@@ -16,8 +16,6 @@ import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.spigot.SpigotClans;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.menu.ClanMenu;
-import com.guflimc.clans.spigot.menu.DesignMenu;
-import com.guflimc.clans.spigot.menu.PermissionsMenu;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,7 +32,7 @@ public class SpigotClanCommands {
     }
 
     @CommandMethod("clans create <name> <tag>")
-    @CommandPermission("lavaclans.clans.create")
+    @CommandPermission("clans.create")
     public void create(Player sender, Profile sprofile, @Argument("name") String name, @Argument("tag") String tag) {
         if (sprofile.clanProfile().isPresent()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
@@ -68,12 +66,11 @@ public class SpigotClanCommands {
 
         ClanAPI.get().create(sprofile, name, tag.toUpperCase()).thenAccept(clan -> {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.create", clan.name(), clan.tag());
-            plugin.getServer().getScheduler().runTask(plugin, () -> DesignMenu.open(sender, clan));
         });
     }
 
     @CommandMethod("clans quit")
-    @CommandPermission("lavaclans.clans.quit")
+    @CommandPermission("clans.quit")
     public void quit(Audience sender, Profile sprofile) {
         if (sprofile.clanProfile().isEmpty()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
@@ -89,7 +86,7 @@ public class SpigotClanCommands {
     }
 
     @CommandMethod("clans disband")
-    @CommandPermission("lavaclans.clans.disband")
+    @CommandPermission("clans.disband")
     public void disband(Audience sender, Profile sprofile) {
         if (sprofile.clanProfile().isEmpty()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
@@ -105,68 +102,32 @@ public class SpigotClanCommands {
         SpigotI18nAPI.get(this).send(sender, "cmd.clans.disband");
     }
 
-    @CommandMethod("clans perms <player>")
-    @CommandPermission("lavaclans.clans.perms")
-    public void perms(Player sender, Profile sprofile, @Argument("player") String username) {
-        if (sprofile.clanProfile().isEmpty()) {
-            SpigotI18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
-            return;
-        }
-
-        if (!sprofile.clanProfile().get().isLeader()) {
-            SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.leader");
-            return;
-        }
-
-        Clan clan = sprofile.clanProfile().get().clan();
-        ClanAPI.get().findProfile(username).thenAccept(target -> {
-            if (target == null) {
-                SpigotI18nAPI.get(this).send(sender, "cmd.error.args.player", username);
-                return;
-            }
-
-            if (target.clanProfile().isEmpty() || !target.clanProfile().get().clan().equals(clan)) {
-                SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.in.clan");
-                return;
-            }
-
-            if ( target.clanProfile().get().isLeader() ) {
-                SpigotI18nAPI.get(this).send(sender, "cmd.clans.perms.error.self");
-                return;
-            }
-
-            PermissionsMenu.open(sender, target.clanProfile().get());
-        }).exceptionally(ex -> {
-            ex.printStackTrace();
-            return null;
-        });
-    }
-
     @CommandMethod("clans menu")
-    @CommandPermission("lavaclans.clans.menu")
+    @CommandPermission("clans.menu")
     public void menu(Player sender) {
         ClanMenu.open(sender);
     }
 
-    @CommandMethod("clans info <input>")
-    @CommandPermission("lavaclans.clans.menu")
-    public void menu(Player sender, @Argument("input") String input) {
-        Clan clan = SpigotClanAPI.get().findClan(input).orElse(null);
-        if ( clan != null ) {
-            ClanMenu.clan(sender, clan);
-            return;
-        }
-
-        SpigotClanAPI.get().findProfile(input).thenAccept(profile -> {
-            ClanMenu.profile(sender, profile);
-        }).exceptionally(v -> {
-            SpigotI18nAPI.get(this).send(sender, "cmd.clans.info.not-found");
-           return null;
-        });
-    }
+    // TODO
+//    @CommandMethod("clans info <input>")
+//    @CommandPermission("lavaclans.clans.menu")
+//    public void menu(Player sender, @Argument("input") String input) {
+//        Clan clan = SpigotClanAPI.get().findClan(input).orElse(null);
+//        if (clan != null) {
+//            ClanMenu.clan(sender, clan);
+//            return;
+//        }
+//
+//        SpigotClanAPI.get().findProfile(input).thenAccept(profile -> {
+//            ClanMenu.profile(sender, profile);
+//        }).exceptionally(v -> {
+//            SpigotI18nAPI.get(this).send(sender, "cmd.clans.info.not-found");
+//            return null;
+//        });
+//    }
 
     @CommandMethod("clans nexus")
-    @CommandPermission("lavaclans.clans.nexus")
+    @CommandPermission("clans.nexus")
     public void nexus(Player sender, Profile sprofile) {
         if (sprofile.clanProfile().isEmpty()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
@@ -191,7 +152,7 @@ public class SpigotClanCommands {
 //            return;
 //        }
 
-        if ( nexus.y() < 10 ) {
+        if (nexus.y() < 10) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.too.low");
             return;
         }
@@ -199,7 +160,7 @@ public class SpigotClanCommands {
         int maxLevelRadius = RegionAttributes.CUBE_RADIUS_MULTIPLIER * 3;
         Area area = CuboidArea.of(nexus.add(-maxLevelRadius, -maxLevelRadius, -maxLevelRadius),
                 nexus.add(maxLevelRadius, maxLevelRadius, maxLevelRadius));
-        if ( !SpigotRegionAPI.get().intersecting(area).isEmpty() ) {
+        if (!SpigotRegionAPI.get().intersecting(area).isEmpty()) {
             SpigotI18nAPI.get(this).send(sender, "cmd.clans.nexus.error.too.close");
             return;
         }

@@ -1,7 +1,7 @@
 package com.guflimc.clans.api.domain;
 
 public enum ClanPermission {
-    CHANGE_BANNER("clans.permission.change.banner"),
+    CHANGE_CREST("clans.permission.change.crest"),
     INVITE_PLAYER("clans.permission.invite.player"),
     KICK_MEMBER("clans.permission.kick.member"),
     ACCESS_STORAGE("clans.permission.access.storage"),

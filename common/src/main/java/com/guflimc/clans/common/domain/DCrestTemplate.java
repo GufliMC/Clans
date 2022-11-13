@@ -1,16 +1,18 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.clans.api.domain.SigilType;
-import jakarta.persistence.Table;
+import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.domain.CrestTemplate;
+import com.guflimc.clans.common.converters.CrestTypeConverter;
 import jakarta.persistence.*;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "sigil_types")
-public class DSigilType implements SigilType {
+@Table(name = "crest_templates")
+public class DCrestTemplate implements CrestTemplate {
 
     @Id
     @GeneratedValue
@@ -21,19 +23,25 @@ public class DSigilType implements SigilType {
     private String name;
 
     @Column(nullable = false)
-    private String data;
+    @Convert(converter = CrestTypeConverter.class)
+    private CrestType type;
 
     @ColumnDefault("false")
     private boolean restricted = false;
 
     //
 
-    public DSigilType() {
+    public DCrestTemplate() {
     }
 
-    public DSigilType(String name, String data, boolean restricted) {
+    public DCrestTemplate(String name, CrestType type, boolean restricted) {
         this.name = name;
-        this.data = data;
+        this.type = type;
+        this.restricted = restricted;
+    }
+
+    public DCrestTemplate(String name, CrestType type) {
+        this(name, type, false);
     }
 
     @Override
@@ -47,8 +55,8 @@ public class DSigilType implements SigilType {
     }
 
     @Override
-    public String data() {
-        return data;
+    public CrestType type() {
+        return type;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class DSigilType implements SigilType {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof DSigilType other && other.id.equals(id);
+        return obj instanceof DCrestTemplate other && other.id.equals(id);
     }
 
 }

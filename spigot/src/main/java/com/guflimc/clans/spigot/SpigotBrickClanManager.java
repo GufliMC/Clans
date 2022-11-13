@@ -2,10 +2,10 @@ package com.guflimc.clans.spigot;
 
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.brick.maths.spigot.api.SpigotMaths;
+import com.guflimc.clans.api.cosmetic.CrestType;
 import com.guflimc.clans.api.cosmetic.NexusSkin;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
-import com.guflimc.clans.api.domain.SigilType;
 import com.guflimc.clans.common.AbstractClanManager;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.domain.DClan;
@@ -23,16 +23,14 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.block.banner.PatternType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class SpigotBrickClanManager extends AbstractClanManager implements SpigotClanManager {
 
@@ -51,30 +49,100 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
             }
         }
 
-        if ( !sigilTypes().isEmpty() ) {
-            return;
-        }
-
-        addSigilType("Cross", List.of(PatternType.CROSS), false);
-
-        addSigilType("Straight Cross", List.of(PatternType.STRAIGHT_CROSS), false);
-
-        addSigilType("Circle", List.of(PatternType.CIRCLE_MIDDLE), false);
-
-        addSigilType("Creeper face", List.of(PatternType.CREEPER), true);
-
-        addSigilType("Globe", List.of(PatternType.GLOBE), false);
-
-        addSigilType("Weird Thing", List.of(PatternType.FLOWER, PatternType.RHOMBUS_MIDDLE), List.of(PatternType.CIRCLE_MIDDLE), false);
+        addCrestTemplate("Cross", CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.CROSS));
+        addCrestTemplate("Straight Cross", CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.STRAIGHT_CROSS));
+        addCrestTemplate("Circle", CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.CIRCLE_MIDDLE));
+        addCrestTemplate("Creeper", CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.CREEPER));
+        addCrestTemplate("Globe", CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.GLOBE));
+        addCrestTemplate("Flower", CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.FLOWER));
+        addCrestTemplate("Black Sun",
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.FLOWER, CrestType.Pattern.RHOMBUS_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CIRCLE_MIDDLE)
+        );
 
         //
 
-        addSigilType("Wither face", List.of(PatternType.PIGLIN, PatternType.FLOWER),
-                List.of(PatternType.CURLY_BORDER, PatternType.STRIPE_BOTTOM), true);
+        addCrestTemplate("Wither Face", true,
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.PIGLIN, CrestType.Pattern.FLOWER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CURLY_BORDER, CrestType.Pattern.STRIPE_BOTTOM)
+        );
 
-        addSigilType("Skull", List.of(PatternType.SKULL), true);
+        addCrestTemplate("Skull", true,
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.SKULL)
+        );
 
+        addCrestTemplate("Squid", true,
+                CrestType.Color.FOREGROUND,
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.TRIANGLE_BOTTOM),
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.STRIPE_SMALL),
+                CrestType.CrestLayer.of(CrestType.Color.BLACK, CrestType.Pattern.STRIPE_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.CIRCLE_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CURLY_BORDER)
+        );
+
+        addCrestTemplate("Wolf", true,
+                CrestType.Color.WHITE,
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.RHOMBUS_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CURLY_BORDER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CIRCLE_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CREEPER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.TRIANGLE_TOP),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.TRIANGLES_TOP)
+        );
+
+        addCrestTemplate("Pirate", true,
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.SKULL),
+                CrestType.CrestLayer.of(CrestType.Color.ACCENT, CrestType.Pattern.STRIPE_TOP),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CURLY_BORDER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.TRIANGLES_TOP)
+        );
+
+        addCrestTemplate("Angel", true,
+                CrestType.Color.ACCENT,
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.GRADIENT),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CURLY_BORDER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CROSS),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.CIRCLE_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.FLOWER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.TRIANGLE_TOP)
+        );
+
+        addCrestTemplate("Holy", true,
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.STRAIGHT_CROSS),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.BORDER),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.STRIPE_TOP),
+                CrestType.CrestLayer.of(CrestType.Color.BACKGROUND, CrestType.Pattern.GRADIENT_UP)
+        );
+
+        addCrestTemplate("Supercross", true,
+                CrestType.CrestLayer.of(CrestType.Color.BLACK, CrestType.Pattern.STRIPE_MIDDLE),
+                CrestType.CrestLayer.of(CrestType.Color.BLACK, CrestType.Pattern.STRIPE_CENTER),
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.STRAIGHT_CROSS),
+                CrestType.CrestLayer.of(CrestType.Color.BLACK, CrestType.Pattern.FLOWER),
+                CrestType.CrestLayer.of(CrestType.Color.FOREGROUND, CrestType.Pattern.CIRCLE_MIDDLE)
+        );
     }
+
+    private void addCrestTemplate(String name, boolean restricted, CrestType.Color background, CrestType.CrestLayer... layers) {
+        if (crestTemplates().stream().anyMatch(ct -> ct.name().equals(name))) {
+            return;
+        }
+        addCrestTemplate(name, CrestType.of(background, layers), restricted);
+    }
+
+    private void addCrestTemplate(String name, CrestType.Color background, CrestType.CrestLayer... layers) {
+        addCrestTemplate(name, false, background, layers);
+    }
+
+    private void addCrestTemplate(String name, boolean restricted, CrestType.CrestLayer... layers) {
+        addCrestTemplate(name, restricted, CrestType.Color.BACKGROUND, layers);
+    }
+
+    private void addCrestTemplate(String name, CrestType.CrestLayer... layers) {
+        addCrestTemplate(name, false, CrestType.Color.BACKGROUND, layers);
+    }
+
+    //
 
     @Override
     public CompletableFuture<Void> createNexus(@NotNull Clan clan, Location location) {
@@ -117,16 +185,4 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
         return update(clan);
     }
 
-    @Override
-    public CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull List<PatternType> pattern, boolean restricted) {
-        return super.addSigilType(name, pattern.stream().map(PatternType::name).collect(Collectors.joining(",")), restricted);
-    }
-
-    @Override
-    public CompletableFuture<SigilType> addSigilType(@NotNull String name, @NotNull List<PatternType> foreground,
-                                                     @NotNull List<PatternType> negative, boolean restricted) {
-        String data = foreground.stream().map(PatternType::name).collect(Collectors.joining(","));
-        data += ";" + negative.stream().map(PatternType::name).collect(Collectors.joining(","));
-        return super.addSigilType(name, data, restricted);
-    }
 }

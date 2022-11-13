@@ -7,7 +7,7 @@
     "debug": true
   },
   "clanChatPrefix": "<insert:/clans info {clan_name}><hover:show_text:'{clan}'><gray>[{clan_tag}]</gray></hover></insert>",
-  "clanNametagPrefix": "<gray>[{clan_tag}]</gray> ",
+  "clanNametagPrefix": "<gray>[{clans_clan_tag}]</gray> ",
   "clanRegionNone": "<green>Wilderness",
   "powerGiftAmount": 1,
   "powerGiftInterval": 1,

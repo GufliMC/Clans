@@ -1,5 +1,6 @@
 package com.guflimc.clans.api.domain;
 
+import com.guflimc.clans.api.cosmetic.CrestConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -37,16 +38,13 @@ public interface Clan {
 
     int memberCount();
 
-    SigilType sigilType();
+    CrestTemplate crestTemplate();
 
-    void setSigilType(SigilType type);
+    void setCrestTemplate(CrestTemplate template);
 
-    /**
-     * Represents the index of a dye color 0 - 15.
-     */
-    byte sigilColor();
+    CrestConfig crestConfig();
 
-    void setSigilColor(byte color);
+    void setCrestConfig(CrestConfig config);
 
     Instant createdAt();
 

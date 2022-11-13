@@ -1,14 +1,16 @@
 package com.guflimc.clans.api.domain;
 
+import com.guflimc.clans.api.cosmetic.CrestType;
+
 import java.util.UUID;
 
-public interface SigilType {
+public interface CrestTemplate {
 
     UUID id();
 
     String name();
 
-    String data();
+    CrestType type();
 
     boolean restricted();
 

@@ -4,14 +4,11 @@ import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanInvite;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
-import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.ConstraintMode;
+import io.ebean.annotation.*;
 import org.jetbrains.annotations.NotNull;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.*;
 
@@ -20,38 +17,33 @@ import java.util.*;
 public class DProfile implements Profile {
 
     @Id
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(targetEntity = DClanProfile.class, orphanRemoval = true,
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
-            "foreign key (clan_profile_id) references clan_profiles (id) on delete set null"))
+    @OneToOne(targetEntity = DClanProfile.class, orphanRemoval = true, cascade = CascadeType.ALL)
+    @DbForeignKey(onDelete = ConstraintMode.SET_NULL)
     DClanProfile clanProfile;
 
-    @OneToMany(targetEntity = DClanInvite.class, mappedBy = "target", fetch = FetchType.EAGER, orphanRemoval = true,
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    @OneToMany(targetEntity = DClanInvite.class, mappedBy = "target", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<DClanInvite> invites = new ArrayList<>();
 
-    @OneToMany(targetEntity = DClanInvite.class, mappedBy = "sender", fetch = FetchType.EAGER, orphanRemoval = true,
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    @OneToMany(targetEntity = DClanInvite.class, mappedBy = "sender", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     List<DClanInvite> sentInvites = new ArrayList<>();
 
-    @ColumnDefault("0")
+    @DbDefault("0")
     private int power = 0;
 
-    @ColumnDefault("0")
+    @DbDefault("0")
     private long playTime = 0;
 
     private Instant lastSeenAt;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @WhenModified
     private Instant updatedAt;
 
     //

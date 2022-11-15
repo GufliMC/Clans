@@ -5,12 +5,10 @@ import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanPermission;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
-import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.ConstraintMode;
+import io.ebean.annotation.*;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,34 +20,33 @@ public class DClanProfile implements ClanProfile {
 
     @Id
     @GeneratedValue
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DProfile profile;
 
     @ManyToOne(targetEntity = DClan.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DClan clan;
 
-    @ColumnDefault("false")
+    @DbDefault("false")
     public boolean leader;
 
     @OneToMany(targetEntity = DClanProfilePermission.class, orphanRemoval = true, mappedBy = "clanProfile", fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<DClanProfilePermission> permissions = new ArrayList<>();
 
-    @ColumnDefault("true")
+    @DbDefault("true")
     private boolean active;
 
-    @ColumnDefault("0")
+    @DbDefault("0")
     private float power;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @WhenModified
     private Instant updatedAt;
 
     //
@@ -112,7 +109,7 @@ public class DClanProfile implements ClanProfile {
 
     @Override
     public void addPermission(ClanPermission permission) {
-        if ( hasPermission(permission) ) {
+        if (hasPermission(permission)) {
             return;
         }
         permissions.add(new DClanProfilePermission(this, permission));

@@ -2,12 +2,10 @@ package com.guflimc.clans.common.domain;
 
 import com.guflimc.clans.api.domain.Attack;
 import com.guflimc.clans.api.domain.Clan;
-import jakarta.persistence.*;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.DbDefault;
+import io.ebean.annotation.WhenCreated;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -17,7 +15,6 @@ public class DAttack implements Attack {
 
     @Id
     @GeneratedValue
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @ManyToOne(targetEntity = DClan.class)
@@ -30,15 +27,15 @@ public class DAttack implements Attack {
             "foreign key (defender_id) references clans (id) on delete set null"))
     private Clan attacker;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt;
 
     @Column(nullable = false)
-    @ColumnDefault("1000")
+    @DbDefault("1000")
     private int nexusHealth = 100; // 1000 = 17 minutes, one block every second
 
     @Column(nullable = false)
-    @ColumnDefault("false")
+    @DbDefault("false")
     private boolean nexusDestroyed = false;
 
     private Instant endedAt;

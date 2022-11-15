@@ -9,11 +9,10 @@ import com.guflimc.brick.regions.api.RegionAPI;
 import com.guflimc.clans.api.cosmetic.NexusSkin;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
-import jakarta.persistence.Table;
-import jakarta.persistence.*;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.ConstraintMode;
+import io.ebean.annotation.*;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -23,11 +22,10 @@ public class DNexus implements Nexus {
 
     @Id
     @GeneratedValue
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @OneToOne(targetEntity = DClan.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DClan clan;
 
     @Convert(converter = LocationConverter.class)
@@ -39,14 +37,14 @@ public class DNexus implements Nexus {
     private Area area;
 
     @Column(nullable = false)
-    @ColumnDefault("'DEFAULT'")
+    @DbDefault("'DEFAULT'")
     @Enumerated(EnumType.STRING)
     private NexusSkin skin = NexusSkin.DEFAULT;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @WhenModified
     private Instant updatedAt;
 
     //
@@ -54,7 +52,9 @@ public class DNexus implements Nexus {
     public DNexus() {
     }
 
-    @PostLoad @PostUpdate @PostPersist
+    @PostLoad
+    @PostUpdate
+    @PostPersist
     public void onLoad() {
         RegionAPI.get().unregister(this);
         RegionAPI.get().register(this);

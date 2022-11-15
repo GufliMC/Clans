@@ -3,9 +3,10 @@ package com.guflimc.clans.common.converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.guflimc.clans.api.cosmetic.CrestType;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 import marcono1234.gson.recordadapter.RecordTypeAdapterFactory;
+
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 @Converter
 public class CrestTypeConverter implements AttributeConverter<CrestType, String> {

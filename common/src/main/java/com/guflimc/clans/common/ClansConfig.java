@@ -1,12 +1,12 @@
 package com.guflimc.clans.common;
 
-import com.guflimc.brick.orm.database.HibernateConfig;
+import com.guflimc.brick.orm.ebean.database.EbeanConfig;
 
 import java.util.List;
 
 public class ClansConfig {
 
-    public HibernateConfig database;
+    public EbeanConfig database;
 
     public int powerGiftAmount;
     public int powerGiftInterval;

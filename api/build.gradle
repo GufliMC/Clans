@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     api 'net.kyori:adventure-api:4.+'
-    api 'com.guflimc.brick.orm:common:+'
 
 //    compileOnly 'com.guflimc.brick.maths:api:+'
     compileOnly 'com.guflimc.brick.regions:api:+'

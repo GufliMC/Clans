@@ -257,6 +257,7 @@ public class ClanMenu {
                         .build())
                 .withAccept(() -> {
                     player.chat("/clans kick " + profile.name());
+                    back.run();
                 })
                 .withDeny(back)
                 .build().open(player);
@@ -483,6 +484,7 @@ public class ClanMenu {
                         .build())
                 .withAccept(() -> {
                     player.chat("/clans invite " + profile.name());
+                    back.run();
                 })
                 .withDeny(back)
                 .build().open(player);

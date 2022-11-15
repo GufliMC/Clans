@@ -1,7 +1,7 @@
 package com.guflimc.clans.spigot.attack;
 
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
-import com.guflimc.brick.orm.database.HibernateDatabaseContext;
+import com.guflimc.brick.orm.api.database.DatabaseContext;
 import com.guflimc.brick.placeholders.spigot.api.SpigotPlaceholderAPI;
 import com.guflimc.brick.sidebar.api.Sidebar;
 import com.guflimc.brick.sidebar.spigot.api.SpigotSidebarAPI;
@@ -11,7 +11,6 @@ import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.common.ClansConfig;
 import com.guflimc.clans.common.attack.AbstractAttackManager;
-import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.util.ClanTools;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -29,10 +28,10 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
 
     private final Sidebar sidebar;
 
-    public SpigotBrickAttackManager(HibernateDatabaseContext databaseContext, ClansConfig config) {
+    public SpigotBrickAttackManager(DatabaseContext databaseContext, ClansConfig config) {
         super(databaseContext);
 
-        if ( config.attackSidebar != null && config.attackSidebar.title != null && config.attackSidebar.lines != null ) {
+        if (config.attackSidebar != null && config.attackSidebar.title != null && config.attackSidebar.lines != null) {
             sidebar = new Sidebar(MiniMessage.miniMessage().deserialize(config.attackSidebar.title));
             for (String line : config.attackSidebar.lines) {
                 sidebar.appendLines(MiniMessage.miniMessage().deserialize(line));
@@ -89,14 +88,14 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
             ClanTools.onlinePlayers(attacker).forEach(p -> {
                 p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
                 SpigotI18nAPI.get(this).send(p, "attack.start.attackers", defender.name());
-                if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
+                if (sidebar != null) SpigotSidebarAPI.get().push(p, sidebar);
             });
 
             // defending players
             ClanTools.onlinePlayers(defender).forEach(p -> {
                 p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
                 SpigotI18nAPI.get(this).send(p, "attack.start.defenders", attacker.name());
-                if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
+                if (sidebar != null) SpigotSidebarAPI.get().push(p, sidebar);
             });
 
             return attack;
@@ -111,26 +110,26 @@ public class SpigotBrickAttackManager extends AbstractAttackManager {
         ClanTools.onlinePlayers(attack.attacker()).forEach(p -> {
             p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
             SpigotI18nAPI.get(this).send(p, "attack.stop.attackers", attack.defender().name());
-            if ( sidebar != null ) SpigotSidebarAPI.get().remove(p, sidebar);
+            if (sidebar != null) SpigotSidebarAPI.get().remove(p, sidebar);
         });
 
         // defending players
         ClanTools.onlinePlayers(attack.defender()).forEach(p -> {
             p.playSound(p.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
             SpigotI18nAPI.get(this).send(p, "attack.stop.defenders", attack.attacker().name());
-            if ( sidebar != null ) SpigotSidebarAPI.get().remove(p, sidebar);
+            if (sidebar != null) SpigotSidebarAPI.get().remove(p, sidebar);
         });
     }
 
     private void resume() {
-        for ( Attack attack : attacks() ) {
+        for (Attack attack : attacks()) {
             ClanTools.onlinePlayers(attack.attacker()).forEach(p -> {
-                if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
+                if (sidebar != null) SpigotSidebarAPI.get().push(p, sidebar);
             });
 
             // defending players
             ClanTools.onlinePlayers(attack.defender()).forEach(p -> {
-                if ( sidebar != null ) SpigotSidebarAPI.get().push(p, sidebar);
+                if (sidebar != null) SpigotSidebarAPI.get().push(p, sidebar);
             });
         }
     }

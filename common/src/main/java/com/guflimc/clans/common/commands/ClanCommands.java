@@ -27,14 +27,14 @@ public class ClanCommands {
     }
 
     @CommandMethod("clans list")
-    @CommandPermission("lavaclans.clans.list")
+    @CommandPermission("clans.list")
     public void list(Audience sender) {
         I18nAPI.get(this).send(sender, "cmd.clans.list",
                 ClanAPI.get().clans().stream().map(Clan::name).toList());
     }
 
     @CommandMethod("clans invite <player>")
-    @CommandPermission("lavaclans.clans.invite")
+    @CommandPermission("clans.invite")
     public void invite(Audience sender, Profile sprofile, @Argument("player") String username) {
         if (sprofile.clanProfile().isEmpty()) {
             I18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
@@ -74,16 +74,18 @@ public class ClanCommands {
             ClanAPI.get().update(target);
 
             // send messages
-            I18nAPI.get(this).send(sender, "cmd.clans.invite.sender", sprofile.name());
+            I18nAPI.get(this).send(sender, "cmd.clans.invite.sender", target.name());
+
+            Audience targetAudience = adventure.player(target.id());
 
             // to target
-            Component accept = I18nAPI.get(this).hoverable(sender, "chat.button.accept", "chat.button.accept.hover")
+            Component accept = I18nAPI.get(this).hoverable(targetAudience, "chat.button.accept", "chat.button.accept.hover")
                     .clickEvent(ClickEvent.runCommand("/clans join " + clan.name()));
-            Component decline = I18nAPI.get(this).hoverable(sender, "chat.button.decline", "chat.button.decline.hover")
+            Component decline = I18nAPI.get(this).hoverable(targetAudience, "chat.button.decline", "chat.button.decline.hover")
                     .clickEvent(ClickEvent.runCommand("/clans reject " + clan.name()));
 
-            Component message = I18nAPI.get(this).translate(sender, "cmd.clans.invite.target", clan.name());
-            I18nAPI.get(this).menu(sender, message, Component.text(""), I18nAPI.get(this).center(accept, decline));
+            Component message = I18nAPI.get(this).translate(targetAudience, "cmd.clans.invite.target", clan.name());
+            I18nAPI.get(this).menu(targetAudience, message, Component.text(""), I18nAPI.get(this).center(accept, decline));
 
         }).exceptionally(ex -> {
             ex.printStackTrace();
@@ -92,7 +94,7 @@ public class ClanCommands {
     }
 
     @CommandMethod("clans join <clan>")
-    @CommandPermission("lavaclans.clans.join")
+    @CommandPermission("clans.join")
     public void join(Audience sender, Profile sprofile, @Argument("clan") Clan clan) {
         if (sprofile.clanProfile().isPresent()) {
             I18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
@@ -117,7 +119,7 @@ public class ClanCommands {
     }
 
     @CommandMethod("clans reject <clan>")
-    @CommandPermission("lavaclans.clans.reject")
+    @CommandPermission("clans.reject")
     public void reject(Audience sender, Profile sprofile, @Argument("clan") Clan clan) {
         Optional<ClanInvite> recent = sprofile.mostRecentInvite(clan);
         if (recent.isEmpty() || !recent.get().isValid()) {

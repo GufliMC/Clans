@@ -3,17 +3,14 @@ package com.guflimc.clans.common.domain;
 import com.guflimc.brick.maths.api.geo.pos.Location;
 import com.guflimc.clans.api.cosmetic.CrestConfig;
 import com.guflimc.clans.api.cosmetic.CrestType;
-import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.api.domain.Clan;
+import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.common.converters.CrestConfigConverter;
-import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.ConstraintMode;
+import io.ebean.annotation.*;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,7 +21,6 @@ public class DClan implements Clan {
 
     @Id
     @GeneratedValue
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @Column(nullable = false, unique = true)
@@ -34,35 +30,33 @@ public class DClan implements Clan {
     private String tag;
 
     @OneToOne(targetEntity = DNexus.class, mappedBy = "clan", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
-            "foreign key (nexus_id) references nexuses (id) on delete set null"))
+    @DbForeignKey(onDelete = ConstraintMode.SET_NULL)
     private DNexus nexus;
 
-    @ColumnDefault("16581375")
+    @DbDefault("16581375")
     private int rgbColor = 16581375;
 
-    @ColumnDefault("1")
+    @DbDefault("1")
     private int level = 1;
 
-    @ColumnDefault("10")
+    @DbDefault("10")
     private int maxMembers = 10;
 
-    @Formula("(select count(cp.id) from clan_profiles cp where cp.clan_id = id)")
+    @Formula(select = "aggr.member_count", join = "join (select count(cp.id) as member_count from clan_profiles cp where cp.clan_id = id) as aggr")
     public int memberCount;
 
-    @ManyToOne(cascade = { CascadeType.ALL })
-    @JoinColumn(foreignKey = @ForeignKey(foreignKeyDefinition =
-            "foreign key (crest_template_id) references crest_templates (id) on delete set null"))
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @DbForeignKey(onDelete = ConstraintMode.SET_NULL)
     private DCrestTemplate crestTemplate;
 
     @Convert(converter = CrestConfigConverter.class)
     @Column(length = 8192)
     private CrestConfig crestConfig;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @WhenModified
     private Instant updatedAt;
 
     //
@@ -111,7 +105,7 @@ public class DClan implements Clan {
     }
 
     private void updateNexusArea() {
-        if ( nexus == null ) {
+        if (nexus == null) {
             return;
         }
 
@@ -171,7 +165,7 @@ public class DClan implements Clan {
 
     @Override
     public CrestConfig crestConfig() {
-        if ( crestConfig == null ) {
+        if (crestConfig == null) {
             return new CrestConfig(CrestType.Color.WHITE, CrestConfig.ColorTarget.BACKGROUND);
         }
         return crestConfig;

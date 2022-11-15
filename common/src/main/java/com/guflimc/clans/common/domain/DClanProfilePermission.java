@@ -3,11 +3,12 @@ package com.guflimc.clans.common.domain;
 import com.guflimc.clans.api.domain.ClanPermission;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.ClanProfilePermission;
-import jakarta.persistence.Table;
-import jakarta.persistence.*;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.ConstraintMode;
+import io.ebean.annotation.DbForeignKey;
+import io.ebean.annotation.WhenCreated;
+import io.ebean.annotation.WhenModified;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -16,20 +17,19 @@ import java.util.UUID;
 public class DClanProfilePermission implements ClanProfilePermission {
 
     @Id
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @ManyToOne(targetEntity = DClanProfile.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DClanProfile clanProfile;
 
     @Enumerated(EnumType.STRING)
     private ClanPermission permission;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @WhenModified
     private Instant updatedAt;
 
     //

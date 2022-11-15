@@ -3,11 +3,12 @@ package com.guflimc.clans.common.domain;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanInvite;
 import com.guflimc.clans.api.domain.Profile;
-import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.ConstraintMode;
+import io.ebean.annotation.DbDefault;
+import io.ebean.annotation.DbForeignKey;
+import io.ebean.annotation.WhenCreated;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -18,28 +19,27 @@ public class DClanInvite implements ClanInvite {
 
     @Id
     @GeneratedValue
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DProfile sender;
 
     @ManyToOne(targetEntity = DProfile.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DProfile target;
 
     @ManyToOne(targetEntity = DClan.class, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DClan clan;
 
-    @ColumnDefault("false")
+    @DbDefault("false")
     private boolean rejected;
 
-    @ColumnDefault("false")
+    @DbDefault("false")
     private boolean accepted;
 
-    @CreationTimestamp
+    @WhenCreated
     private Instant createdAt = Instant.now();
 
     //

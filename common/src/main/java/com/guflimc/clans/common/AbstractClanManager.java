@@ -127,8 +127,7 @@ public abstract class AbstractClanManager implements ClanManager {
 
     @Override
     public CompletableFuture<Void> update(@NotNull Clan clan) {
-        return databaseContext.mergeAsync(clan).thenRun(() -> {
-        });
+        return databaseContext.persistAsync(clan);
     }
 
     // profiles
@@ -148,9 +147,8 @@ public abstract class AbstractClanManager implements ClanManager {
 
     @Override
     public CompletableFuture<List<Profile>> profiles(@NotNull Clan clan) {
-        return databaseContext.findAllWhereAsync(DProfile.class, (cb, root) -> {
-                    return cb.equal(root.get("clanProfile").get("clan"), clan);
-                })
+        // TODO fix
+        return databaseContext.findAllWhereAsync(DProfile.class, "clanProfile.clan", clan)
                 .thenCompose(CompletableFuture::completedFuture)
                 .thenApply(list -> list.stream().map(p -> (Profile) p).toList());
     }
@@ -181,7 +179,7 @@ public abstract class AbstractClanManager implements ClanManager {
         return findProfile(id).thenApply(p -> {
             // update name change
             ((DProfile) p).setName(name);
-            databaseContext.mergeAsync(p);
+            databaseContext.persistAsync(p);
             return p;
         }).exceptionally(ex -> {
             // not found, create new profile
@@ -205,14 +203,12 @@ public abstract class AbstractClanManager implements ClanManager {
 
     @Override
     public CompletableFuture<Void> update(@NotNull Profile profile) {
-        return databaseContext.mergeAsync(profile).thenRun(() -> {
-        });
+        return databaseContext.persistAsync(profile);
     }
 
     @Override
     public CompletableFuture<Void> update(@NotNull ClanProfile clanProfile) {
-        return databaseContext.mergeAsync(clanProfile).thenRun(() -> {
-        });
+        return databaseContext.persistAsync(clanProfile);
     }
 
     //

@@ -1,6 +1,6 @@
 package com.guflimc.clans.common.attack;
 
-import com.guflimc.brick.orm.database.HibernateDatabaseContext;
+import com.guflimc.brick.orm.api.database.DatabaseContext;
 import com.guflimc.clans.api.AttackManager;
 import com.guflimc.clans.api.domain.Attack;
 import com.guflimc.clans.api.domain.Clan;
@@ -13,9 +13,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class AbstractAttackManager implements AttackManager {
 
     private final Set<Attack> attacks = new CopyOnWriteArraySet<>();
-    private final HibernateDatabaseContext databaseContext;
+    private final DatabaseContext databaseContext;
 
-    public AbstractAttackManager(HibernateDatabaseContext databaseContext) {
+    public AbstractAttackManager(DatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
         databaseContext.findAllAsync(DAttack.class).thenAccept(this.attacks::addAll).join();
     }
@@ -31,18 +31,19 @@ public class AbstractAttackManager implements AttackManager {
     }
 
     public final CompletableFuture<Collection<Attack>> attacks(Clan clan) {
-        return databaseContext.findAllAsync(DAttack.class, (cb, root, cq) ->
-                        cq.where(cb.or(cb.equal(root.get("attacker"), clan), cb.equal(root.get("defender"), clan))))
-                .thenApply(list -> {
-                    List<Attack> result = new ArrayList<>(list);
-                    findAttack(clan).ifPresent(result::add);
-                    return result;
-                });
+        // TODO
+//        return databaseContext.findAllAsync(DAttack.class, (cb, root, cq) ->
+//                        cq.where(cb.or(cb.equal(root.get("attacker"), clan), cb.equal(root.get("defender"), clan))))
+//                .thenApply(list -> {
+//                    List<Attack> result = new ArrayList<>(list);
+//                    findAttack(clan).ifPresent(result::add);
+//                    return result;
+//                });
+        return CompletableFuture.completedFuture(Collections.emptyList());
     }
 
     public final CompletableFuture<Void> update(Attack attack) {
-        return databaseContext.mergeAsync(attack).thenRun(() -> {
-        });
+        return databaseContext.persistAsync(attack);
     }
 
     // override me

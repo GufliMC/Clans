@@ -3,11 +3,9 @@ package com.guflimc.clans.common.domain;
 import com.guflimc.clans.api.cosmetic.CrestType;
 import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.common.converters.CrestTypeConverter;
-import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import io.ebean.annotation.DbDefault;
 
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +14,6 @@ public class DCrestTemplate implements CrestTemplate {
 
     @Id
     @GeneratedValue
-    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @Column(nullable = false, unique = true)
@@ -26,7 +23,7 @@ public class DCrestTemplate implements CrestTemplate {
     @Convert(converter = CrestTypeConverter.class)
     private CrestType type;
 
-    @ColumnDefault("false")
+    @DbDefault("false")
     private boolean restricted = false;
 
     //

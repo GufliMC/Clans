@@ -36,8 +36,13 @@
   "cmd.clans.reject.sender": "<green>{0} <gray>has denied your clan invite.",
 
   "cmd.clans.quit": "<gray>You have quit your clan.",
+  "cmd.clans.quit.error.leader": "<red>You cant quit your clan, use <dark_red>/clans disband <red>instead.",
 
   "cmd.clans.disband": "<gray>Your clan has been disbanded.",
+
+  "cmd.clans.kick.error.not.in.clan": "<red>This player is not in your clan.",
+  "cmd.clans.kick.sender": "<gray>You have kicked <green>{0} <gray>from your clan.",
+  "cmd.clans.kick.target": "<gray>You have been kicked from your clan.",
 
   "cmd.clans.perms.error.not.in.clan": "<red>This player is not in your clan.",
   "cmd.clans.perms.error.not.leader": "<red>You are not the leader of this clan.",
@@ -48,9 +53,6 @@
   "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area.",
   "cmd.clans.nexus.error.too.close": "<red>The nexus cannot be placed this close to another nexus or region.",
   "cmd.clans.nexus.error.too.low": "<red>The nexus cannot be placed this deep underground.",
-
-  "cmd.clans.sigils.add.error.banner": "<red>You must be holding a banner with patterns.",
-  "cmd.clans.sigils.add": "<gray>You have created a new sigil type.",
 
   "protection.nexus.build.too-close": "<red>You cannot build this close to a nexus.",
 

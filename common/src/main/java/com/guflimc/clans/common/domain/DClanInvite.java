@@ -75,13 +75,17 @@ public class DClanInvite implements ClanInvite {
 
     @Override
     public void reject() {
+        if ( isAnswered() ) {
+            throw new IllegalStateException("This invite is already answered.");
+        }
+
         this.rejected = true;
     }
 
     @Override
     public void accept() {
-        if (!isValid()) {
-            throw new IllegalStateException("This invite is not valid.");
+        if ( isAnswered() ) {
+            throw new IllegalStateException("This invite is already answered.");
         }
 
         this.accepted = true;
@@ -89,13 +93,18 @@ public class DClanInvite implements ClanInvite {
     }
 
     @Override
-    public boolean isValid() {
-        return !rejected && !isExpired();
+    public boolean isExpired() {
+        return Instant.now().isAfter(createdAt.plus(24, ChronoUnit.HOURS));
     }
 
     @Override
-    public boolean isExpired() {
-        return Instant.now().isAfter(createdAt.plus(24, ChronoUnit.HOURS));
+    public boolean isRejected() {
+        return rejected;
+    }
+
+    @Override
+    public boolean isAccepted() {
+        return accepted;
     }
 
     Instant createdAt() {

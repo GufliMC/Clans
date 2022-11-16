@@ -18,8 +18,8 @@ dependencies {
     implementation 'com.guflimc.brick.maths:database-converters:+'
     implementation 'net.kyori:adventure-platform-api:4.+'
 
-    api 'com.guflimc.brick.regions:api:+'
-    api 'com.guflimc.brick.maths:api:+'
+    compileOnly 'com.guflimc.brick.regions:api:+'
+    compileOnly 'com.guflimc.brick.maths:api:+'
     compileOnly 'com.guflimc.brick.i18n:api:+'
     compileOnly 'com.guflimc.brick.scheduler:api:+'
 

@@ -3,7 +3,6 @@ package com.guflimc.clans.common.commands;
 import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
-import cloud.commandframework.annotations.processing.CommandContainer;
 import com.guflimc.brick.i18n.api.I18nAPI;
 import com.guflimc.clans.api.ClanAPI;
 import com.guflimc.clans.api.domain.Clan;
@@ -14,8 +13,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.AudienceProvider;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-
-import java.util.Optional;
 
 //@CommandContainer
 public class ClanCommands {
@@ -64,8 +61,8 @@ public class ClanCommands {
                 return;
             }
 
-            Optional<ClanInvite> recent = target.mostRecentInvite(clan);
-            if (recent.isPresent() && !recent.get().isExpired()) {
+            ClanInvite recent = target.mostRecentInvite(clan).orElse(null);
+            if (recent != null && !recent.isExpired() && !recent.isAnswered()) {
                 I18nAPI.get(this).send(sender, "cmd.clans.invite.error.already.invited");
                 return;
             }
@@ -85,11 +82,52 @@ public class ClanCommands {
                     .clickEvent(ClickEvent.runCommand("/clans reject " + clan.name()));
 
             Component message = I18nAPI.get(this).translate(targetAudience, "cmd.clans.invite.target", clan.name());
-            I18nAPI.get(this).menu(targetAudience, message, Component.text(""), I18nAPI.get(this).center(accept, decline));
+
+            int length = I18nAPI.get(this).length(message);
+            Component buttons = I18nAPI.get(this).paddingAround(length, accept, decline);
+
+            I18nAPI.get(this).menu(targetAudience, message, Component.text(""), buttons);
 
         }).exceptionally(ex -> {
             ex.printStackTrace();
             return null;
+        });
+    }
+
+    @CommandMethod("clans kick <player>")
+    @CommandPermission("clans.kick")
+    public void kick(Audience sender, Profile sprofile, @Argument("player") String username) {
+        if (sprofile.clanProfile().isEmpty()) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
+            return;
+        }
+
+        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.KICK_MEMBER)) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
+            return;
+        }
+
+        Clan clan = sprofile.clanProfile().orElseThrow().clan();
+
+        ClanAPI.get().findProfile(username).thenAccept(target -> {
+            if (target == null) {
+                I18nAPI.get(this).send(sender, "cmd.error.args.player", username);
+                return;
+            }
+
+            if (target.clanProfile().isEmpty() || !target.clanProfile().get().clan().equals(clan) ) {
+                I18nAPI.get(this).send(sender, "cmd.clans.kick.error.not.in.clan");
+                return;
+            }
+
+            target.clanProfile().get().quit();
+            ClanAPI.get().update(target);
+
+            // send messages
+            I18nAPI.get(this).send(sender, "cmd.clans.kick.sender", target.name());
+
+            Audience targetAudience = adventure.player(target.id());
+            I18nAPI.get(this).send(targetAudience, "cmd.clans.kick.target");
         });
     }
 
@@ -101,8 +139,8 @@ public class ClanCommands {
             return;
         }
 
-        Optional<ClanInvite> recent = sprofile.mostRecentInvite(clan);
-        if (recent.isEmpty() || !recent.get().isValid()) {
+        ClanInvite recent = sprofile.mostRecentInvite(clan).orElse(null);
+        if (recent == null || recent.isExpired() || recent.isAnswered()) {
             I18nAPI.get(this).send(sender, "cmd.clans.join.error.missing");
             return;
         }
@@ -112,7 +150,7 @@ public class ClanCommands {
             return;
         }
 
-        recent.get().accept();
+        recent.accept();
         ClanAPI.get().update(sprofile);
 
         I18nAPI.get(this).send(sender, "cmd.clans.join", clan.name());
@@ -121,20 +159,94 @@ public class ClanCommands {
     @CommandMethod("clans reject <clan>")
     @CommandPermission("clans.reject")
     public void reject(Audience sender, Profile sprofile, @Argument("clan") Clan clan) {
-        Optional<ClanInvite> recent = sprofile.mostRecentInvite(clan);
-        if (recent.isEmpty() || !recent.get().isValid()) {
+        ClanInvite recent = sprofile.mostRecentInvite(clan).orElse(null);
+        if (recent == null || recent.isExpired() || recent.isAnswered()) {
             I18nAPI.get(this).send(sender, "cmd.clans.join.error.missing");
             return;
         }
 
-        recent.get().reject();
+        recent.reject();
         ClanAPI.get().update(sprofile);
 
         I18nAPI.get(this).send(sender, "cmd.clans.reject", clan.name());
 
-        Audience invsender = adventure.player(recent.get().sender().id());
+        Audience invsender = adventure.player(recent.sender().id());
         I18nAPI.get(this).send(invsender, "cmd.clans.reject.sender", sprofile.name());
     }
 
+    @CommandMethod("clans quit")
+    @CommandPermission("clans.quit")
+    public void quit(Audience sender, Profile sprofile) {
+        if (sprofile.clanProfile().isEmpty()) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
+            return;
+        }
+
+        if ( sprofile.clanProfile().get().isLeader() ) {
+            I18nAPI.get(this).send(sender, "cmd.clans.quit.error.leader");
+            return;
+        }
+
+        sprofile.clanProfile().get().quit();
+        ClanAPI.get().update(sprofile);
+
+        I18nAPI.get(this).send(sender, "cmd.clans.quit");
+    }
+
+    @CommandMethod("clans disband")
+    @CommandPermission("clans.disband")
+    public void disband(Audience sender, Profile sprofile) {
+        if (sprofile.clanProfile().isEmpty()) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
+            return;
+        }
+
+        if (!sprofile.clanProfile().get().isLeader()) {
+            I18nAPI.get(this).send(sender, "cmd.clans.perms.error.not.leader");
+            return;
+        }
+
+        ClanAPI.get().remove(sprofile.clanProfile().get().clan());
+        I18nAPI.get(this).send(sender, "cmd.clans.disband");
+    }
+
+    @CommandMethod("clans create <name> <tag>")
+    @CommandPermission("clans.create")
+    public void create(Audience sender, Profile sprofile, @Argument("name") String name, @Argument("tag") String tag) {
+        if (sprofile.clanProfile().isPresent()) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
+            return;
+        }
+
+        if (sprofile.clanProfile().isPresent()) {
+            I18nAPI.get(this).send(sender, "cmd.clans.join.error.already");
+            return;
+        }
+
+        if (!name.matches("[a-zA-Z0-9]{2,24}")) {
+            I18nAPI.get(this).send(sender, "cmd.clans.create.error.name.format", name);
+            return;
+        }
+
+        if (!tag.matches("[a-zA-Z0-9]{2,3}")) {
+            I18nAPI.get(this).send(sender, "cmd.clans.create.error.tag.format", tag);
+            return;
+        }
+
+        if (ClanAPI.get().findClan(name).isPresent()) {
+            I18nAPI.get(this).send(sender, "cmd.clans.create.error.name.exists");
+            return;
+        }
+
+        tag = tag.toUpperCase();
+        if (ClanAPI.get().findClanByTag(tag).isPresent()) {
+            I18nAPI.get(this).send(sender, "cmd.clans.create.error.tag.exists");
+            return;
+        }
+
+        ClanAPI.get().create(sprofile, name, tag).thenAccept(clan -> {
+            I18nAPI.get(this).send(sender, "cmd.clans.create", clan.name(), clan.tag());
+        });
+    }
 
 }

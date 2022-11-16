@@ -22,7 +22,8 @@ public class DProfile implements Profile {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(targetEntity = DClanProfile.class, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = DClanProfile.class, cascade = CascadeType.ALL)
+    @Where(clause = "active = 1")
     @DbForeignKey(onDelete = ConstraintMode.SET_NULL)
     DClanProfile clanProfile;
 

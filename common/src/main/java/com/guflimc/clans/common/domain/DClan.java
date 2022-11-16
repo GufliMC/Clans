@@ -176,13 +176,4 @@ public class DClan implements Clan {
         return createdAt;
     }
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof DClan other && other.id.equals(id);
-    }
 }

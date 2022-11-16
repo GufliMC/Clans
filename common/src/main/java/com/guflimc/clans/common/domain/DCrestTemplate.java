@@ -61,14 +61,4 @@ public class DCrestTemplate implements CrestTemplate {
         return restricted;
     }
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof DCrestTemplate other && other.id.equals(id);
-    }
-
 }

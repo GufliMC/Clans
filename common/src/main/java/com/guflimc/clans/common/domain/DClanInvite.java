@@ -111,14 +111,4 @@ public class DClanInvite implements ClanInvite {
         return createdAt;
     }
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof DClanInvite other && other.id.equals(id);
-    }
-
 }

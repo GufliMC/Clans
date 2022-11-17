@@ -6,10 +6,10 @@ plugins {
 group 'com.guflimc.clans'
 version = scmVersion.version
 
-def javadocProjects = [project(':api')]
+def javadocProjects = [project(':api'), project(':spigot-api')]
 ext.set("javadocProjects", javadocProjects)
 
-def publishProjects = [project(':api')]
+def publishProjects = [project(':api'), project(':spigot-api')]
 ext.set("publishProjects", publishProjects)
 
 def shadowProjects = [project(':spigot')]

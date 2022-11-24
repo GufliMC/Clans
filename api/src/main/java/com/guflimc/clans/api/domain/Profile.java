@@ -1,5 +1,6 @@
 package com.guflimc.clans.api.domain;
 
+import com.guflimc.brick.orm.api.attributes.AttributeKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -14,20 +15,22 @@ public interface Profile {
 
     Optional<ClanProfile> clanProfile();
 
-    Instant createdAt();
-
-    Instant lastSeenAt();
-
     ClanInvite addInvite(@NotNull Profile sender, @NotNull Clan clan);
 
     Optional<ClanInvite> mostRecentInvite(@NotNull Clan clan);
 
-    int power();
+    // attributes
 
-    void setPower(int power);
+    <T> void setAttribute(AttributeKey<T> key, T value);
 
-    long playTime();
+    <T> void removeAttribute(AttributeKey<T> key);
 
-    void setPlayTime(long playTime);
+    <T> Optional<T> attribute(AttributeKey<T> key);
+
+    // timestamps
+
+    Instant lastSeenAt();
+
+    Instant createdAt();
 
 }

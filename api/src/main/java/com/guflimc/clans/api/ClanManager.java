@@ -1,10 +1,9 @@
 package com.guflimc.clans.api;
 
-import com.guflimc.brick.maths.api.geo.pos.Location;
-import com.guflimc.clans.api.cosmetic.CrestType;
-import com.guflimc.clans.api.domain.CrestTemplate;
+import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
+import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.api.domain.Profile;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +31,6 @@ public interface ClanManager {
 
     CompletableFuture<Clan> create(@NotNull Profile leader, @NotNull String name, @NotNull String tag);
 
-    CompletableFuture<Void> createNexus(@NotNull Clan clan, Location location);
-
     CompletableFuture<Void> remove(@NotNull Clan clan);
 
     CompletableFuture<Void> update(@NotNull Clan clan);
@@ -44,11 +41,11 @@ public interface ClanManager {
 
     CompletableFuture<Profile> findProfile(@NotNull String name);
 
+    CompletableFuture<List<Profile>> profiles(@NotNull Clan clan);
+
     Optional<Profile> findCachedProfile(@NotNull UUID id);
 
     Collection<Profile> cachedProfiles();
-
-    CompletableFuture<List<Profile>> profiles(@NotNull Clan clan);
 
     // edit profiles
 

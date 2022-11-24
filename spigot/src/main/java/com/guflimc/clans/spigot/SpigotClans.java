@@ -10,7 +10,6 @@ import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.brick.scheduler.spigot.api.SpigotScheduler;
-import com.guflimc.clans.api.AttackAPI;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.common.ClansConfig;
@@ -18,13 +17,12 @@ import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.commands.ClanCommands;
 import com.guflimc.clans.common.commands.arguments.ClanArgument;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
-import com.guflimc.clans.spigot.attack.SpigotBrickAttackManager;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
 import com.guflimc.clans.spigot.commands.SpigotCrestCommands;
-import com.guflimc.clans.spigot.listener.*;
+import com.guflimc.clans.spigot.listeners.JoinQuitListener;
+import com.guflimc.clans.spigot.listeners.PlayerChatListener;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
-import com.guflimc.clans.spigot.power.SpigotPowerManager;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
@@ -49,7 +47,6 @@ public class SpigotClans extends JavaPlugin {
     public final Gson gson = new Gson();
 
     public SpigotBrickClanManager clanManager;
-    public SpigotBrickAttackManager attackManager;
 
     public ClansConfig config;
     public BukkitAudiences adventure;
@@ -84,10 +81,6 @@ public class SpigotClans extends JavaPlugin {
                 .map(p -> clanManager.load(p.getUniqueId(), p.getName()))
                 .toArray(CompletableFuture[]::new)).join();
 
-        // ATTACK MANAGER
-        attackManager = new SpigotBrickAttackManager(databaseContext, config);
-        AttackAPI.register(attackManager);
-
         // TRANSLATIONS
         SpigotNamespace namespace = new SpigotNamespace(this, Locale.ENGLISH);
         namespace.loadValues(this, "languages");
@@ -95,7 +88,6 @@ public class SpigotClans extends JavaPlugin {
 
         // SCHEDULER
         scheduler = new SpigotScheduler(this, getName());
-        SpigotPowerManager powerManager = new SpigotPowerManager(config, scheduler);
 
         // COMMANDS
         setupCommands();
@@ -115,10 +107,7 @@ public class SpigotClans extends JavaPlugin {
 
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new JoinQuitListener(this), this);
-        pm.registerEvents(new RegionBuildListener(this), this);
         pm.registerEvents(new PlayerChatListener(), this);
-        pm.registerEvents(new JoinQuitPlayTimeListener(this, scheduler), this);
-        pm.registerEvents(new PowerActionListener(this), this);
 
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }

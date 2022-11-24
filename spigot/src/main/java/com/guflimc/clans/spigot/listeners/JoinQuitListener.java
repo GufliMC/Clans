@@ -1,4 +1,4 @@
-package com.guflimc.clans.spigot.listener;
+package com.guflimc.clans.spigot.listeners;
 
 import com.guflimc.clans.spigot.SpigotClans;
 import org.bukkit.event.EventHandler;

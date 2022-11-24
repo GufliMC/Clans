@@ -50,26 +50,6 @@
 
   "cmd.clans.info.not-found": "<red>No clan or player with the given name exists.",
 
-  "cmd.clans.nexus.error.invalid": "<red>The nexus must be placed in an empty area.",
-  "cmd.clans.nexus.error.too.close": "<red>The nexus cannot be placed this close to another nexus or region.",
-  "cmd.clans.nexus.error.too.low": "<red>The nexus cannot be placed this deep underground.",
-
-  "protection.nexus.build.too-close": "<red>You cannot build this close to a nexus.",
-
-  "attack.start.defenders": "<bold><dark_green>{0}</dark_green><gray> is attacking your nexus!",
-  "attack.start.attackers": "<bold><gray>Your clan is attacking <dark_green>{0}</dark_green>!",
-
-  "attack.stop.defenders": "<bold><gray>The attack from <dark_green>{0}</dark_green> has ended!",
-  "attack.stop.attackers": "<bold><gray>The attack on <dark_green>{0}</dark_green> has ended!",
-
-  "attack.progress.defenders": "<bold><gray>Your nexus health is at <dark_green>{0}</dark_green> health!",
-  "attack.progress.attackers": "<bold><gray>The defenders nexus is at <dark_green>{0}</dark_green> health!",
-
-  "attack.error.wrong-nexus": "<red>You can only attack the nexus of a clan you are at war with.",
-
-  "power.action.pay": "<red>-{0} <gray>power.",
-  "power.action.not-enough": "<red>You don't have enough power.",
-
   "menu.items.back.name": "<red>Back",
   "menu.items.back.lore": "<gray>Go to the previous menu.",
 

@@ -1,6 +1,7 @@
 package com.guflimc.clans.api.domain;
 
-import com.guflimc.clans.api.cosmetic.CrestConfig;
+import com.guflimc.brick.orm.api.attributes.AttributeKey;
+import com.guflimc.clans.api.crest.CrestConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -17,20 +18,9 @@ public interface Clan {
 
     String tag();
 
-    Optional<Nexus> nexus();
-
-    int nexusRadius();
-
-    /**
-     * Represents a bitwise rgb value
-     */
     int color();
 
     void setColor(int color);
-
-    int level();
-
-    void setLevel(int level);
 
     int maxMembers();
 
@@ -45,6 +35,16 @@ public interface Clan {
     CrestConfig crestConfig();
 
     void setCrestConfig(CrestConfig config);
+
+    // attributes
+
+    <T> void setAttribute(AttributeKey<T> key, T value);
+
+    <T> void removeAttribute(AttributeKey<T> key);
+
+    <T> Optional<T> attribute(AttributeKey<T> key);
+
+    // timestamps
 
     Instant createdAt();
 

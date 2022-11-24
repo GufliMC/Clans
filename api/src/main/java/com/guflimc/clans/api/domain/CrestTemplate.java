@@ -1,6 +1,6 @@
 package com.guflimc.clans.api.domain;
 
-import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.crest.CrestType;
 
 import java.util.UUID;
 

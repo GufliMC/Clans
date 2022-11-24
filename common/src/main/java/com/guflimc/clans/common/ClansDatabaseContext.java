@@ -33,12 +33,12 @@ public class ClansDatabaseContext extends EbeanDatabaseContext {
     private static final Class<?>[] APPLICABLE_CLASSES = new Class[]{
             DClan.class,
             DClanProfile.class,
-            DNexus.class,
             DProfile.class,
             DClanInvite.class,
             DClanProfilePermission.class,
-            DAttack.class,
             DCrestTemplate.class,
+            DClanAttribute.class,
+            DProfileAttribute.class,
 
             AreaConverter.class,
             LocationConverter.class,

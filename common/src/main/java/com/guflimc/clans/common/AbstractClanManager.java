@@ -1,7 +1,7 @@
 package com.guflimc.clans.common;
 
 import com.guflimc.clans.api.ClanManager;
-import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
@@ -29,7 +29,7 @@ public abstract class AbstractClanManager implements ClanManager {
     private final Set<DClan> clans = new CopyOnWriteArraySet<>();
     private final Set<DProfile> profiles = new CopyOnWriteArraySet<>();
 
-    private final Set<DCrestTemplate> sigilTypes = new CopyOnWriteArraySet<>();
+    private final Set<DCrestTemplate> crestTemplates = new CopyOnWriteArraySet<>();
 
     public AbstractClanManager(ClansDatabaseContext databaseContext) {
         this.databaseContext = databaseContext;
@@ -43,8 +43,8 @@ public abstract class AbstractClanManager implements ClanManager {
         clans.clear();
         clans.addAll(databaseContext.findAllAsync(DClan.class).join());
 
-        sigilTypes.clear();
-        sigilTypes.addAll(databaseContext.findAllAsync(DCrestTemplate.class).join());
+        crestTemplates.clear();
+        crestTemplates.addAll(databaseContext.findAllAsync(DCrestTemplate.class).join());
     }
 
     // clans
@@ -216,20 +216,20 @@ public abstract class AbstractClanManager implements ClanManager {
 
     @Override
     public Collection<CrestTemplate> crestTemplates() {
-        return Collections.unmodifiableSet(sigilTypes);
+        return Collections.unmodifiableSet(crestTemplates);
     }
 
     public CompletableFuture<CrestTemplate> addCrestTemplate(@NotNull String name, @NotNull CrestType type, boolean restricted) {
         DCrestTemplate pattern = new DCrestTemplate(name, type, restricted);
         return databaseContext.persistAsync(pattern).thenApply(n -> {
-            sigilTypes.add(pattern);
+            crestTemplates.add(pattern);
             return pattern;
         });
     }
 
     @Override
     public CompletableFuture<Void> removeCrestTemplate(@NotNull CrestTemplate crestTemplate) {
-        sigilTypes.remove((DCrestTemplate) crestTemplate);
+        crestTemplates.remove((DCrestTemplate) crestTemplate);
         return databaseContext.removeAsync(crestTemplate);
     }
 }

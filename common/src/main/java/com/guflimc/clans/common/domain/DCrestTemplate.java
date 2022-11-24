@@ -1,6 +1,6 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.CrestTemplate;
 import com.guflimc.clans.common.converters.CrestTypeConverter;
 import io.ebean.annotation.DbDefault;

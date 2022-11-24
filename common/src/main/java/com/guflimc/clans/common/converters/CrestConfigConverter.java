@@ -2,7 +2,7 @@ package com.guflimc.clans.common.converters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.guflimc.clans.api.cosmetic.CrestConfig;
+import com.guflimc.clans.api.crest.CrestConfig;
 import marcono1234.gson.recordadapter.RecordTypeAdapterFactory;
 
 import javax.persistence.AttributeConverter;

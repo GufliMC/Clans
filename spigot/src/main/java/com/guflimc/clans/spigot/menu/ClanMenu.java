@@ -10,8 +10,8 @@ import com.guflimc.brick.gui.spigot.menu.SpigotMenuItem;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.clans.api.ClanAPI;
-import com.guflimc.clans.api.cosmetic.CrestConfig;
-import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.clans.api.crest.CrestConfig;
+import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.*;
 import com.guflimc.clans.spigot.SpigotClans;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
@@ -29,7 +29,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class ClanMenu {
@@ -153,7 +156,7 @@ public class ClanMenu {
 
         ItemStack infoItem = ItemStackBuilder.of(ClanTools.crest(clan))
                 .withName(clan.displayName())
-                .withLore(namespace.string(player, "menu.clan.info.lore", format(player, clan.createdAt()), clan.level()))
+                .withLore(namespace.string(player, "menu.clan.info.lore", format(player, clan.createdAt())))
                 .build();
         bmenu.setItem(12, infoItem);
 
@@ -405,7 +408,7 @@ public class ClanMenu {
     private static String format(Player player, Duration duration) {
         String result = duration.toString().substring(2);
         int index = result.indexOf(".");
-        if (index > 0 ) {
+        if (index > 0) {
             result = result.substring(0, index);
         }
 
@@ -422,7 +425,7 @@ public class ClanMenu {
         ItemStack infoItem = ItemStackBuilder.skull().withPlayer(target.id(), target.name())
                 .withName(Component.text(target.name(), NamedTextColor.WHITE))
                 .withLore(namespace.string(player, "menu.profile.info.lore",
-                        format(player, target.createdAt()), target.power(), format(player, Duration.ofSeconds(target.playTime()))))
+                        format(player, target.createdAt())))
                 .build();
         bmenu.withItem(infoItem);
 

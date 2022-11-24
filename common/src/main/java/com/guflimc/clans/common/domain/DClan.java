@@ -1,17 +1,18 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.brick.maths.api.geo.pos.Location;
-import com.guflimc.clans.api.cosmetic.CrestConfig;
-import com.guflimc.clans.api.cosmetic.CrestType;
+import com.guflimc.brick.orm.api.attributes.AttributeKey;
+import com.guflimc.clans.api.crest.CrestConfig;
+import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.CrestTemplate;
-import com.guflimc.clans.api.domain.Nexus;
 import com.guflimc.clans.common.converters.CrestConfigConverter;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.*;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,15 +30,8 @@ public class DClan implements Clan {
     @Column(nullable = false, unique = true)
     private String tag;
 
-    @OneToOne(targetEntity = DNexus.class, mappedBy = "clan", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @DbForeignKey(onDelete = ConstraintMode.SET_NULL)
-    private DNexus nexus;
-
     @DbDefault("16581375")
     private int rgbColor = 16581375;
-
-    @DbDefault("1")
-    private int level = 1;
 
     @DbDefault("10")
     private int maxMembers = 10;
@@ -53,6 +47,10 @@ public class DClan implements Clan {
     @Column(length = 8192)
     private CrestConfig crestConfig;
 
+    @OneToMany(targetEntity = DClanAttribute.class, mappedBy = "clan",
+            cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DClanAttribute> attributes = new ArrayList<>();
+
     @WhenCreated
     private Instant createdAt;
 
@@ -67,11 +65,6 @@ public class DClan implements Clan {
     public DClan(String name, String tag) {
         this.name = name;
         this.tag = tag;
-    }
-
-    @PostLoad
-    private void onLoad() {
-        updateNexusArea();
     }
 
     @Override
@@ -90,29 +83,6 @@ public class DClan implements Clan {
     }
 
     @Override
-    public Optional<Nexus> nexus() {
-        return Optional.ofNullable(nexus);
-    }
-
-    @Override
-    public int nexusRadius() {
-        return level * 40; // TODO: Configurable
-    }
-
-    public void setNexus(Location loc) {
-        nexus = new DNexus(this, loc);
-        updateNexusArea();
-    }
-
-    private void updateNexusArea() {
-        if (nexus == null) {
-            return;
-        }
-
-        nexus.setCubeRadius(nexusRadius());
-    }
-
-    @Override
     public int color() {
         return rgbColor;
     }
@@ -120,17 +90,6 @@ public class DClan implements Clan {
     @Override
     public void setColor(int color) {
         this.rgbColor = color;
-    }
-
-    @Override
-    public int level() {
-        return level;
-    }
-
-    @Override
-    public void setLevel(int level) {
-        this.level = level;
-        updateNexusArea();
     }
 
     @Override
@@ -147,6 +106,8 @@ public class DClan implements Clan {
     public int memberCount() {
         return memberCount;
     }
+
+    // crest
 
     @Override
     public void setCrestTemplate(CrestTemplate template) {
@@ -170,6 +131,40 @@ public class DClan implements Clan {
         }
         return crestConfig;
     }
+
+    // attributes
+
+    @Override
+    public <T> void setAttribute(AttributeKey<T> key, T value) {
+        if (value == null) {
+            removeAttribute(key);
+            return;
+        }
+
+        DAttribute attribute = attributes.stream()
+                .filter(attr -> attr.name().equals(key.name()))
+                .findFirst().orElse(null);
+
+        if (attribute == null) {
+            attributes.add(new DClanAttribute(this, key, value));
+            return;
+        }
+
+        attribute.setValue(key, value);
+    }
+
+    @Override
+    public <T> void removeAttribute(AttributeKey<T> key) {
+        attributes.removeIf(attr -> attr.name().equals(key.name()));
+    }
+
+    @Override
+    public <T> Optional<T> attribute(AttributeKey<T> key) {
+        return attributes.stream().filter(attr -> attr.name().equals(key.name()))
+                .findFirst().map(ra -> ra.value(key));
+    }
+
+    // timestamps
 
     @Override
     public Instant createdAt() {

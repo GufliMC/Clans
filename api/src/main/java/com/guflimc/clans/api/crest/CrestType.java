@@ -1,4 +1,4 @@
-package com.guflimc.clans.api.cosmetic;
+package com.guflimc.clans.api.crest;
 
 import java.util.ArrayList;
 import java.util.List;

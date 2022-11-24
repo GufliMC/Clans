@@ -32,7 +32,6 @@ dependencies {
 
     // provided
     compileOnly 'com.guflimc.brick.i18n:spigot-api:+'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.+'
 
     compileOnly 'com.guflimc.brick.regions:spigot-api:+'
     compileOnly 'com.guflimc.brick.maths:spigot-api:+'
@@ -54,7 +53,7 @@ bukkit {
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/Clans'
     apiVersion = '1.13'
-    depend = ["BrickI18n", "BrickRegions", "BrickChat", "BrickPlaceholders", "BrickNametags", "BrickSidebar", "WorldGuard", "WorldEdit"]
+    depend = ["BrickI18n", "BrickRegions", "BrickChat", "BrickPlaceholders", "BrickNametags", "BrickSidebar"]
 }
 
 // I want it nice like that

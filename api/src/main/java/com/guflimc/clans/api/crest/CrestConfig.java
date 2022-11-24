@@ -1,4 +1,4 @@
-package com.guflimc.clans.api.cosmetic;
+package com.guflimc.clans.api.crest;
 
 public record CrestConfig(CrestType.Color color, ColorTarget target) {
 

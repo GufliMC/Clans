@@ -1,21 +1,9 @@
 -- apply changes
-create table attacks (
-  id                            uuid not null,
-  defender_id                   uuid,
-  attacker_id                   uuid,
-  nexus_health                  integer default 1000 not null,
-  nexus_destroyed               boolean default false not null,
-  ended_at                      timestamp,
-  created_at                    timestamp not null,
-  constraint pk_attacks primary key (id)
-);
-
 create table clans (
   id                            uuid not null,
   name                          varchar(255) not null,
   tag                           varchar(255) not null,
   rgb_color                     integer default 16581375 not null,
-  level                         integer default 1 not null,
   max_members                   integer default 10 not null,
   crest_template_id             uuid,
   crest_config                  varchar(8192),
@@ -24,6 +12,15 @@ create table clans (
   constraint uq_clans_name unique (name),
   constraint uq_clans_tag unique (tag),
   constraint pk_clans primary key (id)
+);
+
+create table clan_attributes (
+  id                            uuid not null,
+  name                          varchar(255) not null,
+  value                         varchar(255) not null,
+  clan_id                       uuid not null,
+  constraint uq_clan_attributes_clan_id_name unique (clan_id,name),
+  constraint pk_clan_attributes primary key (id)
 );
 
 create table clan_invites (
@@ -68,26 +65,10 @@ create table crest_templates (
   constraint pk_crest_templates primary key (id)
 );
 
-create table nexuses (
-  id                            uuid not null,
-  clan_id                       uuid not null,
-  location                      varchar(255) not null,
-  area                          varchar(8192) not null,
-  skin                          varchar(7) default 'DEFAULT' not null,
-  created_at                    timestamp not null,
-  updated_at                    timestamp not null,
-  constraint ck_nexuses_skin check ( skin in ('DEFAULT')),
-  constraint uq_nexuses_clan_id unique (clan_id),
-  constraint uq_nexuses_area unique (area),
-  constraint pk_nexuses primary key (id)
-);
-
 create table profiles (
   id                            uuid not null,
   name                          varchar(255) not null,
   clan_profile_id               uuid,
-  power                         integer default 0 not null,
-  play_time                     bigint default 0 not null,
   last_seen_at                  timestamp,
   created_at                    timestamp not null,
   updated_at                    timestamp not null,
@@ -95,15 +76,21 @@ create table profiles (
   constraint pk_profiles primary key (id)
 );
 
+create table profile_attributes (
+  id                            uuid not null,
+  name                          varchar(255) not null,
+  value                         varchar(255) not null,
+  profile_id                    uuid not null,
+  constraint uq_profile_attributes_profile_id_name unique (profile_id,name),
+  constraint pk_profile_attributes primary key (id)
+);
+
 -- foreign keys and indices
-create index ix_attacks_defender_id on attacks (defender_id);
-alter table attacks add constraint fk_attacks_defender_id foreign key (defender_id) references clans (id) on delete restrict on update restrict;
-
-create index ix_attacks_attacker_id on attacks (attacker_id);
-alter table attacks add constraint fk_attacks_attacker_id foreign key (attacker_id) references clans (id) on delete restrict on update restrict;
-
 create index ix_clans_crest_template_id on clans (crest_template_id);
 alter table clans add constraint fk_clans_crest_template_id foreign key (crest_template_id) references crest_templates (id) on delete set null on update restrict;
+
+create index ix_clan_attributes_clan_id on clan_attributes (clan_id);
+alter table clan_attributes add constraint fk_clan_attributes_clan_id foreign key (clan_id) references clans (id) on delete cascade on update restrict;
 
 create index ix_clan_invites_sender_id on clan_invites (sender_id);
 alter table clan_invites add constraint fk_clan_invites_sender_id foreign key (sender_id) references profiles (id) on delete cascade on update restrict;
@@ -123,7 +110,8 @@ alter table clan_profiles add constraint fk_clan_profiles_clan_id foreign key (c
 create index ix_clan_profile_permissions_clan_profile_id on clan_profile_permissions (clan_profile_id);
 alter table clan_profile_permissions add constraint fk_clan_profile_permissions_clan_profile_id foreign key (clan_profile_id) references clan_profiles (id) on delete cascade on update restrict;
 
-alter table nexuses add constraint fk_nexuses_clan_id foreign key (clan_id) references clans (id) on delete cascade on update restrict;
-
 alter table profiles add constraint fk_profiles_clan_profile_id foreign key (clan_profile_id) references clan_profiles (id) on delete set null on update restrict;
+
+create index ix_profile_attributes_profile_id on profile_attributes (profile_id);
+alter table profile_attributes add constraint fk_profile_attributes_profile_id foreign key (profile_id) references profiles (id) on delete cascade on update restrict;
 

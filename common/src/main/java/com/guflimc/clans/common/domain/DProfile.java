@@ -1,5 +1,6 @@
 package com.guflimc.clans.common.domain;
 
+import com.guflimc.brick.orm.api.attributes.AttributeKey;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanInvite;
 import com.guflimc.clans.api.domain.ClanProfile;
@@ -33,11 +34,9 @@ public class DProfile implements Profile {
     @OneToMany(targetEntity = DClanInvite.class, mappedBy = "sender", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     List<DClanInvite> sentInvites = new ArrayList<>();
 
-    @DbDefault("0")
-    private int power = 0;
-
-    @DbDefault("0")
-    private long playTime = 0;
+    @OneToMany(targetEntity = DProfileAttribute.class, mappedBy = "profile",
+            cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DProfileAttribute> attributes = new ArrayList<>();
 
     private Instant lastSeenAt;
 
@@ -87,19 +86,7 @@ public class DProfile implements Profile {
         // TODO events
     }
 
-    @Override
-    public Instant createdAt() {
-        return createdAt;
-    }
-
-    @Override
-    public Instant lastSeenAt() {
-        return lastSeenAt;
-    }
-
-    public void setLastSeenAt(Instant lastSeenAt) {
-        this.lastSeenAt = lastSeenAt;
-    }
+    // invites
 
     @Override
     public ClanInvite addInvite(@NotNull Profile sender, @NotNull Clan clan) {
@@ -115,24 +102,52 @@ public class DProfile implements Profile {
                 .map(inv -> inv);
     }
 
+    // attributes
+
     @Override
-    public int power() {
-        return power;
+    public <T> void setAttribute(AttributeKey<T> key, T value) {
+        if (value == null) {
+            removeAttribute(key);
+            return;
+        }
+
+        DAttribute attribute = attributes.stream()
+                .filter(attr -> attr.name().equals(key.name()))
+                .findFirst().orElse(null);
+
+        if ( attribute == null ) {
+            attributes.add(new DProfileAttribute(this, key, value));
+            return;
+        }
+
+        attribute.setValue(key, value);
     }
 
     @Override
-    public void setPower(int power) {
-        this.power = power;
+    public <T> void removeAttribute(AttributeKey<T> key) {
+        attributes.removeIf(attr -> attr.name().equals(key.name()));
     }
 
     @Override
-    public long playTime() {
-        return playTime;
+    public <T> Optional<T> attribute(AttributeKey<T> key) {
+        return attributes.stream().filter(attr -> attr.name().equals(key.name()))
+                .findFirst().map(ra -> ra.value(key));
+    }
+
+    // timestamps
+
+    @Override
+    public Instant createdAt() {
+        return createdAt;
     }
 
     @Override
-    public void setPlayTime(long playTime) {
-        this.playTime = playTime;
+    public Instant lastSeenAt() {
+        return lastSeenAt;
+    }
+
+    public void setLastSeenAt(Instant lastSeenAt) {
+        this.lastSeenAt = lastSeenAt;
     }
 
 }

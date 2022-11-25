@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.TextColor;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 public interface Clan {
 
@@ -38,11 +39,11 @@ public interface Clan {
 
     // attributes
 
-    <T> void setAttribute(AttributeKey<T> key, T value);
+    <T> void setAttribute(ClanAttributeKey<T> key, T value);
 
-    <T> void removeAttribute(AttributeKey<T> key);
+    <T> void removeAttribute(ClanAttributeKey<T> key);
 
-    <T> Optional<T> attribute(AttributeKey<T> key);
+    <T> Optional<T> attribute(ClanAttributeKey<T> key);
 
     // timestamps
 
@@ -64,6 +65,16 @@ public interface Clan {
 
     default NamedTextColor namedTextColor() {
         return NamedTextColor.nearestTo(TextColor.color(color()));
+    }
+
+    //
+
+    class ClanAttributeKey<T> extends AttributeKey<T> {
+
+        public ClanAttributeKey(String name, Class<T> type, Function<T, String> serializer, Function<String, T> deserializer) {
+            super(name, type, serializer, deserializer);
+        }
+
     }
 
 }

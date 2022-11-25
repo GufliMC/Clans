@@ -135,7 +135,7 @@ public class DClan implements Clan {
     // attributes
 
     @Override
-    public <T> void setAttribute(AttributeKey<T> key, T value) {
+    public <T> void setAttribute(ClanAttributeKey<T> key, T value) {
         if (value == null) {
             removeAttribute(key);
             return;
@@ -154,12 +154,12 @@ public class DClan implements Clan {
     }
 
     @Override
-    public <T> void removeAttribute(AttributeKey<T> key) {
+    public <T> void removeAttribute(ClanAttributeKey<T> key) {
         attributes.removeIf(attr -> attr.name().equals(key.name()));
     }
 
     @Override
-    public <T> Optional<T> attribute(AttributeKey<T> key) {
+    public <T> Optional<T> attribute(ClanAttributeKey<T> key) {
         return attributes.stream().filter(attr -> attr.name().equals(key.name()))
                 .findFirst().map(ra -> ra.value(key));
     }

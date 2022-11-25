@@ -105,7 +105,7 @@ public class DProfile implements Profile {
     // attributes
 
     @Override
-    public <T> void setAttribute(AttributeKey<T> key, T value) {
+    public <T> void setAttribute(ProfileAttributeKey<T> key, T value) {
         if (value == null) {
             removeAttribute(key);
             return;
@@ -124,12 +124,12 @@ public class DProfile implements Profile {
     }
 
     @Override
-    public <T> void removeAttribute(AttributeKey<T> key) {
+    public <T> void removeAttribute(ProfileAttributeKey<T> key) {
         attributes.removeIf(attr -> attr.name().equals(key.name()));
     }
 
     @Override
-    public <T> Optional<T> attribute(AttributeKey<T> key) {
+    public <T> Optional<T> attribute(ProfileAttributeKey<T> key) {
         return attributes.stream().filter(attr -> attr.name().equals(key.name()))
                 .findFirst().map(ra -> ra.value(key));
     }

@@ -46,6 +46,7 @@ public class SpigotClans extends JavaPlugin {
 
     public final Gson gson = new Gson();
 
+    private ClansDatabaseContext databaseContext;
     public SpigotBrickClanManager clanManager;
 
     public ClansConfig config;
@@ -70,7 +71,7 @@ public class SpigotClans extends JavaPlugin {
         adventure = BukkitAudiences.create(this);
 
         // DATABASE
-        ClansDatabaseContext databaseContext = new ClansDatabaseContext(config.database);
+        databaseContext = new ClansDatabaseContext(config.database);
 
         // CLAN MANAGER
         clanManager = new SpigotBrickClanManager(databaseContext);
@@ -114,6 +115,10 @@ public class SpigotClans extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if ( databaseContext != null ) {
+            databaseContext.shutdown();
+        }
+
         getLogger().info("Disabled " + nameAndVersion() + ".");
     }
 

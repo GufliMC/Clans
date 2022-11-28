@@ -17,12 +17,14 @@ import java.util.Arrays;
 
 public class ClansDatabaseContext extends EbeanDatabaseContext {
 
+    private final static String DATASOURCE_NAME = "Clans";
+
     public ClansDatabaseContext(EbeanConfig config) {
-        super(config, "Clans");
+        super(config, DATASOURCE_NAME);
     }
 
     public ClansDatabaseContext(EbeanConfig config, int poolSize) {
-        super(config, "Clans", poolSize);
+        super(config, DATASOURCE_NAME, poolSize);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class ClansDatabaseContext extends EbeanDatabaseContext {
 
     public static void main(String[] args) throws IOException, SQLException {
         EbeanMigrations generator = new EbeanMigrations(
-                "Clans",
+                DATASOURCE_NAME,
                 Path.of("Clans/common/src/main/resources"),
                 Platform.H2, Platform.MYSQL
         );

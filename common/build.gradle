@@ -10,20 +10,22 @@ repositories {
 dependencies {
     api project(':api')
 
+    // provided
     compileOnly 'org.slf4j:slf4j-api:1.7.36'
     compileOnly 'com.google.code.gson:gson:+'
-    implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'
-
-    api 'com.guflimc.brick.orm:ebean:+'
-    implementation 'com.guflimc.brick.maths:database-converters:+'
-    implementation 'net.kyori:adventure-platform-api:4.+'
 
     compileOnly 'com.guflimc.brick.regions:api:+'
     compileOnly 'com.guflimc.brick.maths:api:+'
     compileOnly 'com.guflimc.brick.i18n:api:+'
     compileOnly 'com.guflimc.brick.scheduler:api:+'
 
-    api 'cloud.commandframework:cloud-core:+'
-    api 'cloud.commandframework:cloud-annotations:+'
+    compileOnly 'cloud.commandframework:cloud-core:+'
+    compileOnly 'cloud.commandframework:cloud-annotations:+'
     annotationProcessor 'cloud.commandframework:cloud-annotations:+'
+
+    // shadow
+    api 'com.guflimc.brick.orm:ebean:+'
+    implementation 'com.guflimc.brick.maths:database-converters:+'
+    implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'
+    implementation 'net.kyori:adventure-platform-api:4.+'
 }

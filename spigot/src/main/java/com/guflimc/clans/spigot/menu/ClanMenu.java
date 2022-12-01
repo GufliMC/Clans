@@ -236,7 +236,7 @@ public class ClanMenu {
 
             bmenu.withItems(profiles.size(), index -> {
                 Profile profile = profiles.get(index);
-                ItemStack profileItem = ItemStackBuilder.skull().withPlayer(profile.id(), profile.name())
+                ItemStack profileItem = ItemStackBuilder.skull().withPlayer(profile.id())
                         .withName(Component.text(profile.name(), NamedTextColor.WHITE))
                         .withLore(namespace.string(player, "menu.clan.members.profile.lore", profile.name()))
                         .build();
@@ -255,7 +255,7 @@ public class ClanMenu {
     private static void kickMember(Player player, Profile profile, Runnable back) {
         SpigotBrickGUI.confirmationBuilder()
                 .withTitle(namespace.string(player, "menu.profile.kick.confirm.title", profile.name()))
-                .withDisplay(ItemStackBuilder.skull().withPlayer(profile.id(), profile.name())
+                .withDisplay(ItemStackBuilder.skull().withPlayer(profile.id())
                         .withName(Component.text(profile.name(), NamedTextColor.WHITE))
                         .build())
                 .withAccept(() -> {
@@ -389,7 +389,7 @@ public class ClanMenu {
 
         bmenu.withItems(profiles.size(), index -> {
             Profile profile = profiles.get(index);
-            ItemStack profileItem = ItemStackBuilder.skull().withPlayer(profile.id(), profile.name())
+            ItemStack profileItem = ItemStackBuilder.skull().withPlayer(profile.id())
                     .withName(Component.text(profile.name(), NamedTextColor.WHITE))
                     .withLore(namespace.string(player, "menu.profileList.profile.lore", profile.name()))
                     .build();
@@ -422,7 +422,7 @@ public class ClanMenu {
         ISpigotMenuBuilder bmenu = SpigotBrickGUI.builder();
         bmenu.withTitle(namespace.string(player, "menu.profile.title", target.name()));
 
-        ItemStack infoItem = ItemStackBuilder.skull().withPlayer(target.id(), target.name())
+        ItemStack infoItem = ItemStackBuilder.skull().withPlayer(target.id())
                 .withName(Component.text(target.name(), NamedTextColor.WHITE))
                 .withLore(namespace.string(player, "menu.profile.info.lore",
                         format(player, target.createdAt())))
@@ -449,16 +449,17 @@ public class ClanMenu {
                 });
             }
 
-            ClanProfile cp = ClanTools.clanProfile(player).orElse(null);
-            if (cp != null && cp.isLeader() && !target.id().equals(player.getUniqueId())) {
-                ItemStack changePermissionItem = ItemStackBuilder.of(Material.COMMAND_BLOCK)
-                        .withName(namespace.string(player, "menu.profile.change-permissions.name"))
-                        .withLore(namespace.string(player, "menu.profile.change-permissions.lore", target.name()))
-                        .build();
-                bmenu.withItem(changePermissionItem, c -> {
-                    changePlayerPermissions(player, cp, () -> profile(player, target, back));
-                });
-            }
+            // TODO
+//            ClanProfile cp = ClanTools.clanProfile(player).orElse(null);
+//            if (cp != null && cp.isLeader() && !target.id().equals(player.getUniqueId())) {
+//                ItemStack changePermissionItem = ItemStackBuilder.of(Material.COMMAND_BLOCK)
+//                        .withName(namespace.string(player, "menu.profile.change-permissions.name"))
+//                        .withLore(namespace.string(player, "menu.profile.change-permissions.lore", target.name()))
+//                        .build();
+//                bmenu.withItem(changePermissionItem, c -> {
+//                    changePlayerPermissions(player, cp, () -> profile(player, target, back));
+//                });
+//            }
         } else {
             Clan pclan = ClanTools.clan(player).orElse(null);
             if (pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYER)) {
@@ -482,7 +483,7 @@ public class ClanMenu {
     private static void invitePlayer(Player player, Profile profile, Runnable back) {
         SpigotBrickGUI.confirmationBuilder()
                 .withTitle(namespace.string(player, "menu.profile.invite.confirm.title", profile.name()))
-                .withDisplay(ItemStackBuilder.skull().withPlayer(profile.id(), profile.name())
+                .withDisplay(ItemStackBuilder.skull().withPlayer(profile.id())
                         .withName(Component.text(profile.name(), NamedTextColor.WHITE))
                         .build())
                 .withAccept(() -> {

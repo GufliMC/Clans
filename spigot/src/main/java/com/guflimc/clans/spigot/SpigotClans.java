@@ -10,12 +10,12 @@ import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.brick.scheduler.spigot.api.SpigotScheduler;
+import com.guflimc.clans.api.commands.arguments.ClanArgument;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.common.ClansConfig;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.common.commands.ClanCommands;
-import com.guflimc.clans.common.commands.arguments.ClanArgument;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.chat.ClanChatChannel;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
@@ -115,7 +115,7 @@ public class SpigotClans extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if ( databaseContext != null ) {
+        if (databaseContext != null) {
             databaseContext.shutdown();
         }
 

@@ -1,4 +1,4 @@
-package com.guflimc.clans.common.commands.arguments;
+package com.guflimc.clans.api.commands.arguments;
 
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
@@ -83,7 +83,7 @@ public final class ClanArgument<C> extends CommandArgument<C, Clan> {
                 final @NotNull CommandContext<?> context
         ) {
             super(
-                    ClanArgument.ClanParser.class,
+                    ClanParser.class,
                     context,
                     Caption.of("cmd.args.error.Clan"),
                     CaptionVariable.of("0", input)

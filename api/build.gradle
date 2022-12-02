@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     api 'net.kyori:adventure-api:4.+'
-
-    compileOnly 'cloud.commandframework:cloud-core:+'
-    compileOnly 'com.guflimc.brick.orm:api:+'
+    api 'cloud.commandframework:cloud-core:+'
+    api 'com.guflimc.brick.orm:api:+'
 }

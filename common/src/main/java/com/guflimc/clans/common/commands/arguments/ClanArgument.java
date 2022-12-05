@@ -1,4 +1,4 @@
-package com.guflimc.clans.api.commands.arguments;
+package com.guflimc.clans.common.commands.arguments;
 
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;

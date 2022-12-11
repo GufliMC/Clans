@@ -6,5 +6,6 @@
     "password": "root"
   },
   "clanChatPrefix": "<insert:/clans info {clan_name}><hover:show_text:'{clan_display_name}'><gray>[{clan_display_tag}]</gray></hover></insert>",
-  "clanNametagPrefix": "<gray>[{clan_display_tag}]</gray> "
+  "clanNametagPrefix": "<gray>[{clan_display_tag}]</gray> ",
+  "noClanDisplayName": "<gray>/"
 }

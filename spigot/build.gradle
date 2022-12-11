@@ -61,7 +61,7 @@ generateBukkitPluginDescription.group = "minecraft"
 
 // relocate libs in shadow jar
 ext.set("excludeRelocation", ['io.ebean', 'org.slf4j', 'cloud.commandframework'])
-apply from: 'https://guflimc.github.io/scripts/gradle/shadow-relocate.gradle'
+//apply from: 'https://guflimc.github.io/scripts/gradle/shadow-relocate.gradle'
 
 //println project.configurations.runtimeClasspath.getResolvedConfiguration().getLenientConfiguration()
 //        .getArtifacts().stream()

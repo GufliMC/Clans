@@ -80,35 +80,6 @@ public class ClanTools {
         return b.build();
     }
 
-    public static ItemStack crest(@NotNull Clan clan) {
-        if (clan.crestTemplate() == null) {
-            return ItemStackBuilder.banner(dyeColor(clan.color())).build();
-        }
-        return crest(clan.crestTemplate().type(), clan.crestConfig(), dyeColor(clan.color()));
-    }
-
-    public static Collection<Player> onlinePlayers(@NotNull Clan clan) {
-        return Bukkit.getOnlinePlayers().stream()
-                .filter(p -> ClanAPI.get().findCachedProfile(p.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(ClanProfile::clan)
-                        .filter(c -> c.equals(clan))
-                        .isPresent()
-                ).map(Player.class::cast).toList();
-    }
-
-    public static Optional<Clan> clan(@NotNull Player player) {
-        return ClanAPI.get()
-                .findCachedProfile(player.getUniqueId())
-                .flatMap(Profile::clanProfile)
-                .map(ClanProfile::clan);
-    }
-
-    public static Optional<ClanProfile> clanProfile(@NotNull Player player) {
-        return SpigotClanAPI.get().findCachedProfile(player.getUniqueId())
-                .flatMap(Profile::clanProfile);
-    }
-
     public static DyeColor dyeColor(@NotNull Clan clan) {
         return dyeColor(clan.color());
     }

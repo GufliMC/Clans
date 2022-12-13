@@ -7,6 +7,7 @@ import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -35,5 +36,7 @@ public interface SpigotClanManager extends ClanManager {
         return ClanAPI.get().findCachedProfile(player.getUniqueId())
                 .flatMap(Profile::clanProfile);
     }
+
+    ItemStack crest(@NotNull Clan clan);
 
 }

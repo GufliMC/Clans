@@ -26,6 +26,9 @@
   "cmd.clans.invite.sender": "<gray>You have invited <green>{0} <gray>to join your clan.",
   "cmd.clans.invite.target": "<gray>You have been invited to join <green>{0}<gray>.",
 
+  "cmd.clans.uninvite.error.not.invited": "<red>This player is not invited to join your clan.",
+  "cmd.clans.uninvite.sender": "<gray>You have uninvited <green>{0} <gray>from joining your clan.",
+
   "cmd.clans.join.error.missing": "<red>You don't have an invite to join this clan.",
   "cmd.clans.join.error.max.members": "<red>This clan has reached the maximum amount of members.",
   "cmd.clans.join": "<gray>You joined <green>{0}<gray>.",

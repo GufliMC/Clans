@@ -89,7 +89,7 @@ public class ClanMenu {
 
         // clans
         if (clan != null) {
-            ItemStack clanItem = ItemStackBuilder.of(ClanTools.crest(clan))
+            ItemStack clanItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.main.clan.lore"))
                     .build();
@@ -137,7 +137,7 @@ public class ClanMenu {
 
         bmenu.withItems(clans.size(), index -> {
             Clan clan = clans.get(index);
-            ItemStack clanItem = ItemStackBuilder.of(ClanTools.crest(clan))
+            ItemStack clanItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.clanList.clan.lore", clan.name()))
                     .build();
@@ -154,7 +154,7 @@ public class ClanMenu {
                 hasPermission(player, clan, ClanPermission.CHANGE_CREST);
         ISpigotMenu bmenu = SpigotBrickGUI.create(any ? 54 : 36, namespace.string(player, "menu.clan.title", clan.name()));
 
-        ItemStack infoItem = ItemStackBuilder.of(ClanTools.crest(clan))
+        ItemStack infoItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
                 .withName(clan.displayName())
                 .withLore(namespace.string(player, "menu.clan.info.lore", format(player, clan.createdAt())))
                 .build();
@@ -269,7 +269,7 @@ public class ClanMenu {
     private static void clanEditCrest(Player player, Clan clan, Runnable back) {
         ISpigotMenu menu = SpigotBrickGUI.create(54, namespace.string(player, "menu.clan.change-crest.title", clan.name()));
 
-        ItemStack previewItem = ItemStackBuilder.of(ClanTools.crest(clan))
+        ItemStack previewItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
                 .withName(namespace.string(player, "menu.clan.change-crest.preview.name"))
                 .build();
         menu.setItem(13, previewItem);
@@ -317,7 +317,7 @@ public class ClanMenu {
             clanEditCrest(player, clan, back);
         });
 
-        ItemStack crestTypeItem = ItemStackBuilder.of(ClanTools.crest(clan))
+        ItemStack crestTypeItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
                 .withName(namespace.string(player, "menu.clan.change-crest.type.name"))
                 .withLore(namespace.string(player, "menu.clan.change-crest.type.lore"))
                 .build();
@@ -431,7 +431,7 @@ public class ClanMenu {
 
         Clan clan = target.clanProfile().map(ClanProfile::clan).orElse(null);
         if (clan != null) {
-            ItemStack clanItem = ItemStackBuilder.of(ClanTools.crest(clan))
+            ItemStack clanItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
                     .withName(clan.displayName())
                     .withLore(namespace.string(player, "menu.profile.clan.lore", clan.name()))
                     .build();
@@ -461,7 +461,7 @@ public class ClanMenu {
 //                });
 //            }
         } else {
-            Clan pclan = ClanTools.clan(player).orElse(null);
+            Clan pclan = SpigotClanAPI.get().findClan(player).orElse(null);
             if (pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYER)) {
                 ItemStack inviteItem = ItemStackBuilder.of(Material.WRITABLE_BOOK)
                         .withName(namespace.string(player, "menu.profile.invite.name"))

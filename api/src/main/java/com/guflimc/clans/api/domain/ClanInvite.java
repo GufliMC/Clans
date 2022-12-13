@@ -16,14 +16,22 @@ public interface ClanInvite {
 
     void accept();
 
+    void cancel();
+
     boolean isExpired();
 
     boolean isRejected();
 
     boolean isAccepted();
 
+    boolean isCancelled();
+
     default boolean isAnswered() {
         return isRejected() || isAccepted();
+    }
+
+    default boolean isActive() {
+        return !isAnswered() && !isExpired() && !isCancelled();
     }
 
 }

@@ -39,6 +39,9 @@ public class DClanInvite implements ClanInvite {
     @DbDefault("false")
     private boolean accepted;
 
+    @DbDefault("false")
+    private boolean cancelled;
+
     @WhenCreated
     private Instant createdAt = Instant.now();
 
@@ -93,6 +96,15 @@ public class DClanInvite implements ClanInvite {
     }
 
     @Override
+    public void cancel() {
+        if ( isAnswered() ) {
+            throw new IllegalStateException("This invite is already answered.");
+        }
+
+        this.cancelled = true;
+    }
+
+    @Override
     public boolean isExpired() {
         return Instant.now().isAfter(createdAt.plus(24, ChronoUnit.HOURS));
     }
@@ -106,6 +118,12 @@ public class DClanInvite implements ClanInvite {
     public boolean isAccepted() {
         return accepted;
     }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
 
     Instant createdAt() {
         return createdAt;

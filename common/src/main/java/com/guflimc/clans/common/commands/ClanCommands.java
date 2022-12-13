@@ -94,6 +94,44 @@ public class ClanCommands {
         });
     }
 
+    @CommandMethod("clans uninvite <player>")
+    @CommandPermission("clans.uninvite")
+    public void uninvite(Audience sender, Profile sprofile, @Argument("player") String username) {
+        if (sprofile.clanProfile().isEmpty()) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.not.in.clan");
+            return;
+        }
+
+        Clan clan = sprofile.clanProfile().orElseThrow().clan();
+
+        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER)) {
+            I18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
+            return;
+        }
+
+        ClanAPI.get().findProfile(username).thenAccept(target -> {
+            if (target == null) {
+                I18nAPI.get(this).send(sender, "cmd.error.args.player", username);
+                return;
+            }
+
+            ClanInvite recent = target.mostRecentInvite(clan).orElse(null);
+            if (recent == null || !recent.isActive()) {
+                I18nAPI.get(this).send(sender, "cmd.clans.uninvite.error.not.invited");
+                return;
+            }
+
+            recent.cancel();
+            ClanAPI.get().update(target);
+
+            // send messages
+            I18nAPI.get(this).send(sender, "cmd.clans.uninvite.sender", target.name());
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
+    }
+
     @CommandMethod("clans kick <player>")
     @CommandPermission("clans.kick")
     public void kick(Audience sender, Profile sprofile, @Argument("player") String username) {
@@ -140,7 +178,7 @@ public class ClanCommands {
         }
 
         ClanInvite recent = sprofile.mostRecentInvite(clan).orElse(null);
-        if (recent == null || recent.isExpired() || recent.isAnswered()) {
+        if (recent == null || !recent.isActive()) {
             I18nAPI.get(this).send(sender, "cmd.clans.join.error.missing");
             return;
         }
@@ -160,7 +198,7 @@ public class ClanCommands {
     @CommandPermission("clans.reject")
     public void reject(Audience sender, Profile sprofile, @Argument("clan") Clan clan) {
         ClanInvite recent = sprofile.mostRecentInvite(clan).orElse(null);
-        if (recent == null || recent.isExpired() || recent.isAnswered()) {
+        if (recent == null || !recent.isActive()) {
             I18nAPI.get(this).send(sender, "cmd.clans.join.error.missing");
             return;
         }

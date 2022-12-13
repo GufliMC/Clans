@@ -1,9 +1,14 @@
 package com.guflimc.clans.spigot;
 
+import com.guflimc.brick.gui.spigot.item.ItemStackBuilder;
 import com.guflimc.clans.api.crest.CrestType;
+import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.common.AbstractClanManager;
 import com.guflimc.clans.common.ClansDatabaseContext;
 import com.guflimc.clans.spigot.api.SpigotClanManager;
+import com.guflimc.clans.spigot.util.ClanTools;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SpigotBrickClanManager extends AbstractClanManager implements SpigotClanManager {
 
@@ -12,6 +17,16 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
 
         setupCrests();
     }
+
+    @Override
+    public ItemStack crest(@NotNull Clan clan) {
+        if (clan.crestTemplate() == null) {
+            return ItemStackBuilder.banner(ClanTools.dyeColor(clan.color())).build();
+        }
+        return ClanTools.crest(clan.crestTemplate().type(), clan.crestConfig(), ClanTools.dyeColor(clan.color()));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
 
     private void addCrestTemplate(String name, boolean restricted, CrestType.Color background, CrestType.CrestLayer... layers) {
         if (crestTemplates().stream().anyMatch(ct -> ct.name().equals(name))) {

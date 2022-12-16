@@ -1,8 +1,6 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.clans.api.domain.ClanPermission;
 import com.guflimc.clans.api.domain.ClanProfile;
-import com.guflimc.clans.api.domain.ClanProfilePermission;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.DbForeignKey;
 import io.ebean.annotation.WhenCreated;
@@ -14,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "clan_profile_permissions")
-public class DClanProfilePermission implements ClanProfilePermission {
+public class DClanProfilePermission {
 
     @Id
     private UUID id;
@@ -23,8 +21,8 @@ public class DClanProfilePermission implements ClanProfilePermission {
     @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DClanProfile clanProfile;
 
-    @Enumerated(EnumType.STRING)
-    private ClanPermission permission;
+    @Convert
+    private String key;
 
     @WhenCreated
     private Instant createdAt;
@@ -37,19 +35,17 @@ public class DClanProfilePermission implements ClanProfilePermission {
     private DClanProfilePermission() {
     }
 
-    public DClanProfilePermission(DClanProfile clanProfile, ClanPermission permission) {
+    public DClanProfilePermission(DClanProfile clanProfile, String key) {
         this.clanProfile = clanProfile;
-        this.permission = permission;
+        this.key = key;
     }
 
-    @Override
     public ClanProfile clanProfile() {
         return clanProfile;
     }
 
-    @Override
-    public ClanPermission permission() {
-        return permission;
+    public String key() {
+        return key;
     }
 
 }

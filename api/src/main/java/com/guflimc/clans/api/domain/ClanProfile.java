@@ -1,5 +1,7 @@
 package com.guflimc.clans.api.domain;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.Instant;
 
 public interface ClanProfile {
@@ -16,11 +18,11 @@ public interface ClanProfile {
 
     void setPower(float power);
 
-    boolean hasPermission(ClanPermission permission);
+    boolean hasPermission(@NotNull ClanPermission permission);
 
-    void addPermission(ClanPermission permission);
+    void addPermission(@NotNull ClanPermission permission);
 
-    void removePermission(ClanPermission permission);
+    void removePermission(@NotNull ClanPermission permission);
 
     Instant createdAt();
 

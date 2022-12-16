@@ -14,7 +14,6 @@ public class SpigotBrickClanManager extends AbstractClanManager implements Spigo
 
     public SpigotBrickClanManager(ClansDatabaseContext databaseContext) {
         super(databaseContext);
-
         setupCrests();
     }
 

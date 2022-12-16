@@ -4,12 +4,12 @@ import com.guflimc.clans.api.ClanManager;
 import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanProfile;
-import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.api.domain.CrestTemplate;
+import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.common.domain.DClan;
 import com.guflimc.clans.common.domain.DClanProfile;
-import com.guflimc.clans.common.domain.DProfile;
 import com.guflimc.clans.common.domain.DCrestTemplate;
+import com.guflimc.clans.common.domain.DProfile;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,16 +90,14 @@ public abstract class AbstractClanManager implements ClanManager {
             throw new IllegalArgumentException("A clan with that name or tag already exists.");
         }
 
-        logger.debug("Created new clan '" + name + "' with tag '" + tag + "'.");
-
         DClan clan = new DClan(name, tag);
         clans.add(clan);
 
         return databaseContext.persistAsync(clan).thenCompose(n -> {
-            // TODO call create event
-
-            ((DProfile) leader).joinClan(clan);
+            ((DProfile) leader).join(clan);
             ((DClanProfile) leader.clanProfile().orElseThrow()).leader = true;
+
+            EventManager.INSTANCE.onCreate(clan);
 
             return update(leader);
         }).thenApply(n -> clan);
@@ -107,7 +105,6 @@ public abstract class AbstractClanManager implements ClanManager {
 
     @Override
     public CompletableFuture<Void> remove(@NotNull Clan clan) {
-        logger.debug("Deleting clan '" + clan.name() + "'.");
         clans.remove((DClan) clan);
 
         Set<CompletableFuture<?>> futures = new HashSet<>();
@@ -120,6 +117,8 @@ public abstract class AbstractClanManager implements ClanManager {
                 });
 
         // TODO consistency check
+
+        EventManager.INSTANCE.onDelete(clan);
 
         return databaseContext.removeAsync(clan).thenCompose(n ->
                 CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)));

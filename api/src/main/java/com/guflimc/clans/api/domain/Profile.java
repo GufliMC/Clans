@@ -20,6 +20,8 @@ public interface Profile {
 
     Optional<ClanInvite> mostRecentInvite(@NotNull Clan clan);
 
+    void join(@NotNull Clan clan);
+
     // attributes
 
     <T> void setAttribute(ProfileAttributeKey<T> key, T value);

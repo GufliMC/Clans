@@ -3,6 +3,7 @@ package com.guflimc.clans.common.domain;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanInvite;
 import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.common.EventManager;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.DbDefault;
 import io.ebean.annotation.DbForeignKey;
@@ -83,6 +84,7 @@ public class DClanInvite implements ClanInvite {
         }
 
         this.rejected = true;
+        EventManager.INSTANCE.onInviteReject(target, clan);
     }
 
     @Override
@@ -92,7 +94,7 @@ public class DClanInvite implements ClanInvite {
         }
 
         this.accepted = true;
-        target.joinClan(clan);
+        target.join(clan);
     }
 
     @Override
@@ -102,6 +104,7 @@ public class DClanInvite implements ClanInvite {
         }
 
         this.cancelled = true;
+        EventManager.INSTANCE.onInviteDelete(target, clan);
     }
 
     @Override

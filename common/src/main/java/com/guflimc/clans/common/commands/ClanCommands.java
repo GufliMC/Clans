@@ -5,10 +5,7 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import com.guflimc.brick.i18n.api.I18nAPI;
 import com.guflimc.clans.api.ClanAPI;
-import com.guflimc.clans.api.domain.Clan;
-import com.guflimc.clans.api.domain.ClanInvite;
-import com.guflimc.clans.api.domain.ClanPermission;
-import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.api.domain.*;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.AudienceProvider;
 import net.kyori.adventure.text.Component;
@@ -40,7 +37,7 @@ public class ClanCommands {
 
         Clan clan = sprofile.clanProfile().orElseThrow().clan();
 
-        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER)) {
+        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYERS)) {
             I18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
             return;
         }
@@ -104,7 +101,7 @@ public class ClanCommands {
 
         Clan clan = sprofile.clanProfile().orElseThrow().clan();
 
-        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYER)) {
+        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.INVITE_PLAYERS)) {
             I18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
             return;
         }
@@ -140,7 +137,7 @@ public class ClanCommands {
             return;
         }
 
-        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.KICK_MEMBER)) {
+        if (!sprofile.clanProfile().get().hasPermission(ClanPermission.KICK_MEMBERS)) {
             I18nAPI.get(this).send(sender, "cmd.error.base.no.permission");
             return;
         }
@@ -153,7 +150,7 @@ public class ClanCommands {
                 return;
             }
 
-            if (target.clanProfile().isEmpty() || !target.clanProfile().get().clan().equals(clan) ) {
+            if (target.clanProfile().isEmpty() || !target.clanProfile().get().clan().equals(clan)) {
                 I18nAPI.get(this).send(sender, "cmd.clans.kick.error.not.in.clan");
                 return;
             }
@@ -172,10 +169,10 @@ public class ClanCommands {
     @CommandMethod("clans join <clan>")
     @CommandPermission("clans.join")
     public void join(Audience sender, Profile sprofile, @Argument("clan") Clan clan) {
-        if (sprofile.clanProfile().isPresent()) {
-            I18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
-            return;
-        }
+//        if (sprofile.clanProfile().isPresent()) {
+//            I18nAPI.get(this).send(sender, "cmd.error.base.already.in.clan");
+//            return;
+//        }
 
         ClanInvite recent = sprofile.mostRecentInvite(clan).orElse(null);
         if (recent == null || !recent.isActive()) {
@@ -220,7 +217,7 @@ public class ClanCommands {
             return;
         }
 
-        if ( sprofile.clanProfile().get().isLeader() ) {
+        if (sprofile.clanProfile().get().isLeader()) {
             I18nAPI.get(this).send(sender, "cmd.clans.quit.error.leader");
             return;
         }

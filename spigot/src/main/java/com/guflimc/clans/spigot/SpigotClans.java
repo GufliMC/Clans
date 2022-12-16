@@ -10,6 +10,7 @@ import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.brick.scheduler.spigot.api.SpigotScheduler;
+import com.guflimc.clans.common.EventManager;
 import com.guflimc.clans.common.commands.arguments.ClanArgument;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Profile;
@@ -72,6 +73,9 @@ public class SpigotClans extends JavaPlugin {
 
         // DATABASE
         databaseContext = new ClansDatabaseContext(config.database);
+
+        // EVENT MANAGER
+        EventManager.INSTANCE = new SpigotEventManager();
 
         // CLAN MANAGER
         clanManager = new SpigotBrickClanManager(databaseContext);

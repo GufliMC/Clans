@@ -5,8 +5,10 @@ import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanPermission;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.common.EventManager;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -94,7 +96,7 @@ public class DClanProfile implements ClanProfile {
         this.active = false;
         ClanAPI.get().update(this);
 
-        // TODO events
+        EventManager.INSTANCE.onLeave(profile, clan);
     }
 
     @Override
@@ -103,21 +105,21 @@ public class DClanProfile implements ClanProfile {
     }
 
     @Override
-    public boolean hasPermission(ClanPermission permission) {
-        return leader || permissions.stream().anyMatch(p -> p.permission().equals(permission));
+    public boolean hasPermission(@NotNull ClanPermission permission) {
+        return leader || permissions.stream().anyMatch(p -> p.key().equals(permission.key()));
     }
 
     @Override
-    public void addPermission(ClanPermission permission) {
+    public void addPermission(@NotNull ClanPermission permission) {
         if (hasPermission(permission)) {
             return;
         }
-        permissions.add(new DClanProfilePermission(this, permission));
+        permissions.add(new DClanProfilePermission(this, permission.key()));
     }
 
     @Override
-    public void removePermission(ClanPermission permission) {
-        permissions.removeIf(p -> p.permission().equals(permission));
+    public void removePermission(@NotNull ClanPermission permission) {
+        permissions.removeIf(p -> p.key().equals(permission.key()));
     }
 
 }

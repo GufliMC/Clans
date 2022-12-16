@@ -1,10 +1,10 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.brick.orm.api.attributes.AttributeKey;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.ClanInvite;
 import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
+import com.guflimc.clans.common.EventManager;
 import io.ebean.annotation.ConstraintMode;
 import io.ebean.annotation.*;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public class DProfile implements Profile {
         return Optional.ofNullable(clanProfile);
     }
 
-    public void joinClan(Clan clan) {
+    public void join(@NotNull Clan clan) {
         // leave previous clan
         clanProfile().ifPresent(ClanProfile::quit);
 
@@ -83,7 +83,7 @@ public class DProfile implements Profile {
         clanProfile = new DClanProfile(this, (DClan) clan);
         ((DClan) clan).memberCount++;
 
-        // TODO events
+        EventManager.INSTANCE.onJoin(this, clan);
     }
 
     // invites
@@ -92,6 +92,7 @@ public class DProfile implements Profile {
     public ClanInvite addInvite(@NotNull Profile sender, @NotNull Clan clan) {
         DClanInvite invite = new DClanInvite((DProfile) sender, this, (DClan) clan);
         invites.add(invite);
+        EventManager.INSTANCE.onInvite(this, clan);
         return invite;
     }
 

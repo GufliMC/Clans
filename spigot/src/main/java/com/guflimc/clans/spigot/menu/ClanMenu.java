@@ -149,9 +149,7 @@ public class ClanMenu {
 
 
     public static void clan(Player player, Clan clan, Runnable back) {
-        boolean any = hasPermission(player, clan, ClanPermission.ACCESS_STORAGE) ||
-                hasPermission(player, clan, ClanPermission.ACCESS_VAULT) ||
-                hasPermission(player, clan, ClanPermission.CHANGE_CREST);
+        boolean any = hasPermission(player, clan, ClanPermission.CHANGE_CREST);
         ISpigotMenu bmenu = SpigotBrickGUI.create(any ? 54 : 36, namespace.string(player, "menu.clan.title", clan.name()));
 
         ItemStack infoItem = ItemStackBuilder.of(SpigotClanAPI.get().crest(clan))
@@ -439,7 +437,7 @@ public class ClanMenu {
                 clan(player, clan, () -> profile(player, target, back));
             });
 
-            if (hasPermission(player, clan, ClanPermission.KICK_MEMBER) && !target.id().equals(player.getUniqueId())) {
+            if (hasPermission(player, clan, ClanPermission.KICK_MEMBERS) && !target.id().equals(player.getUniqueId())) {
                 ItemStack kickItem = ItemStackBuilder.of(Material.REDSTONE_BLOCK)
                         .withName(namespace.string(player, "menu.profile.kick.name"))
                         .withLore(namespace.string(player, "menu.profile.kick.lore", target.name()))
@@ -462,7 +460,7 @@ public class ClanMenu {
 //            }
         } else {
             Clan pclan = SpigotClanAPI.get().findClan(player).orElse(null);
-            if (pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYER)) {
+            if (pclan != null && hasPermission(player, pclan, ClanPermission.INVITE_PLAYERS)) {
                 ItemStack inviteItem = ItemStackBuilder.of(Material.WRITABLE_BOOK)
                         .withName(namespace.string(player, "menu.profile.invite.name"))
                         .withLore(namespace.string(player, "menu.profile.invite.lore", target.name()))
@@ -496,20 +494,18 @@ public class ClanMenu {
 
     private static final Map<ClanPermission, Material> materials = Map.of(
             ClanPermission.CHANGE_CREST, Material.WHITE_BANNER,
-            ClanPermission.INVITE_PLAYER, Material.PLAYER_HEAD,
-            ClanPermission.KICK_MEMBER, Material.IRON_SWORD,
-            ClanPermission.ACCESS_STORAGE, Material.CHEST,
-            ClanPermission.ACCESS_VAULT, Material.EMERALD
+            ClanPermission.INVITE_PLAYERS, Material.PLAYER_HEAD,
+            ClanPermission.KICK_MEMBERS, Material.IRON_SWORD
     );
 
     public static void changePlayerPermissions(Player player, ClanProfile cp, Runnable back) {
         ISpigotMenu menu = SpigotBrickGUI.create(45, namespace.string(player, "menu.clan.permissions.title", cp.profile().name()));
 
         int index = 11;
-        for (ClanPermission perm : ClanPermission.values()) {
+        for (ClanPermission perm : materials.keySet()) {
             String statusKey = "menu.clan.permissions." + cp.hasPermission(perm);
             ItemStack item = ItemStackBuilder.of(materials.get(perm))
-                    .withName(namespace.string(player, "menu." + perm.i18nKey()))
+//                    .withName(perm.display()) // TODO
                     .withLore(namespace.string(player, "menu.clan.permissions.status", namespace.string(player, statusKey)))
                     .apply(cp.hasPermission(perm), b -> {
                         b.withEnchantment(Enchantment.SILK_TOUCH);

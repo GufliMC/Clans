@@ -14,10 +14,7 @@ dependencies {
     compileOnly 'org.slf4j:slf4j-api:1.7.36'
     compileOnly 'com.google.code.gson:gson:+'
 
-    compileOnly 'com.guflimc.brick.regions:api:+'
-    compileOnly 'com.guflimc.brick.maths:api:+'
     compileOnly 'com.guflimc.brick.i18n:api:+'
-    compileOnly 'com.guflimc.brick.scheduler:api:+'
 
     compileOnly 'cloud.commandframework:cloud-core:+'
     compileOnly 'cloud.commandframework:cloud-annotations:+'

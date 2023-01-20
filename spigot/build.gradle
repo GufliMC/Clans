@@ -34,7 +34,6 @@ dependencies {
     compileOnly 'com.guflimc.brick.i18n:spigot-api:+'
     compileOnly 'com.guflimc.brick.chat:spigot-api:+'
     compileOnly 'com.guflimc.brick.placeholders:spigot-api:+'
-    compileOnly 'com.guflimc.brick.sidebar:spigot-api:+'
 }
 
 compileJava {

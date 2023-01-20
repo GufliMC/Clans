@@ -1,7 +1,5 @@
 package com.guflimc.clans.common;
 
-import com.guflimc.brick.maths.database.api.AreaConverter;
-import com.guflimc.brick.maths.database.api.LocationConverter;
 import com.guflimc.brick.orm.ebean.database.EbeanConfig;
 import com.guflimc.brick.orm.ebean.database.EbeanDatabaseContext;
 import com.guflimc.brick.orm.ebean.database.EbeanMigrations;
@@ -42,8 +40,6 @@ public class ClansDatabaseContext extends EbeanDatabaseContext {
             DClanAttribute.class,
             DProfileAttribute.class,
 
-            AreaConverter.class,
-            LocationConverter.class,
             CrestTypeConverter.class,
             CrestConfigConverter.class
     };

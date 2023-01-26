@@ -1,4 +1,4 @@
-package com.guflimc.clans.spigot.listeners;
+package com.guflimc.clans.spigot.chat;
 
 import com.guflimc.brick.chat.spigot.api.event.SpigotPlayerChannelChatEvent;
 import com.guflimc.clans.api.ClanAPI;

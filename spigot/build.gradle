@@ -49,7 +49,7 @@ bukkit {
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/Clans'
     apiVersion = '1.13'
-    depend = ["BrickI18n", "BrickRegions", "BrickChat", "BrickPlaceholders", "BrickNametags", "BrickSidebar"]
+    softDepend = ["BrickChat", "BrickPlaceholders"]
 }
 
 // I want it nice like that

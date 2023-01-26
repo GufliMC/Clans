@@ -80,8 +80,8 @@ public class ClanCommands {
 
             Component message = I18nAPI.get(this).translate(targetAudience, "cmd.clans.invite.target", clan.name());
 
-            int length = I18nAPI.get(this).length(message);
-            Component buttons = I18nAPI.get(this).paddingAround(length, accept, decline);
+            int width = I18nAPI.get(this).width(message);
+            Component buttons = I18nAPI.get(this).paddingAround(width, accept, decline);
 
             I18nAPI.get(this).menu(targetAudience, message, Component.text(""), buttons);
 

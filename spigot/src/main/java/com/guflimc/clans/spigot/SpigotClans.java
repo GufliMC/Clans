@@ -5,24 +5,23 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.SimpleCommandMeta;
 import com.google.gson.Gson;
-import com.guflimc.brick.chat.spigot.api.SpigotChatAPI;
 import com.guflimc.brick.gui.spigot.SpigotBrickGUI;
 import com.guflimc.brick.i18n.spigot.api.SpigotI18nAPI;
 import com.guflimc.brick.i18n.spigot.api.namespace.SpigotNamespace;
 import com.guflimc.brick.scheduler.spigot.api.SpigotScheduler;
-import com.guflimc.clans.common.EventManager;
-import com.guflimc.clans.common.commands.arguments.ClanArgument;
 import com.guflimc.clans.api.domain.Clan;
 import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.common.ClansConfig;
 import com.guflimc.clans.common.ClansDatabaseContext;
+import com.guflimc.clans.common.EventManager;
 import com.guflimc.clans.common.commands.ClanCommands;
+import com.guflimc.clans.common.commands.arguments.ClanArgument;
 import com.guflimc.clans.spigot.api.SpigotClanAPI;
-import com.guflimc.clans.spigot.chat.ClanChatChannel;
+import com.guflimc.clans.spigot.chat.ClanChat;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
 import com.guflimc.clans.spigot.commands.SpigotCrestCommands;
 import com.guflimc.clans.spigot.listeners.JoinQuitListener;
-import com.guflimc.clans.spigot.listeners.PlayerChatListener;
+import com.guflimc.clans.spigot.chat.PlayerChatListener;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -97,23 +96,22 @@ public class SpigotClans extends JavaPlugin {
         // COMMANDS
         setupCommands();
 
+        PluginManager pm = getServer().getPluginManager();
+
         // PLACEHOLDERS
-        ClanPlaceholders.init(config);
+        if (pm.isPluginEnabled("BrickPlaceholders")) {
+            ClanPlaceholders.init(config);
+        }
 
         // CHAT
-        SpigotChatAPI.get().channelByName("clan").ifPresent(ch -> {
-            ClanChatChannel replacement = new ClanChatChannel(ch.name(), ch.activator(), ch.format());
-            SpigotChatAPI.get().unregisterChatChannel(ch);
-            SpigotChatAPI.get().registerChatChannel(replacement);
-            logger.info("Injected custom chat channel for clans.");
-        });
+        if (pm.isPluginEnabled("BrickChat")) {
+            ClanChat.init(this);
+        }
 
         // EVENTS
-
-        PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new JoinQuitListener(this), this);
-        pm.registerEvents(new PlayerChatListener(), this);
 
+        //
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }
 

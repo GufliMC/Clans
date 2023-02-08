@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClanDeleteEvent extends ClanEvent {
 
-    public ClanDeleteEvent(Clan clan) {
-        super(clan);
+    public ClanDeleteEvent(Clan clan, boolean async) {
+        super(clan, async);
     }
 
     //

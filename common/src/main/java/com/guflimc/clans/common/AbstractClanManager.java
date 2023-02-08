@@ -94,13 +94,18 @@ public abstract class AbstractClanManager implements ClanManager {
         clans.add(clan);
 
         return databaseContext.persistAsync(clan).thenCompose(n -> {
-            ((DProfile) leader).join(clan);
-            ((DClanProfile) leader.clanProfile().orElseThrow()).leader = true;
+                    leader.join(clan);
+                    ((DClanProfile) leader.clanProfile().orElseThrow()).leader = true;
 
-            EventManager.INSTANCE.onCreate(clan);
+                    EventManager.INSTANCE.onCreate(clan);
 
-            return update(leader);
-        }).thenApply(n -> clan);
+                    return update(leader);
+                })
+                .thenApply(n -> (Clan) clan)
+                .exceptionally((ex) -> {
+                    ex.printStackTrace();
+                    return null;
+                });
     }
 
     @Override
@@ -147,8 +152,7 @@ public abstract class AbstractClanManager implements ClanManager {
     @Override
     public CompletableFuture<List<Profile>> profiles(@NotNull Clan clan) {
         // TODO fix
-        return databaseContext.findAllWhereAsync(DProfile.class, "clanProfile.clan", clan)
-                .thenCompose(CompletableFuture::completedFuture)
+        return databaseContext.findAllWhereAsync(DProfile.class, "clanProfile.clan.id", clan.id())
                 .thenApply(list -> list.stream().map(p -> (Profile) p).toList());
     }
 
@@ -190,7 +194,6 @@ public abstract class AbstractClanManager implements ClanManager {
             DProfile dp = (DProfile) p;
             dp.setLastSeenAt(Instant.now());
             profiles.add(dp);
-
             // TODO call events
             return p;
         });

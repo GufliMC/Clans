@@ -17,7 +17,7 @@ create table clans (
 create table clan_attributes (
   id                            uuid not null,
   name                          varchar(255) not null,
-  value                         varchar(255) not null,
+  attrvalue                     varchar(255) not null,
   clan_id                       uuid not null,
   constraint uq_clan_attributes_clan_id_name unique (clan_id,name),
   constraint pk_clan_attributes primary key (id)
@@ -30,6 +30,7 @@ create table clan_invites (
   clan_id                       uuid not null,
   rejected                      boolean default false not null,
   accepted                      boolean default false not null,
+  cancelled                     boolean default false not null,
   created_at                    timestamp not null,
   constraint pk_clan_invites primary key (id)
 );
@@ -49,10 +50,9 @@ create table clan_profiles (
 create table clan_profile_permissions (
   id                            uuid not null,
   clan_profile_id               uuid not null,
-  permission                    varchar(14),
+  permkey                       varchar(255),
   created_at                    timestamp not null,
   updated_at                    timestamp not null,
-  constraint ck_clan_profile_permissions_permission check ( permission in ('CHANGE_CREST','INVITE_PLAYER','KICK_MEMBER','ACCESS_STORAGE','ACCESS_VAULT')),
   constraint pk_clan_profile_permissions primary key (id)
 );
 
@@ -79,7 +79,7 @@ create table profiles (
 create table profile_attributes (
   id                            uuid not null,
   name                          varchar(255) not null,
-  value                         varchar(255) not null,
+  attrvalue                     varchar(255) not null,
   profile_id                    uuid not null,
   constraint uq_profile_attributes_profile_id_name unique (profile_id,name),
   constraint pk_profile_attributes primary key (id)

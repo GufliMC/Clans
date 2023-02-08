@@ -7,8 +7,8 @@ public abstract class ProfileClanEvent extends ClanEvent {
 
     private final Profile profile;
 
-    public ProfileClanEvent(Clan clan, Profile profile) {
-        super(clan);
+    public ProfileClanEvent(Clan clan, Profile profile, boolean async) {
+        super(clan, async);
         this.profile = profile;
     }
 

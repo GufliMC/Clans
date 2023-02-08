@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClanCreateEvent extends ClanEvent {
 
-    public ClanCreateEvent(Clan clan) {
-        super(clan);
+    public ClanCreateEvent(Clan clan, boolean async) {
+        super(clan, async);
     }
 
     //

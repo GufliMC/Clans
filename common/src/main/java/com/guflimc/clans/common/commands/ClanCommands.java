@@ -78,7 +78,7 @@ public class ClanCommands {
             Component decline = I18nAPI.get(this).hoverable(targetAudience, "chat.button.decline", "chat.button.decline.hover")
                     .clickEvent(ClickEvent.runCommand("/clans reject " + clan.name()));
 
-            Component message = I18nAPI.get(this).translate(targetAudience, "cmd.clans.invite.target", clan.name());
+            Component message = I18nAPI.get(this).translate(targetAudience, "cmd.clans.invite.target", sprofile.name(), clan.name());
 
             int width = I18nAPI.get(this).width(message);
             Component buttons = I18nAPI.get(this).paddingAround(width, accept, decline);

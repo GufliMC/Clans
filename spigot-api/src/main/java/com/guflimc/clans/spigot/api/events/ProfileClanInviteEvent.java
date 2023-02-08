@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ProfileClanInviteEvent extends ProfileClanEvent {
 
-    public ProfileClanInviteEvent(Clan clan, Profile profile) {
-        super(clan, profile);
+    public ProfileClanInviteEvent(Clan clan, Profile profile, boolean async) {
+        super(clan, profile, async);
     }
 
     //

@@ -19,7 +19,7 @@ public class DAttribute {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "attrvalue", nullable = false)
     private String value;
 
     public DAttribute() {

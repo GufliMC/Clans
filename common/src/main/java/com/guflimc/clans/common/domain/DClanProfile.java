@@ -33,17 +33,14 @@ public class DClanProfile implements ClanProfile {
     private DClan clan;
 
     @DbDefault("false")
-    public boolean leader;
+    public boolean leader = false;
 
     @OneToMany(targetEntity = DClanProfilePermission.class, orphanRemoval = true, mappedBy = "clanProfile", fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<DClanProfilePermission> permissions = new ArrayList<>();
 
     @DbDefault("true")
-    private boolean active;
-
-    @DbDefault("0")
-    private float power;
+    private boolean active = true;
 
     @WhenCreated
     private Instant createdAt;
@@ -74,16 +71,6 @@ public class DClanProfile implements ClanProfile {
     @Override
     public Instant createdAt() {
         return createdAt;
-    }
-
-    @Override
-    public float power() {
-        return power;
-    }
-
-    @Override
-    public void setPower(float power) {
-        this.power = power;
     }
 
     @Override

@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ProfileClanLeaveEvent extends ProfileClanEvent {
 
-    public ProfileClanLeaveEvent(Clan clan, Profile profile) {
-        super(clan, profile);
+    public ProfileClanLeaveEvent(Clan clan, Profile profile, boolean async) {
+        super(clan, profile, async);
     }
 
     //

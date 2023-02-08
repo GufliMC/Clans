@@ -1,6 +1,5 @@
 package com.guflimc.clans.common.domain;
 
-import com.guflimc.brick.orm.api.attributes.AttributeKey;
 import com.guflimc.clans.api.crest.CrestConfig;
 import com.guflimc.clans.api.crest.CrestType;
 import com.guflimc.clans.api.domain.Clan;
@@ -36,7 +35,7 @@ public class DClan implements Clan {
     @DbDefault("10")
     private int maxMembers = 10;
 
-    @Formula(select = "aggr.member_count", join = "join (select count(cp.id) as member_count from clan_profiles cp where cp.clan_id = id) as aggr")
+    @Formula(select = "aggr.member_count", join = "join (select cp.clan_id, count(cp.id) as member_count from clan_profiles cp) as aggr ON ${ta}.id = aggr.clan_id")
     public int memberCount;
 
     @ManyToOne(cascade = {CascadeType.ALL})

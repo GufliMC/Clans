@@ -71,7 +71,7 @@
   "menu.profileList.profile.lore": "<gray>Left click to view the information of <dark_gray>{0}<gray>.",
 
   "menu.clan.title": "Information of {0}",
-  "menu.clan.info.lore": "<gray>Created on: <gold>{0}\n<gray>Level: <gold>{1}",
+  "menu.clan.info.lore": "<gray>Created on: <gold>{0}",
   "menu.clan.members.name": "<green>Members <gold>({0}/{1})",
   "menu.clan.members.lore": "<gray>Click to view the members of <dark_gray>{0}<gray>.",
   "menu.clan.storage.name": "<green>Clan storage",
@@ -85,7 +85,7 @@
   "menu.clan.members.profile.lore": "<gray>Left click to view the information of <dark_gray>{0}<gray>.",
 
   "menu.profile.title": "Profile of {0}",
-  "menu.profile.info.lore": "<gray>Joined on: <gold>{0}\n<gray>Power: <gold>{1}\n<gray>Play time: <gold>{2}",
+  "menu.profile.info.lore": "<gray>Joined on: <gold>{0}",
   "menu.profile.clan.lore": "<gray>Click to view the information of <dark_gray>{0}<gray>.",
   "menu.profile.kick.name": "<red>Kick player",
   "menu.profile.kick.lore": "<gray>Click to kick <dark_gray>{0}<gray> from your clan.",

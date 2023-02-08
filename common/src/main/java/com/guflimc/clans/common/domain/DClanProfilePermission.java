@@ -21,7 +21,7 @@ public class DClanProfilePermission {
     @DbForeignKey(onDelete = ConstraintMode.CASCADE)
     private DClanProfile clanProfile;
 
-    @Convert
+    @Column(name = "permkey")
     private String key;
 
     @WhenCreated

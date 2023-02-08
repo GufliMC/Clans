@@ -14,10 +14,6 @@ public interface ClanProfile {
 
     boolean isLeader();
 
-    float power();
-
-    void setPower(float power);
-
     boolean hasPermission(@NotNull ClanPermission permission);
 
     void addPermission(@NotNull ClanPermission permission);

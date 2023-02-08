@@ -5,42 +5,53 @@ import com.guflimc.clans.api.domain.Profile;
 import com.guflimc.clans.common.EventManager;
 import com.guflimc.clans.spigot.api.events.*;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+
+import java.util.function.Supplier;
 
 public class SpigotEventManager extends EventManager {
 
+    private void wrap(Supplier<Event> supplier) {
+        try {
+            Bukkit.getServer().getPluginManager().callEvent(supplier.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onCreate(Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ClanCreateEvent(clan));
+        wrap(() -> new ClanCreateEvent(clan, !Bukkit.isPrimaryThread()));
     }
 
     @Override
     public void onDelete(Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ClanDeleteEvent(clan));
+        wrap(() -> new ClanDeleteEvent(clan, !Bukkit.isPrimaryThread()));
     }
 
     @Override
     public void onJoin(Profile profile, Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ProfileClanJoinEvent(clan, profile));
+        wrap(() -> new ProfileClanJoinEvent(clan, profile, !Bukkit.isPrimaryThread()));
     }
 
     @Override
     public void onLeave(Profile profile, Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ProfileClanLeaveEvent(clan, profile));
+        wrap(() -> new ProfileClanLeaveEvent(clan, profile, !Bukkit.isPrimaryThread()));
     }
 
     @Override
     public void onInvite(Profile profile, Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ProfileClanInviteEvent(clan, profile));
+        wrap(() -> new ProfileClanInviteEvent(clan, profile, !Bukkit.isPrimaryThread()));
     }
 
     @Override
     public void onInviteDelete(Profile profile, Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ProfileClanInviteDeleteEvent(clan, profile));
+        wrap(() -> new ProfileClanInviteDeleteEvent(clan, profile, !Bukkit.isPrimaryThread()));
     }
 
     @Override
     public void onInviteReject(Profile profile, Clan clan) {
-        Bukkit.getServer().getPluginManager().callEvent(new ProfileClanInviteRejectEvent(clan, profile));
+        wrap(() -> new ProfileClanInviteRejectEvent(clan, profile, !Bukkit.isPrimaryThread()));
     }
 
 }

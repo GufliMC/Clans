@@ -75,6 +75,7 @@ public class DProfile implements Profile {
         return Optional.ofNullable(clanProfile);
     }
 
+    @Override
     public void join(@NotNull Clan clan) {
         // leave previous clan
         clanProfile().ifPresent(ClanProfile::quit);

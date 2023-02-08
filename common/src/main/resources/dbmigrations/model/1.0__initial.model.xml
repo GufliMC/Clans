@@ -15,7 +15,7 @@
         <createTable name="clan_attributes" identityType="external" pkName="pk_clan_attributes">
             <column name="id" type="uuid" primaryKey="true" identity="true"/>
             <column name="name" type="varchar" notnull="true"/>
-            <column name="value" type="varchar" notnull="true"/>
+            <column name="attrvalue" type="varchar" notnull="true"/>
             <column name="clan_id" type="uuid" notnull="true" references="clans.id" foreignKeyName="fk_clan_attributes_clan_id" foreignKeyIndex="ix_clan_attributes_clan_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
             <uniqueConstraint name="uq_clan_attributes_clan_id_name" columnNames="clan_id,name" oneToOne="false" nullableColumns=""/>
         </createTable>
@@ -26,6 +26,7 @@
             <column name="clan_id" type="uuid" notnull="true" references="clans.id" foreignKeyName="fk_clan_invites_clan_id" foreignKeyIndex="ix_clan_invites_clan_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
             <column name="rejected" type="boolean" defaultValue="false" notnull="true"/>
             <column name="accepted" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="cancelled" type="boolean" defaultValue="false" notnull="true"/>
             <column name="created_at" type="timestamp" notnull="true"/>
         </createTable>
         <createTable name="clan_profiles" identityType="external" pkName="pk_clan_profiles">
@@ -41,7 +42,7 @@
         <createTable name="clan_profile_permissions" identityType="external" pkName="pk_clan_profile_permissions">
             <column name="id" type="uuid" primaryKey="true" identity="true"/>
             <column name="clan_profile_id" type="uuid" notnull="true" references="clan_profiles.id" foreignKeyName="fk_clan_profile_permissions_clan_profile_id" foreignKeyIndex="ix_clan_profile_permissions_clan_profile_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
-            <column name="permission" type="varchar(14)" checkConstraint="check ( permission in ('CHANGE_CREST','INVITE_PLAYER','KICK_MEMBER','ACCESS_STORAGE','ACCESS_VAULT'))" checkConstraintName="ck_clan_profile_permissions_permission"/>
+            <column name="permkey" type="varchar"/>
             <column name="created_at" type="timestamp" notnull="true"/>
             <column name="updated_at" type="timestamp" notnull="true"/>
         </createTable>
@@ -62,7 +63,7 @@
         <createTable name="profile_attributes" identityType="external" pkName="pk_profile_attributes">
             <column name="id" type="uuid" primaryKey="true" identity="true"/>
             <column name="name" type="varchar" notnull="true"/>
-            <column name="value" type="varchar" notnull="true"/>
+            <column name="attrvalue" type="varchar" notnull="true"/>
             <column name="profile_id" type="uuid" notnull="true" references="profiles.id" foreignKeyName="fk_profile_attributes_profile_id" foreignKeyIndex="ix_profile_attributes_profile_id" foreignKeyOnDelete="CASCADE" foreignKeyOnUpdate="RESTRICT"/>
             <uniqueConstraint name="uq_profile_attributes_profile_id_name" columnNames="profile_id,name" oneToOne="false" nullableColumns=""/>
         </createTable>

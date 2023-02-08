@@ -20,6 +20,7 @@ import com.guflimc.clans.spigot.api.SpigotClanAPI;
 import com.guflimc.clans.spigot.chat.ClanChat;
 import com.guflimc.clans.spigot.commands.SpigotClanCommands;
 import com.guflimc.clans.spigot.commands.SpigotCrestCommands;
+import com.guflimc.clans.spigot.listeners.ClanListener;
 import com.guflimc.clans.spigot.listeners.JoinQuitListener;
 import com.guflimc.clans.spigot.chat.PlayerChatListener;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
@@ -110,6 +111,7 @@ public class SpigotClans extends JavaPlugin {
 
         // EVENTS
         pm.registerEvents(new JoinQuitListener(this), this);
+        pm.registerEvents(new ClanListener(), this);
 
         //
         getLogger().info("Enabled " + nameAndVersion() + ".");

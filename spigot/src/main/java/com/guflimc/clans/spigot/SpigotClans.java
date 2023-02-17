@@ -22,8 +22,8 @@ import com.guflimc.clans.spigot.commands.SpigotClanCommands;
 import com.guflimc.clans.spigot.commands.SpigotCrestCommands;
 import com.guflimc.clans.spigot.listeners.ClanListener;
 import com.guflimc.clans.spigot.listeners.JoinQuitListener;
-import com.guflimc.clans.spigot.chat.PlayerChatListener;
 import com.guflimc.clans.spigot.placeholders.ClanPlaceholders;
+import com.guflimc.config.toml.TomlConfig;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -55,17 +55,10 @@ public class SpigotClans extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveResource("config.json", false);
-        try (
-                InputStream is = new FileInputStream(new File(getDataFolder(), "config.json"));
-                InputStreamReader isr = new InputStreamReader(is)
-        ) {
-            config = gson.fromJson(isr, ClansConfig.class);
-        } catch (IOException e) {
-            logger.error("Cannot load configuration.", e);
-            return;
-        }
+        // CONFIG
+        config = TomlConfig.load(new File(getDataFolder(), "config.toml"), new ClansConfig());
 
+        // GUI
         SpigotBrickGUI.register(this);
 
         // ADVENTURE

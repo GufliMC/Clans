@@ -35,7 +35,8 @@ public class DClan implements Clan {
     @DbDefault("10")
     private int maxMembers = 10;
 
-    @Formula(select = "aggr.member_count", join = "join (select cp.clan_id, count(cp.id) as member_count from clan_profiles cp) as aggr ON ${ta}.id = aggr.clan_id")
+    @Formula(select = "aggr.member_count",
+            join = "join (select cp.clan_id, count(cp.clan_id) as member_count from clan_profiles cp where cp.active = 1 group by cp.clan_id) as aggr ON ${ta}.id = aggr.clan_id")
     public int memberCount;
 
     @ManyToOne(cascade = {CascadeType.ALL})

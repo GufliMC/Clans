@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class ClanChatChannel extends AbstractChatChannel<Player> {
 
     public ClanChatChannel(String name, String activator, Component format) {
-        super(name, activator, format);
+        super(name, activator, format, false);
     }
 
     @Override

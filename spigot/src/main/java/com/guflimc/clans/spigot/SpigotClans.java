@@ -41,11 +41,7 @@ import java.util.function.Function;
 
 public class SpigotClans extends JavaPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(SpigotClans.class);
-
     public static SpigotScheduler scheduler;
-
-    public final Gson gson = new Gson();
 
     private ClansDatabaseContext databaseContext;
     public SpigotBrickClanManager clanManager;
@@ -56,7 +52,7 @@ public class SpigotClans extends JavaPlugin {
     @Override
     public void onEnable() {
         // CONFIG
-        config = TomlConfig.load(new File(getDataFolder(), "config.toml"), new ClansConfig());
+        config = TomlConfig.load(getDataFolder().toPath().resolve("config.toml"), new ClansConfig());
 
         // GUI
         SpigotBrickGUI.register(this);

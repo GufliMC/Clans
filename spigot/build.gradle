@@ -50,6 +50,7 @@ bukkit {
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/Clans'
     apiVersion = '1.13'
+    depend = ["BrickI18n"]
     softDepend = ["BrickChat", "BrickPlaceholders"]
 }
 

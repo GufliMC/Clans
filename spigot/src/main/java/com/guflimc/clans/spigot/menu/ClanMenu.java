@@ -159,7 +159,7 @@ public class ClanMenu {
         bmenu.setItem(12, infoItem);
 
         ItemStack membersItem = ItemStackBuilder.skull()
-                .withName(namespace.string(player, "menu.clan.members.name", clan.memberCount(), clan.maxMembers()))
+                .withName(namespace.string(player, "menu.clan.members.name", clan.memberCount(), clan.memberLimit()))
                 .withLore(namespace.string(player, "menu.clan.members.lore", clan.name()))
                 .build();
         bmenu.setItem(14, membersItem, c -> {

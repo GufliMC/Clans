@@ -90,7 +90,7 @@ public class SpigotClans extends JavaPlugin {
 
         // PLACEHOLDERS
         if (pm.isPluginEnabled("BrickPlaceholders")) {
-            ClanPlaceholders.init(config);
+            ClanPlaceholders.init();
         }
 
         // CHAT

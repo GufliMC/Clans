@@ -42,7 +42,7 @@ public class ClanCommands {
             return;
         }
 
-        if (clan.memberCount() >= clan.maxMembers()) {
+        if (clan.memberCount() >= clan.memberLimit()) {
             I18nAPI.get(this).send(sender, "cmd.clans.invite.error.max.members");
             return;
         }
@@ -180,7 +180,7 @@ public class ClanCommands {
             return;
         }
 
-        if (clan.memberCount() >= clan.maxMembers()) {
+        if (clan.memberCount() >= clan.memberLimit()) {
             I18nAPI.get(this).send(sender, "cmd.clans.join.error.max.members");
             return;
         }

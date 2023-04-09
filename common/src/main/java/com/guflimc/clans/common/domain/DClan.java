@@ -33,7 +33,7 @@ public class DClan implements Clan {
     private int rgbColor = 16581375;
 
     @DbDefault("10")
-    private int maxMembers = 10;
+    private int memberLimit = 10;
 
     @Formula(select = "aggr.member_count",
             join = "join (select cp.clan_id, count(cp.clan_id) as member_count from clan_profiles cp where cp.active = 1 group by cp.clan_id) as aggr ON ${ta}.id = aggr.clan_id")
@@ -93,13 +93,13 @@ public class DClan implements Clan {
     }
 
     @Override
-    public int maxMembers() {
-        return maxMembers;
+    public int memberLimit() {
+        return memberLimit;
     }
 
     @Override
-    public void setMaxMembers(int value) {
-        this.maxMembers = value;
+    public void setMemberLimit(int value) {
+        this.memberLimit = value;
     }
 
     @Override

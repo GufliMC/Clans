@@ -1,56 +1,38 @@
 package com.guflimc.clans.spigot.placeholders;
 
+import com.guflimc.brick.placeholders.api.module.BasePlaceholderModule;
+import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolver;
 import com.guflimc.brick.placeholders.spigot.api.SpigotPlaceholderAPI;
 import com.guflimc.clans.api.ClanAPI;
+import com.guflimc.clans.api.domain.ClanProfile;
 import com.guflimc.clans.api.domain.Profile;
-import com.guflimc.clans.common.ClansConfig;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.Player;
+
+import java.util.function.Function;
 
 public class ClanPlaceholders {
 
-    public static void init(ClansConfig config) {
+    private static <T> PlaceholderResolver<Player, T> profile(Function<Profile, T> map) {
+        return PlaceholderResolver.requireEntity((player, context) ->
+                ClanAPI.get().findCachedProfile(context.entity().getUniqueId())
+                        .map(map).orElse(null));
+    }
 
-        Component clanChatPrefix = MiniMessage.miniMessage().deserialize(config.clanChatPrefix);
-        Component clanNametagPrefix = MiniMessage.miniMessage().deserialize(config.clanNametagPrefix);
-        Component noClanDisplayName = MiniMessage.miniMessage().deserialize(config.noClanDisplayName);
+    private static <T> PlaceholderResolver<Player, T> clanProfile(Function<ClanProfile, T> map) {
+        return profile(profile -> profile.clanProfile().map(map).orElse(null));
+    }
 
-        SpigotPlaceholderAPI.get().registerReplacer("clan_name", (player) ->
-                ClanAPI.get().findCachedProfile(player.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(cp -> Component.text(cp.clan().name()))
-                        .orElse(null));
-
-        SpigotPlaceholderAPI.get().registerReplacer("clan_display_name", (player) ->
-                ClanAPI.get().findCachedProfile(player.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(cp -> cp.clan().displayName())
-                        .orElse(noClanDisplayName));
-
-        SpigotPlaceholderAPI.get().registerReplacer("clan_tag", (player) ->
-                ClanAPI.get().findCachedProfile(player.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(cp -> Component.text(cp.clan().tag()))
-                        .orElse(null));
-
-        SpigotPlaceholderAPI.get().registerReplacer("clan_display_tag", (player) ->
-                ClanAPI.get().findCachedProfile(player.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(cp -> cp.clan().displayTag())
-                        .orElse(null));
-
-        SpigotPlaceholderAPI.get().registerReplacer("clan_chat_prefix", (player) ->
-                ClanAPI.get().findCachedProfile(player.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(cp -> SpigotPlaceholderAPI.get().replace(player, clanChatPrefix))
-                        .orElse(null));
-
-        SpigotPlaceholderAPI.get().registerReplacer("clan_nametag_prefix", (player) ->
-                ClanAPI.get().findCachedProfile(player.getUniqueId())
-                        .flatMap(Profile::clanProfile)
-                        .map(cp -> SpigotPlaceholderAPI.get().replace(player, clanNametagPrefix))
-                        .orElse(null));
-
+    public static void init() {
+        BasePlaceholderModule<Player> module = new BasePlaceholderModule<Player>("clans");
+        module.register("name", clanProfile(cp -> Component.text(cp.clan().name())));
+        module.register("display_name", clanProfile(cp -> cp.clan().displayName()));
+        module.register("tag", clanProfile(cp -> Component.text(cp.clan().tag())));
+        module.register("display_tag", clanProfile(cp -> cp.clan().displayTag()));
+        module.register("member_count", clanProfile(cp -> cp.clan().memberCount()));
+        module.register("member_limit", clanProfile(cp -> cp.clan().memberLimit()));
+        module.register("color", clanProfile(cp -> cp.clan().namedTextColor()));
+        SpigotPlaceholderAPI.get().register(module);
     }
 
 }

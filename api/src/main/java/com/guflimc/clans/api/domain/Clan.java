@@ -23,9 +23,9 @@ public interface Clan {
 
     void setColor(int color);
 
-    int maxMembers();
+    int memberLimit();
 
-    void setMaxMembers(int value);
+    void setMemberLimit(int value);
 
     int memberCount();
 

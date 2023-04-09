@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class ClanPlaceholders {
 
     private static <T> PlaceholderResolver<Player, T> profile(Function<Profile, T> map) {
-        return PlaceholderResolver.requireEntity((player, context) ->
+        return PlaceholderResolver.requireEntity((placeholder, context) ->
                 ClanAPI.get().findCachedProfile(context.entity().getUniqueId())
                         .map(map).orElse(null));
     }
@@ -24,7 +24,7 @@ public class ClanPlaceholders {
     }
 
     public static void init() {
-        BasePlaceholderModule<Player> module = new BasePlaceholderModule<Player>("clans");
+        BasePlaceholderModule<Player> module = new BasePlaceholderModule<>("clan");
         module.register("name", clanProfile(cp -> Component.text(cp.clan().name())));
         module.register("display_name", clanProfile(cp -> cp.clan().displayName()));
         module.register("tag", clanProfile(cp -> Component.text(cp.clan().tag())));
